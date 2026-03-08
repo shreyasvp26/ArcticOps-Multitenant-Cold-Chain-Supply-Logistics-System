@@ -115,11 +115,12 @@ export default function DashboardPage() {
         >
           <GlobeMap />
 
-          {/* Stress level indicator overlay */}
+          {/* Stress level indicator overlay — centered top */}
           {stressLevel !== "serene" && (
             <div
-              className="absolute top-3 left-3 flex items-center gap-2 px-3 py-1.5 rounded-full text-[12px] font-medium"
+              className="absolute top-3 left-1/2 -translate-x-1/2 flex items-center gap-2 px-3 py-1.5 rounded-full text-[12px] font-medium pointer-events-none"
               style={{
+                zIndex: 999,
                 backgroundColor: stressLevel === "emergency"
                   ? "rgba(255,71,87,0.15)"
                   : stressLevel === "urgent"

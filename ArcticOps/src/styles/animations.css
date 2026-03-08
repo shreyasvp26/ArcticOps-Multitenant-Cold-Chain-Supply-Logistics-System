@@ -273,6 +273,28 @@
   animation: shimmer 1.5s ease-in-out infinite;
 }
 
+/* ── Ring Expand — live map marker sonar ring ── */
+@keyframes ring-expand {
+  0% {
+    transform: scale(1);
+    opacity: 0.6;
+  }
+  100% {
+    transform: scale(3.5);
+    opacity: 0;
+  }
+}
+
+/* ── Danger Pulse — high-risk shipment marker ── */
+@keyframes danger-pulse {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(255,71,87,0);
+  }
+  50% {
+    box-shadow: 0 0 0 5px rgba(255,71,87,0.25);
+  }
+}
+
 /* ── Shake — critical alert entrance ── */
 @keyframes shake {
   0%, 100% { transform: translateX(0); }

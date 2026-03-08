@@ -22,14 +22,14 @@ export const MOCK_DELAY_PREDICTIONS: DelayPrediction[] = [
     riskDetails: "Missing Australian import permit may cause customs hold at Sydney",
   },
   {
-    shipmentId: "SH-2788",
-    shipmentLabel: "SH-2788",
+    shipmentId: "SH-2847",
+    shipmentLabel: "SH-2847",
     clientName: "PharmaAlpha Inc.",
-    currentStatus: "In Transit (Sea)",
-    predictedDelayHours: 18,
-    confidencePercent: 48,
+    currentStatus: "In Transit",
+    predictedDelayHours: 0,
+    confidencePercent: 91,
     primaryRiskFactor: "weather",
-    riskDetails: "North Pacific storm system may impact ETA by 12–24 hours near Hawaii",
+    riskDetails: "Clear weather on Dubai → Frankfurt corridor. On-time delivery expected.",
   },
 ]
 
@@ -37,9 +37,6 @@ export const MOCK_EXCURSION_HEATMAP: ExcursionHeatmapData[] = [
   { routeSegment: "Mumbai → Frankfurt", month: "Jan 2026", excursionCount: 1, carrierId: "carrier_arctic_express" },
   { routeSegment: "Mumbai → Frankfurt", month: "Feb 2026", excursionCount: 2, carrierId: "carrier_arctic_express" },
   { routeSegment: "Mumbai → Frankfurt", month: "Mar 2026", excursionCount: 0, carrierId: "carrier_polaraero" },
-  { routeSegment: "Shanghai → New York", month: "Jan 2026", excursionCount: 0, carrierId: "carrier_pharmafreight" },
-  { routeSegment: "Shanghai → New York", month: "Feb 2026", excursionCount: 1, carrierId: "carrier_pharmafreight" },
-  { routeSegment: "Shanghai → New York", month: "Mar 2026", excursionCount: 0, carrierId: "carrier_pharmafreight" },
   { routeSegment: "Brussels → Nairobi", month: "Jan 2026", excursionCount: 3, carrierId: "carrier_arctic_express" },
   { routeSegment: "Brussels → Nairobi", month: "Feb 2026", excursionCount: 2, carrierId: "carrier_arctic_express" },
   { routeSegment: "Brussels → Nairobi", month: "Mar 2026", excursionCount: 1, carrierId: "carrier_arctic_express" },
@@ -49,15 +46,17 @@ export const MOCK_EXCURSION_HEATMAP: ExcursionHeatmapData[] = [
   { routeSegment: "Zurich → Toronto", month: "Jan 2026", excursionCount: 0, carrierId: "carrier_polaraero" },
   { routeSegment: "Zurich → Toronto", month: "Feb 2026", excursionCount: 0, carrierId: "carrier_polaraero" },
   { routeSegment: "Zurich → Toronto", month: "Mar 2026", excursionCount: 0, carrierId: "carrier_polaraero" },
+  { routeSegment: "Seoul → New Delhi", month: "Jan 2026", excursionCount: 0, carrierId: "carrier_meditrans" },
+  { routeSegment: "Seoul → New Delhi", month: "Feb 2026", excursionCount: 1, carrierId: "carrier_meditrans" },
+  { routeSegment: "Seoul → New Delhi", month: "Mar 2026", excursionCount: 0, carrierId: "carrier_meditrans" },
 ]
 
 export const MOCK_COST_REPORTS: CostReport[] = [
   { shipmentId: "SH-2847", clientName: "PharmaAlpha Inc.", estimatedCostUsd: 28000, actualCostUsd: 27400, variance: -600, variancePercent: -2.1, primaryMode: "air" },
   { shipmentId: "SH-1204", clientName: "BioVerde Labs", estimatedCostUsd: 18500, actualCostUsd: 21200, variance: 2700, variancePercent: 14.6, primaryMode: "air" },
   { shipmentId: "SH-3091", clientName: "CryoMed Solutions", estimatedCostUsd: 35000, actualCostUsd: 34100, variance: -900, variancePercent: -2.6, primaryMode: "air" },
-  { shipmentId: "SH-2788", clientName: "PharmaAlpha Inc.", estimatedCostUsd: 14200, actualCostUsd: 13800, variance: -400, variancePercent: -2.8, primaryMode: "sea" },
-  { shipmentId: "SH-3102", clientName: "BioVerde Labs", estimatedCostUsd: 22400, actualCostUsd: 22400, variance: 0, variancePercent: 0, primaryMode: "air" },
-  { shipmentId: "SH-2901", clientName: "CryoMed Solutions", estimatedCostUsd: 19800, actualCostUsd: 19200, variance: -600, variancePercent: -3.0, primaryMode: "air" },
+  { shipmentId: "SH-3110", clientName: "CryoMed Solutions", estimatedCostUsd: 42000, actualCostUsd: 42000, variance: 0, variancePercent: 0, primaryMode: "air" },
+  { shipmentId: "SH-2965", clientName: "CryoMed Solutions", estimatedCostUsd: 12800, actualCostUsd: 12600, variance: -200, variancePercent: -1.6, primaryMode: "air" },
 ]
 
 export const MOCK_CLIENT_HEALTH: ClientHealthScore[] = [
