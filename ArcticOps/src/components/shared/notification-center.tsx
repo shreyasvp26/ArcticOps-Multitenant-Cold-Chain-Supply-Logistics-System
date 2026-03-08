@@ -8,6 +8,7 @@ import {
 } from "lucide-react"
 import { useNotificationStore } from "@/lib/store/notification-store"
 import { useAuthStore } from "@/lib/store/auth-store"
+import { useDriverStore } from "@/lib/store/driver-store"
 import { formatTimestamp } from "@/lib/utils/format"
 import { cn } from "@/lib/utils/cn"
 import type { AlertSeverity } from "@/lib/types/notification"
@@ -39,10 +40,23 @@ interface NotificationCenterProps {
 export function NotificationCenter({ open, onClose }: NotificationCenterProps) {
   const router = useRouter()
   const { user } = useAuthStore()
-  const { notifications, unreadCount, markRead, markAllRead, getForTenant } = useNotificationStore()
+  const { currentAssignment } = useDriverStore()
+  const { notifications, markRead, markAllRead, getForTenant } = useNotificationStore()
   const panelRef = useRef<HTMLDivElement>(null)
 
-  const tenantNotifications = getForTenant(user?.tenantId ?? null).slice(0, 30)
+  const isDriver = user?.role === "driver"
+  const tenantNotifications = getForTenant(user?.tenantId ?? null)
+    .filter((n) => {
+      if (isDriver) {
+        // Extremely strict: only show if there is an assignment AND the notification is for it
+        if (!currentAssignment) return false
+        return n.relatedEntityId === currentAssignment.id
+      }
+      return true
+    })
+    .slice(0, 30)
+
+  const unreadCount = tenantNotifications.filter(n => !n.read).length
 
   // Close on outside click
   useEffect(() => {

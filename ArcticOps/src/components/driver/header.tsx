@@ -13,8 +13,18 @@ export function DriverHeader() {
   const router = useRouter()
   const { user, logout } = useAuthStore()
   const { currentAssignment } = useDriverStore()
-  const { unreadCount } = useNotificationStore()
+  const { notifications, markAllRead } = useNotificationStore()
   const [notifOpen, setNotifOpen] = useState(false)
+
+  const isDriver = user?.role === "driver"
+  const relevantNotifications = notifications.filter((n) => {
+    if (isDriver) {
+      // Drivers only see notifications related to THEIR shipment
+      return n.relatedEntityId === currentAssignment?.id
+    }
+    return true
+  })
+  const unreadCount = relevantNotifications.filter(n => !n.read).length
 
   const status = currentAssignment?.status
   const statusConfig = status ? SHIPMENT_STATUSES[status] : null

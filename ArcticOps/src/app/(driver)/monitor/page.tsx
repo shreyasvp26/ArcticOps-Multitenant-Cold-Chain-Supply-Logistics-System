@@ -1,7 +1,7 @@
 "use client"
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { motion } from "framer-motion"
-import { Power, Wind, DoorOpen, AlertTriangle, Send } from "lucide-react"
+import { Power, Wind, DoorOpen, AlertTriangle, Send, Phone } from "lucide-react"
 import { useDriverStore } from "@/lib/store/driver-store"
 import { useTemperatureStore } from "@/lib/store/temperature-store"
 import { useNotificationStore } from "@/lib/store/notification-store"
@@ -16,13 +16,22 @@ export default function MonitorPage() {
   const { addNotification } = useNotificationStore()
   const [reportOpen, setReportOpen] = useState(false)
   const [reportText, setReportText] = useState("")
+  const [fluctuation, setFluctuation] = useState(0)
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      setFluctuation((Math.random() - 0.5) * 0.4)
+    }, 2000)
+    return () => clearInterval(interval)
+  }, [])
 
   const shipment = currentAssignment ?? MOCK_SHIPMENTS.find((s) => s.status === "in_transit")
   if (!shipment) return <div className="flex items-center justify-center h-full text-sm" style={{ color: "var(--ao-text-muted)", fontFamily: "var(--ao-font-body)" }}>No active assignment</div>
 
   const latest = getLatest(shipment.id)
   const history = getHistory(shipment.id, 6).map((r) => r.temperature)
-  const temp = latest?.temperature ?? (shipment.requiredTempMin + shipment.requiredTempMax) / 2
+  const baseTemp = latest?.temperature ?? (shipment.requiredTempMin + shipment.requiredTempMax) / 2
+  const temp = baseTemp + fluctuation
 
   const isExcursion = temp > shipment.requiredTempMax || temp < shipment.requiredTempMin
   const isApproaching = !isExcursion && (temp > shipment.requiredTempMax - 0.5 || temp < shipment.requiredTempMin + 0.5)
@@ -66,6 +75,17 @@ export default function MonitorPage() {
         <p className="text-[12px] font-medium" style={{ color: statusColor, fontFamily: "var(--ao-font-body)" }}>
           {isExcursion ? "⚠ EXCURSION — Contact ops immediately" : isApproaching ? "⚠ Approaching limit" : "✓ Within range"}
         </p>
+
+        {isExcursion && (
+          <a
+            href="tel:+18002726771"
+            className="mt-2 flex items-center gap-2 px-4 py-2 rounded-lg text-[13px] font-bold animate-pulse"
+            style={{ backgroundColor: "#FF4757", color: "white", boxShadow: "0 0 15px rgba(255,71,87,0.4)" }}
+          >
+            <Phone className="w-4 h-4" /> CALL EMERGENCY
+          </a>
+        )}
+
         {history.length > 2 && (
           <div className="w-full mt-2">
             <p className="text-[10px] mb-1 text-center" style={{ color: "var(--ao-text-muted)", fontFamily: "var(--ao-font-body)" }}>Last 6 hours</p>
