@@ -1,6 +1,5 @@
 "use client"
 import { useState } from "react"
-import { useRouter } from "next/navigation"
 import {
   ArrowUpDown, ArrowUp, ArrowDown, Search, SlidersHorizontal,
   LayoutGrid, List, X
@@ -12,6 +11,8 @@ import { TemperatureBadge } from "@/components/shared/temperature-badge"
 import { RiskScore } from "@/components/shared/risk-score"
 import { Sparkline } from "@/components/shared/sparkline"
 import { EmptyState } from "@/components/shared/empty-state"
+import { ShipmentDetailModal } from "@/components/ops/shipment-detail-modal"
+import { ModalPortal } from "@/components/shared/modal-portal"
 import { SHIPMENT_STATUSES } from "@/lib/constants/shipment-statuses"
 import { formatEta, formatDate } from "@/lib/utils/format"
 import { isClientRole } from "@/lib/utils/permissions"
@@ -40,7 +41,6 @@ const ZONE_OPTIONS = [
 ]
 
 export function ShipmentTable() {
-  const router = useRouter()
   const { user } = useAuthStore()
   const { shipments } = useShipmentStore()
   const getHistory = useTemperatureStore((s) => s.getHistory)
@@ -50,6 +50,7 @@ export function ShipmentTable() {
   const [zoneFilter, setZoneFilter] = useState("all")
   const [sortKey, setSortKey] = useState<SortKey>("eta")
   const [sortDir, setSortDir] = useState<SortDir>("asc")
+  const [selectedShipment, setSelectedShipment] = useState<Shipment | null>(null)
 
   const tenantId = isClientRole(user?.role ?? "driver") ? user?.tenantId : null
 
@@ -86,7 +87,7 @@ export function ShipmentTable() {
 
   const SortIcon = ({ k }: { k: SortKey }) =>
     sortKey !== k ? <ArrowUpDown className="w-3 h-3 opacity-40" /> :
-    sortDir === "asc" ? <ArrowUp className="w-3 h-3" /> : <ArrowDown className="w-3 h-3" />
+      sortDir === "asc" ? <ArrowUp className="w-3 h-3" /> : <ArrowDown className="w-3 h-3" />
 
   return (
     <div className="flex flex-col gap-4">
@@ -181,7 +182,7 @@ export function ShipmentTable() {
                   return (
                     <tr
                       key={shipment.id}
-                      onClick={() => router.push(`/shipments/${shipment.id}`)}
+                      onClick={() => setSelectedShipment(shipment)}
                       className="cursor-pointer transition-colors border-t hover:bg-[rgba(255,255,255,0.03)]"
                       style={{ borderColor: "var(--ao-border)" }}
                     >
@@ -224,7 +225,7 @@ export function ShipmentTable() {
                               data={tempHistory.slice(-48)}
                               color={
                                 shipment.temperatureZone === "ultra_cold" ? "#7C3AED" :
-                                shipment.temperatureZone === "frozen" ? "#3B82F6" : "#06B6D4"
+                                  shipment.temperatureZone === "frozen" ? "#3B82F6" : "#06B6D4"
                               }
                               width={60}
                               height={20}
@@ -262,6 +263,16 @@ export function ShipmentTable() {
             </span>
           </div>
         </div>
+      )}
+
+      {/* Shipment detail modal */}
+      {selectedShipment && (
+        <ModalPortal>
+          <ShipmentDetailModal
+            shipment={selectedShipment}
+            onClose={() => setSelectedShipment(null)}
+          />
+        </ModalPortal>
       )}
     </div>
   )

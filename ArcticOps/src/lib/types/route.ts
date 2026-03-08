@@ -23,6 +23,7 @@ export interface RouteOption {
   co2EstimateKg: number
   tempMaintenanceConfidence: number
   isRecommended: boolean
+  capacityVials: number
   notes?: string
 }
 
