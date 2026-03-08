@@ -9,8 +9,8 @@ const ROLE_ALLOWED_PREFIXES: Record<string, string[]> = {
   super_admin: ["/dashboard", "/shipments", "/inventory", "/route-planner", "/carriers", "/transport", "/compliance", "/analytics", "/settings", "/notifications", "/profile"],
   ops_manager: ["/dashboard", "/shipments", "/inventory", "/route-planner", "/carriers", "/transport", "/compliance", "/analytics", "/settings", "/notifications", "/profile"],
   compliance_officer: ["/dashboard", "/shipments", "/compliance", "/analytics", "/notifications", "/profile"],
-  client_admin: ["/home", "/tracker", "/procurement", "/documents", "/communications", "/settings", "/notifications", "/profile"],
-  client_viewer: ["/home", "/tracker", "/documents", "/communications", "/notifications", "/profile"],
+  client_admin: ["/home", "/tracker", "/procurement", "/documents", "/communications", "/client/settings", "/client/notifications", "/client/profile"],
+  client_viewer: ["/home", "/tracker", "/documents", "/communications", "/client/notifications", "/client/profile"],
   driver: ["/assignment", "/navigate", "/monitor", "/deliver", "/driver", "/notifications", "/profile"],
 }
 

@@ -2,15 +2,14 @@
 import { useRouter } from "next/navigation"
 import { motion } from "framer-motion"
 import { useMemo } from "react"
-import { 
-  Thermometer, Activity, Clock, 
-  ArrowUpRight, TrendingDown, TrendingUp, Package
+import {
+  Thermometer, Activity, Clock,
+  ArrowUpRight, TrendingDown, TrendingUp, Package, ShieldCheck, ShieldAlert, ShieldX,
 } from "lucide-react"
 import { useAuthStore } from "@/lib/store/auth-store"
 import { useShipmentStore } from "@/lib/store/shipment-store"
 import { useTemperatureStore } from "@/lib/store/temperature-store"
 import { MOCK_CLIENT_HEALTH } from "@/lib/mock-data/analytics"
-import { RiskScore } from "@/components/shared/risk-score"
 import { TemperatureBadge } from "@/components/shared/temperature-badge"
 import { formatEta } from "@/lib/utils/format"
 import { calculateRiskScore } from "@/lib/utils/risk"
@@ -81,7 +80,23 @@ export default function SupplyTelemetryPage() {
                     <span className="text-[12px] font-bold block mb-1" style={{ color: "var(--ao-accent)", fontFamily: "var(--ao-font-mono)" }}>{sh.id}</span>
                     <p className="text-sm font-bold truncate pr-4" style={{ color: "var(--ao-text-primary)" }}>{sh.materials[0]?.name ?? "Consignment"}</p>
                   </div>
-                  <RiskScore score={risk} size="sm" showLabel={false} />
+                  {/* Risk badge — label only, no number */}
+                  {(() => {
+                    const level = risk <= 25 ? "Low" : risk <= 50 ? "Medium" : risk <= 75 ? "High" : "Critical"
+                    const [color, bg, border, Icon] =
+                      risk <= 25 ? ["#2ED573", "rgba(46,213,115,0.10)", "rgba(46,213,115,0.25)", ShieldCheck]
+                      : risk <= 50 ? ["#FFA502", "rgba(255,165,2,0.10)", "rgba(255,165,2,0.25)", ShieldAlert]
+                      : ["#FF4757", "rgba(255,71,87,0.10)", "rgba(255,71,87,0.25)", ShieldX]
+                    return (
+                      <div className="flex items-center gap-1.5 px-2 py-1 rounded-lg shrink-0"
+                        style={{ background: bg, border: `1px solid ${border}` }}>
+                        <Icon style={{ width: 11, height: 11, color }} />
+                        <span style={{ fontSize: 9, fontWeight: 700, color, fontFamily: "var(--ao-font-mono)", letterSpacing: "0.05em" }}>
+                          {level.toUpperCase()}
+                        </span>
+                      </div>
+                    )
+                  })()}
                 </div>
 
                 <div className="grid grid-cols-2 gap-4 mb-4">

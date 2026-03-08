@@ -82,15 +82,11 @@ export function DriverHeader() {
         <div className="relative">
           <button
             onClick={() => setNotifOpen((v) => !v)}
-            className={cn(
-              "relative p-2 rounded-xl transition-colors",
-              notifOpen ? "bg-[rgba(255,255,255,0.08)]" : "hover:bg-[rgba(255,255,255,0.05)]"
-            )}
-            style={{ border: "1px solid transparent" }}
+            className={cn("ao-icon-btn ao-icon-btn--teal", notifOpen && "ao-icon-btn--active")}
             aria-label={`Notifications${unreadCount > 0 ? ` (${unreadCount})` : ""}`}
             aria-expanded={notifOpen}
           >
-            <Bell className="w-5 h-5" style={{ color: unreadCount > 0 ? "var(--ao-text-secondary)" : "var(--ao-text-muted)" }} aria-hidden="true" />
+            <Bell className="ao-icon-btn__icon w-4 h-4" style={{ color: unreadCount > 0 ? "var(--ao-text-secondary)" : "var(--ao-text-muted)" }} aria-hidden="true" />
             {unreadCount > 0 && (
               <span
                 className="absolute -top-0.5 -right-0.5 w-4 h-4 rounded-full flex items-center justify-center text-[10px] font-bold"
@@ -99,6 +95,7 @@ export function DriverHeader() {
                   color: "white",
                   fontFamily: "var(--ao-font-mono)",
                   boxShadow: "0 0 8px rgba(255,71,87,0.5)",
+                  zIndex: 3,
                 }}
                 aria-hidden="true"
               >
@@ -109,12 +106,11 @@ export function DriverHeader() {
           <NotificationCenter open={notifOpen} onClose={() => setNotifOpen(false)} />
         </div>
         <button
-          onClick={() => { logout(); router.push("/login") }}
-          className="p-2 rounded-xl transition-colors hover:bg-[rgba(255,71,87,0.08)]"
-          style={{ color: "var(--ao-danger)", border: "1px solid transparent" }}
+          onClick={() => { logout(); window.location.href = "/login" }}
+          className="ao-icon-btn ao-icon-btn--danger"
           aria-label="Sign out"
         >
-          <LogOut className="w-4 h-4" aria-hidden="true" />
+          <LogOut className="ao-icon-btn__icon w-4 h-4" aria-hidden="true" style={{ color: "var(--ao-danger)" }} />
         </button>
       </div>
     </header>

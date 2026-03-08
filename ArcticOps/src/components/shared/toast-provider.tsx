@@ -44,11 +44,11 @@ export function ToastProvider() {
   const isDriver = user?.role === "driver"
   const isClient = user?.role && (CLIENT_ROLES as string[]).includes(user.role)
 
-  if (isClient) return null
-
   // Watch for new unread notifications and convert to toasts.
   // Show only 1 alert at a time — highest priority (emergency > critical > warning > info).
   useEffect(() => {
+    if (isClient) return
+
     const candidates = notifications.filter((n) => {
       if (n.read || shownIds.has(n.id)) return false
       if (isDriver) {
@@ -95,7 +95,7 @@ export function ToastProvider() {
     })
   }, [toasts])
 
-  return (
+  return isClient ? null : (
     <>
       {/* Toast stack */}
       <div className="fixed bottom-5 right-5 z-[190] flex flex-col gap-2 w-[360px] max-w-[calc(100vw-24px)]">

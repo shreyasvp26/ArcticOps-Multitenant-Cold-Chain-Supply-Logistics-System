@@ -1,8 +1,8 @@
 "use client"
 import { useState } from "react"
+import { motion } from "framer-motion"
 import {
-  ArrowUpDown, ArrowUp, ArrowDown, Search, SlidersHorizontal,
-  LayoutGrid, List, X
+  ArrowUpDown, ArrowUp, ArrowDown, Search, X
 } from "lucide-react"
 import { useShipmentStore } from "@/lib/store/shipment-store"
 import { useTemperatureStore } from "@/lib/store/temperature-store"
@@ -11,13 +11,11 @@ import { TemperatureBadge } from "@/components/shared/temperature-badge"
 import { RiskScore } from "@/components/shared/risk-score"
 import { Sparkline } from "@/components/shared/sparkline"
 import { EmptyState } from "@/components/shared/empty-state"
-import { ShipmentDetailModal } from "@/components/ops/shipment-detail-modal"
-import { ModalPortal } from "@/components/shared/modal-portal"
 import { SHIPMENT_STATUSES } from "@/lib/constants/shipment-statuses"
-import { formatEta, formatDate } from "@/lib/utils/format"
+import { formatEta } from "@/lib/utils/format"
 import { isClientRole } from "@/lib/utils/permissions"
 import { cn } from "@/lib/utils/cn"
-import type { Shipment, ShipmentStatus } from "@/lib/types/shipment"
+import type { ShipmentStatus } from "@/lib/types/shipment"
 import { Package } from "lucide-react"
 
 type SortKey = "id" | "clientName" | "status" | "riskScore" | "eta"
@@ -50,7 +48,6 @@ export function ShipmentTable() {
   const [zoneFilter, setZoneFilter] = useState("all")
   const [sortKey, setSortKey] = useState<SortKey>("eta")
   const [sortDir, setSortDir] = useState<SortDir>("asc")
-  const [selectedShipment, setSelectedShipment] = useState<Shipment | null>(null)
 
   const tenantId = isClientRole(user?.role ?? "driver") ? user?.tenantId : null
 
@@ -156,9 +153,9 @@ export function ShipmentTable() {
           icon={Package}
         />
       ) : (
-        <div className="rounded-2xl border overflow-hidden" style={{ borderColor: "rgba(30,48,80,0.7)", boxShadow: "0 4px 24px rgba(0,0,0,0.15)" }}>
-          <div className="overflow-x-auto">
-            <table className="w-full" aria-label="Shipments table">
+        <div className="rounded-2xl border" style={{ borderColor: "rgba(30,48,80,0.7)", boxShadow: "0 4px 24px rgba(0,0,0,0.15)", overflow: "visible" }}>
+        <div className="overflow-x-auto" style={{ overflow: "visible" }}>
+            <table className="w-full" aria-label="Shipments table" style={{ borderCollapse: "separate", borderSpacing: 0 }}>
               <thead>
                 <tr style={{ background: "linear-gradient(180deg, rgba(7,12,25,0.98) 0%, rgba(13,24,41,0.95) 100%)", borderBottom: "1px solid rgba(30,48,80,0.7)" }}>
                   {[
@@ -194,16 +191,35 @@ export function ShipmentTable() {
                   const tempHistory = getHistory(shipment.id, 24).map((r) => r.temperature)
                   const latestTemp = tempHistory.at(-1)
                   return (
-                    <tr
+                    <motion.tr
                       key={shipment.id}
-                      onClick={() => setSelectedShipment(shipment)}
-                      className="cursor-pointer transition-all"
+                      initial={false}
+                      whileHover={{
+                        scale: 1.018,
+                        zIndex: 10,
+                        transition: { type: "spring", stiffness: 380, damping: 28 },
+                      }}
                       style={{
                         borderBottom: "1px solid rgba(30,48,80,0.4)",
                         background: idx % 2 === 0 ? "rgba(7,12,25,0.6)" : "rgba(13,24,41,0.4)",
+                        position: "relative",
+                        cursor: "default",
+                        transformOrigin: "center",
                       }}
-                      onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.backgroundColor = "rgba(0,200,168,0.025)" }}
-                      onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.backgroundColor = idx % 2 === 0 ? "rgba(7,12,25,0.6)" : "rgba(13,24,41,0.4)" }}
+                      onMouseEnter={(e) => {
+                        const el = e.currentTarget as HTMLElement
+                        el.style.background = "linear-gradient(90deg, rgba(12,22,42,0.95) 0%, rgba(10,20,38,0.98) 100%)"
+                        el.style.boxShadow = "0 0 0 1.5px rgba(0,200,168,0.22), 0 8px 32px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.04)"
+                        el.style.borderRadius = "10px"
+                        el.style.backdropFilter = "blur(6px)"
+                      }}
+                      onMouseLeave={(e) => {
+                        const el = e.currentTarget as HTMLElement
+                        el.style.background = idx % 2 === 0 ? "rgba(7,12,25,0.6)" : "rgba(13,24,41,0.4)"
+                        el.style.boxShadow = "none"
+                        el.style.borderRadius = "0"
+                        el.style.backdropFilter = "none"
+                      }}
                     >
                       <td className="px-4 py-3.5">
                         <span className="text-[12px] font-bold" style={{ color: "var(--ao-accent)", fontFamily: "var(--ao-font-mono)" }}>
@@ -270,7 +286,7 @@ export function ShipmentTable() {
                           {shipment.carrierName}
                         </span>
                       </td>
-                    </tr>
+                    </motion.tr>
                   )
                 })}
               </tbody>
@@ -289,15 +305,6 @@ export function ShipmentTable() {
         </div>
       )}
 
-      {/* Shipment detail modal */}
-      {selectedShipment && (
-        <ModalPortal>
-          <ShipmentDetailModal
-            shipment={selectedShipment}
-            onClose={() => setSelectedShipment(null)}
-          />
-        </ModalPortal>
-      )}
     </div>
   )
 }

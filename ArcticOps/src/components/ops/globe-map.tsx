@@ -560,7 +560,7 @@ export function GlobeMap() {
   }
   return (
     <div className="relative w-full h-full">
-      <MapboxMap tenantId={tenantId} />
+      <MapboxMap />
     </div>
   )
 }
@@ -790,7 +790,7 @@ function MapboxMap() {
   }, [startLiveTracking, tempInitialized, initTemp])
 
   const activeShipments = shipments.filter(
-    (s) => s.status !== "cancelled" && (!tenantId || s.tenantId === tenantId)
+    (s) => s.status !== "cancelled"
   )
 
   useEffect(() => {

@@ -14,7 +14,7 @@ const PAGE_SUBTITLES: Record<string, string> = {
   "Inventory": "Raw materials catalog & procurement",
   "Route Planner": "Multimodal route optimization",
   "Carriers": "Partner carriers & capacity",
-  "Transport": "Crew operations & cold-chain health",
+  "Crew Members": "Crew operations & cold-chain health",
   "Compliance": "Documentation & audit trail",
   "Analytics": "Predictive insights & intelligence",
   "Settings": "Platform configuration",
@@ -36,7 +36,7 @@ export function OpsHeader({ title }: OpsHeaderProps) {
 
   const handleLogout = () => {
     logout()
-    router.push("/login")
+    window.location.href = "/login"
   }
 
   const subtitle = title ? PAGE_SUBTITLES[title] : undefined
@@ -74,14 +74,10 @@ export function OpsHeader({ title }: OpsHeaderProps) {
         {/* Search trigger */}
         <button
           onClick={() => setCommandPaletteOpen(true)}
-          className="flex items-center gap-2 px-3 py-2 rounded-xl transition-all hover:bg-[rgba(255,255,255,0.05)]"
-          style={{
-            border: "1px solid rgba(30,48,80,0.7)",
-            background: "rgba(12,22,42,0.6)",
-          }}
+          className="ao-icon-btn ao-icon-btn--teal ao-icon-btn--pill flex items-center"
           aria-label="Open command palette (⌘K)"
         >
-          <Search className="w-3.5 h-3.5 shrink-0" style={{ color: "var(--ao-text-muted)" }} aria-hidden="true" />
+          <Search className="ao-icon-btn__icon w-3.5 h-3.5 shrink-0" style={{ color: "var(--ao-text-muted)" }} aria-hidden="true" />
           <span className="text-[12px] hidden sm:block" style={{ color: "var(--ao-text-muted)", fontFamily: "var(--ao-font-body)" }}>
             Search…
           </span>
@@ -103,16 +99,13 @@ export function OpsHeader({ title }: OpsHeaderProps) {
           <button
             onClick={() => setNotifOpen((v) => !v)}
             className={cn(
-              "relative p-2 rounded-xl transition-all",
-              notifOpen
-                ? "bg-[rgba(255,255,255,0.08)]"
-                : "hover:bg-[rgba(255,255,255,0.04)]"
+              "ao-icon-btn ao-icon-btn--teal",
+              notifOpen && "ao-icon-btn--active"
             )}
             aria-label={`Notifications${unreadCount > 0 ? ` (${unreadCount} unread)` : ""}`}
             aria-expanded={notifOpen}
-            style={{ border: "1px solid transparent" }}
           >
-            <Bell className="w-4.5 h-4.5" style={{ color: unreadCount > 0 ? "var(--ao-text-secondary)" : "var(--ao-text-muted)" }} aria-hidden="true" />
+            <Bell className="ao-icon-btn__icon w-4 h-4" style={{ color: unreadCount > 0 ? "var(--ao-text-secondary)" : "var(--ao-text-muted)" }} aria-hidden="true" />
             {unreadCount > 0 && (
               <span
                 className="absolute -top-0.5 -right-0.5 w-4 h-4 rounded-full flex items-center justify-center text-[10px] font-bold"
@@ -121,6 +114,7 @@ export function OpsHeader({ title }: OpsHeaderProps) {
                   color: "white",
                   fontFamily: "var(--ao-font-mono)",
                   boxShadow: "0 0 8px rgba(255,71,87,0.5)",
+                  zIndex: 3,
                 }}
                 aria-hidden="true"
               >
@@ -207,11 +201,13 @@ export function OpsHeader({ title }: OpsHeaderProps) {
               <div className="p-1.5 space-y-0.5">
                 <button
                   onClick={() => { router.push("/profile"); setProfileOpen(false) }}
-                  className="w-full flex items-center gap-3 px-3 py-2 rounded-xl text-[13px] text-left transition-colors hover:bg-[rgba(255,255,255,0.04)]"
+                  className="w-full flex items-center gap-3 px-3 py-2 rounded-xl text-[13px] text-left transition-colors hover:bg-[rgba(255,255,255,0.04)] group"
                   style={{ color: "var(--ao-text-secondary)", fontFamily: "var(--ao-font-body)" }}
                   role="menuitem"
                 >
-                  <User className="w-4 h-4 shrink-0" style={{ color: "var(--ao-text-muted)" }} aria-hidden="true" />
+                  <span className="ao-icon-btn ao-icon-btn--teal" style={{ width: 28, height: 28 }}>
+                    <User className="ao-icon-btn__icon w-3.5 h-3.5" style={{ color: "var(--ao-text-muted)" }} aria-hidden="true" />
+                  </span>
                   Profile & Preferences
                 </button>
                 <button
@@ -220,7 +216,9 @@ export function OpsHeader({ title }: OpsHeaderProps) {
                   style={{ color: "var(--ao-text-secondary)", fontFamily: "var(--ao-font-body)" }}
                   role="menuitem"
                 >
-                  <Settings className="w-4 h-4 shrink-0" style={{ color: "var(--ao-text-muted)" }} aria-hidden="true" />
+                  <span className="ao-icon-btn ao-icon-btn--amber" style={{ width: 28, height: 28 }}>
+                    <Settings className="ao-icon-btn__icon w-3.5 h-3.5" style={{ color: "var(--ao-text-muted)" }} aria-hidden="true" />
+                  </span>
                   Settings
                 </button>
                 <div className="my-1 mx-2 h-px" style={{ backgroundColor: "rgba(30,48,80,0.6)" }} aria-hidden="true" />
@@ -230,7 +228,9 @@ export function OpsHeader({ title }: OpsHeaderProps) {
                   style={{ color: "var(--ao-danger)", fontFamily: "var(--ao-font-body)" }}
                   role="menuitem"
                 >
-                  <LogOut className="w-4 h-4 shrink-0" aria-hidden="true" />
+                  <span className="ao-icon-btn ao-icon-btn--danger" style={{ width: 28, height: 28 }}>
+                    <LogOut className="ao-icon-btn__icon w-3.5 h-3.5" aria-hidden="true" style={{ color: "var(--ao-danger)" }} />
+                  </span>
                   Sign out
                 </button>
               </div>

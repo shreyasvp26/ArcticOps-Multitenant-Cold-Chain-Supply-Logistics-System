@@ -4,7 +4,7 @@ import { usePathname } from "next/navigation"
 import { motion } from "framer-motion"
 import {
   Home, MapPin, ShoppingCart, FileText, MessageSquare,
-  Settings, ChevronLeft, ChevronRight, Snowflake, Thermometer
+  Settings, Bell, ChevronLeft, ChevronRight, Snowflake, Thermometer
 } from "lucide-react"
 import { cn } from "@/lib/utils/cn"
 import { useUIStore } from "@/lib/store/ui-store"
@@ -17,7 +17,8 @@ const NAV_ITEMS = [
   { label: "Procurement", href: "/procurement", icon: ShoppingCart },
   { label: "Documents", href: "/documents", icon: FileText },
   { label: "Communications", href: "/communications", icon: MessageSquare },
-  { label: "Settings", href: "/settings", icon: Settings },
+  { label: "Notifications", href: "/client/notifications", icon: Bell },
+  { label: "Settings", href: "/client/settings", icon: Settings },
 ]
 
 export function ClientSidebar() {

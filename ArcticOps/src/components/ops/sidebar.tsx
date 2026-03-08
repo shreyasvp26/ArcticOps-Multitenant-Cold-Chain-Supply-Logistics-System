@@ -18,7 +18,7 @@ const NAV_ITEMS = [
   { label: "Shipments", href: "/shipments", icon: Package },
   { label: "Inventory", href: "/inventory", icon: Boxes },
   { label: "Route Planner", href: "/route-planner", icon: Map },
-  { label: "Transport", href: "/transport", icon: Users },
+  { label: "Crew Members", href: "/transport", icon: Users },
   { label: "Compliance", href: "/compliance", icon: ShieldCheck },
   { label: "Analytics", href: "/analytics", icon: BarChart3 },
   { label: "Settings", href: "/settings", icon: Settings },
@@ -124,11 +124,19 @@ export function OpsSidebar() {
                       aria-hidden="true"
                     />
                   )}
-                  <Icon
-                    className="w-4.5 h-4.5 shrink-0 transition-colors"
-                    style={{ color: active ? "var(--ao-accent)" : "rgba(148,163,184,0.6)" }}
+                  <span
+                    className={cn(
+                      "ao-icon-btn shrink-0",
+                      active ? "ao-icon-btn--active" : "ao-icon-btn--teal"
+                    )}
+                    style={{ width: 30, height: 30, borderRadius: 8, pointerEvents: "none" }}
                     aria-hidden="true"
-                  />
+                  >
+                    <Icon
+                      className="ao-icon-btn__icon w-4 h-4"
+                      style={{ color: active ? "var(--ao-accent)" : "rgba(148,163,184,0.6)" }}
+                    />
+                  </span>
                   {sidebarOpen && (
                     <span
                       className="text-[13px] font-medium truncate"
@@ -197,13 +205,13 @@ export function OpsSidebar() {
         <div className="p-2">
           <button
             onClick={toggleSidebar}
-            className="w-full flex items-center justify-center p-2 rounded-xl transition-colors hover:bg-[rgba(255,255,255,0.04)]"
-            style={{ color: "var(--ao-text-muted)" }}
+            className="ao-icon-btn ao-icon-btn--teal w-full"
+            style={{ borderRadius: 10, width: "100%" }}
             aria-label={sidebarOpen ? "Collapse sidebar" : "Expand sidebar"}
           >
             {sidebarOpen
-              ? <ChevronLeft className="w-4 h-4" aria-hidden="true" />
-              : <ChevronRight className="w-4 h-4" aria-hidden="true" />}
+              ? <ChevronLeft className="ao-icon-btn__icon w-4 h-4" aria-hidden="true" style={{ color: "var(--ao-text-muted)" }} />
+              : <ChevronRight className="ao-icon-btn__icon w-4 h-4" aria-hidden="true" style={{ color: "var(--ao-text-muted)" }} />}
           </button>
         </div>
       </div>
