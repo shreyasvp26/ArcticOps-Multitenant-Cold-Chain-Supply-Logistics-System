@@ -127,6 +127,7 @@ export function OpsSidebar() {
         </ul>
       </nav>
 
+<<<<<<< Updated upstream
       {/* Collapse toggle */}
       <div className="p-2 border-t" style={{ borderColor: "var(--ao-border)" }}>
         <button
@@ -139,6 +140,50 @@ export function OpsSidebar() {
             ? <ChevronLeft className="w-4 h-4" aria-hidden="true" />
             : <ChevronRight className="w-4 h-4" aria-hidden="true" />}
         </button>
+=======
+      {/* User info + collapse toggle */}
+      <div className="border-t" style={{ borderColor: "rgba(30,48,80,0.6)" }}>
+        {/* Role badge */}
+        {sidebarOpen && user && (
+          <div className="px-3 py-3 border-b" style={{ borderColor: "rgba(30,48,80,0.4)" }}>
+            <div className="flex items-center gap-2.5">
+              <div
+                className="w-7 h-7 rounded-lg flex items-center justify-center text-[11px] font-bold shrink-0"
+                style={{
+                  background: "radial-gradient(circle, rgba(0,200,168,0.2) 0%, rgba(0,200,168,0.08) 100%)",
+                  color: "var(--ao-accent)",
+                  fontFamily: "var(--ao-font-mono)",
+                  border: "1px solid rgba(0,200,168,0.2)",
+                }}
+                aria-hidden="true"
+              >
+                {user.name?.trim().charAt(0) ?? "?"}
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-[12px] font-semibold truncate" style={{ color: "var(--ao-text-primary)", fontFamily: "var(--ao-font-body)" }}>
+                  {user.name}
+                </p>
+                <p className="text-[10px] truncate" style={{ color: "var(--ao-text-muted)", fontFamily: "var(--ao-font-body)" }}>
+                  {ROLE_LABELS[user.role] ?? user.role}
+                </p>
+              </div>
+              <div className="w-1.5 h-1.5 rounded-full shrink-0" style={{ backgroundColor: "#22E574", boxShadow: "0 0 6px rgba(46,213,115,0.5)" }} aria-hidden="true" />
+            </div>
+          </div>
+        )}
+        <div className="p-2">
+          <button
+            onClick={toggleSidebar}
+            className="ao-icon-btn ao-icon-btn--teal w-full"
+            style={{ borderRadius: 10, width: "100%" }}
+            aria-label={sidebarOpen ? "Collapse sidebar" : "Expand sidebar"}
+          >
+            {sidebarOpen
+              ? <ChevronLeft className="ao-icon-btn__icon w-4 h-4" aria-hidden="true" style={{ color: "var(--ao-text-muted)" }} />
+              : <ChevronRight className="ao-icon-btn__icon w-4 h-4" aria-hidden="true" style={{ color: "var(--ao-text-muted)" }} />}
+          </button>
+        </div>
+>>>>>>> Stashed changes
       </div>
     </motion.aside>
   )

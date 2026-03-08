@@ -17,7 +17,6 @@ const NAV_ITEMS = [
   { label: "Supply Telemetry", href: "/tracker", icon: Thermometer },
   { label: "Procurement", href: "/procurement", icon: ShoppingCart },
   { label: "Documents", href: "/documents", icon: FileText },
-  { label: "Communications", href: "/communications", icon: MessageSquare },
   { label: "Settings", href: "/settings", icon: Settings },
 ]
 
@@ -103,6 +102,7 @@ export function ClientSidebar() {
         </ul>
       </nav>
 
+<<<<<<< Updated upstream
       <div className="p-2 border-t" style={{ borderColor: "var(--ao-border)" }}>
         <button onClick={toggleSidebar}
           className="w-full flex items-center justify-center p-2 rounded-lg transition-colors hover:bg-[rgba(255,255,255,0.05)]"
@@ -110,6 +110,44 @@ export function ClientSidebar() {
           aria-label={sidebarOpen ? "Collapse sidebar" : "Expand sidebar"}>
           {sidebarOpen ? <ChevronLeft className="w-4 h-4" /> : <ChevronRight className="w-4 h-4" />}
         </button>
+=======
+      {/* User info + collapse */}
+      <div className="border-t" style={{ borderColor: "rgba(30,48,80,0.6)" }}>
+        {sidebarOpen && user && (
+          <div className="px-3 py-3 border-b" style={{ borderColor: "rgba(30,48,80,0.4)" }}>
+            <div className="flex items-center gap-2.5">
+              <div
+                className="w-7 h-7 rounded-lg flex items-center justify-center text-[11px] font-bold shrink-0"
+                style={{
+                  background: "radial-gradient(circle, rgba(59,130,246,0.2) 0%, rgba(59,130,246,0.08) 100%)",
+                  color: "#3B82F6",
+                  fontFamily: "var(--ao-font-mono)",
+                  border: "1px solid rgba(59,130,246,0.2)",
+                }}
+                aria-hidden="true"
+              >
+                {user.name?.trim().charAt(0) ?? "?"}
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-[12px] font-semibold truncate" style={{ color: "var(--ao-text-primary)", fontFamily: "var(--ao-font-body)" }}>
+                  {user.name}
+                </p>
+                <p className="text-[10px] truncate" style={{ color: "var(--ao-text-muted)", fontFamily: "var(--ao-font-body)" }}>
+                  Client Portal
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
+        <div className="p-2">
+          <button onClick={toggleSidebar}
+            className="w-full flex items-center justify-center p-2 rounded-xl transition-colors hover:bg-[rgba(255,255,255,0.04)]"
+            style={{ color: "var(--ao-text-muted)" }}
+            aria-label={sidebarOpen ? "Collapse sidebar" : "Expand sidebar"}>
+            {sidebarOpen ? <ChevronLeft className="w-4 h-4" aria-hidden="true" /> : <ChevronRight className="w-4 h-4" aria-hidden="true" />}
+          </button>
+        </div>
+>>>>>>> Stashed changes
       </div>
     </motion.aside>
   )

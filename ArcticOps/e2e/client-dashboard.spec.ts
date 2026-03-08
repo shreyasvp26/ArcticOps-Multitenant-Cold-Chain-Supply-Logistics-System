@@ -14,8 +14,11 @@ test.describe("Client Dashboard", () => {
     await loginAsClient(page)
   })
 
-  test("client home shows order-related content", async ({ page }) => {
+  test("client home shows order-related content and user name", async ({ page }) => {
+    // verify dashboard content
     await expect(page.locator("body")).toContainText(/order|shipment|active|transit/i, { timeout: 15_000 })
+    // the header should display the full contact name, not just the prefix
+    await expect(page.locator("header")).toContainText(/Dr\.\s*Sarah\s*Chen|Sarah\s*Chen/i)
   })
 
   test("procurement catalog loads", async ({ page }) => {

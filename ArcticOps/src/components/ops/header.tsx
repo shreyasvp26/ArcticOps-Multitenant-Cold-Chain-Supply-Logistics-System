@@ -112,10 +112,15 @@ export function OpsHeader({ title }: OpsHeaderProps) {
               style={{ backgroundColor: "rgba(0,212,170,0.18)", color: "var(--ao-accent)", fontFamily: "var(--ao-font-mono)" }}
               aria-hidden="true"
             >
-              {user?.name?.charAt(0) ?? "?"}
+              {user?.name?.trim().charAt(0) ?? "?"}
             </div>
+<<<<<<< Updated upstream
             <span className="text-[13px] hidden md:block" style={{ color: "var(--ao-text-secondary)", fontFamily: "var(--ao-font-body)" }}>
               {user?.name?.split(" ")[0] ?? "User"}
+=======
+            <span className="text-[13px] font-medium hidden md:block" style={{ color: "var(--ao-text-secondary)", fontFamily: "var(--ao-font-body)" }}>
+              {user?.name ?? "User"}
+>>>>>>> Stashed changes
             </span>
             <ChevronDown className="w-3.5 h-3.5 hidden md:block" style={{ color: "var(--ao-text-muted)" }} aria-hidden="true" />
           </button>
