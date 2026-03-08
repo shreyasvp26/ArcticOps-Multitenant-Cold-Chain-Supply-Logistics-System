@@ -78,9 +78,9 @@ export default function SignupPage() {
   }
 
   const cardStyle = {
-    background: "rgba(17,29,51,0.88)",
+    background: "rgba(13,22,41,0.88)",
     backdropFilter: "blur(24px)",
-    border: "1px solid rgba(36,51,82,0.8)",
+    border: "1px solid rgba(30,48,80,0.8)",
     boxShadow: "0 25px 60px rgba(0,0,0,0.4)",
   }
 
@@ -106,7 +106,7 @@ export default function SignupPage() {
         <div className="p-8">
           {/* Header */}
           <div className="flex items-center gap-3 mb-8">
-            <div className="p-2 rounded-xl" style={{ backgroundColor: "rgba(0,212,170,0.12)" }}>
+            <div className="p-2 rounded-xl" style={{ backgroundColor: "rgba(0,200,168,0.12)" }}>
               <Snowflake className="w-6 h-6" style={{ color: "var(--ao-accent)" }} aria-hidden="true" />
             </div>
             <div>
@@ -143,7 +143,7 @@ export default function SignupPage() {
                         border: `2px solid ${codeError ? "var(--ao-danger)" : digit ? "var(--ao-accent)" : "var(--ao-border)"}`,
                         color: "var(--ao-text-primary)",
                         fontFamily: "var(--ao-font-mono)",
-                        boxShadow: digit ? "0 0 12px rgba(0,212,170,0.12)" : "none",
+                        boxShadow: digit ? "0 0 12px rgba(0,200,168,0.12)" : "none",
                       }}
                       aria-label={`Activation code digit ${i + 1}`}
                     />
@@ -169,7 +169,7 @@ export default function SignupPage() {
                   onClick={validateCode}
                   disabled={code.length < 6}
                   className="w-full py-3 rounded-lg font-semibold text-sm flex items-center justify-center gap-2 transition-all hover:brightness-110 disabled:opacity-50"
-                  style={{ backgroundColor: "var(--ao-accent)", color: "#0A1628", fontFamily: "var(--ao-font-body)" }}
+                  style={{ backgroundColor: "var(--ao-accent)", color: "#060D1B", fontFamily: "var(--ao-font-body)" }}
                 >
                   Continue <ArrowRight className="w-4 h-4" aria-hidden="true" />
                 </button>
@@ -193,7 +193,7 @@ export default function SignupPage() {
 
                 <div
                   className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full mb-4"
-                  style={{ backgroundColor: "rgba(0,212,170,0.12)", border: "1px solid rgba(0,212,170,0.2)" }}
+                  style={{ backgroundColor: "rgba(0,200,168,0.12)", border: "1px solid rgba(0,200,168,0.2)" }}
                 >
                   <div className="w-2 h-2 rounded-full" style={{ backgroundColor: "var(--ao-accent)" }} aria-hidden="true" />
                   <span className="text-[12px] font-medium" style={{ color: "var(--ao-accent)", fontFamily: "var(--ao-font-mono)" }}>
@@ -246,7 +246,7 @@ export default function SignupPage() {
                 <button
                   onClick={handleDetailsSubmit}
                   className="w-full py-3 rounded-lg font-semibold text-sm flex items-center justify-center gap-2 transition-all hover:brightness-110"
-                  style={{ backgroundColor: "var(--ao-accent)", color: "#0A1628", fontFamily: "var(--ao-font-body)" }}
+                  style={{ backgroundColor: "var(--ao-accent)", color: "#060D1B", fontFamily: "var(--ao-font-body)" }}
                 >
                   Set up organization <ArrowRight className="w-4 h-4" aria-hidden="true" />
                 </button>

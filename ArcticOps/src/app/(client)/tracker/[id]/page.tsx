@@ -79,7 +79,6 @@ export default function TrackerPage({ params }: { params: Promise<{ id: string }
             <p className="text-[11px] text-[var(--ao-text-muted)]">{shipment.origin.split(",")[0]} → {shipment.destination.split(",")[0]}</p>
           </div>
         </div>
-        
         <div className="flex items-center gap-6">
           <div className="flex flex-col items-end">
             <span className="text-[9px] uppercase font-bold text-[var(--ao-text-muted)] tracking-widest">Supply Health</span>

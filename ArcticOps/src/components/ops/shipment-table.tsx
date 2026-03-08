@@ -1,8 +1,8 @@
 "use client"
 import { useState } from "react"
+import { motion } from "framer-motion"
 import {
-  ArrowUpDown, ArrowUp, ArrowDown, Search, SlidersHorizontal,
-  LayoutGrid, List, X
+  ArrowUpDown, ArrowUp, ArrowDown, Search, X
 } from "lucide-react"
 import { useShipmentStore } from "@/lib/store/shipment-store"
 import { useTemperatureStore } from "@/lib/store/temperature-store"
@@ -11,13 +11,11 @@ import { TemperatureBadge } from "@/components/shared/temperature-badge"
 import { RiskScore } from "@/components/shared/risk-score"
 import { Sparkline } from "@/components/shared/sparkline"
 import { EmptyState } from "@/components/shared/empty-state"
-import { ShipmentDetailModal } from "@/components/ops/shipment-detail-modal"
-import { ModalPortal } from "@/components/shared/modal-portal"
 import { SHIPMENT_STATUSES } from "@/lib/constants/shipment-statuses"
-import { formatEta, formatDate } from "@/lib/utils/format"
+import { formatEta } from "@/lib/utils/format"
 import { isClientRole } from "@/lib/utils/permissions"
 import { cn } from "@/lib/utils/cn"
-import type { Shipment, ShipmentStatus } from "@/lib/types/shipment"
+import type { ShipmentStatus } from "@/lib/types/shipment"
 import { Package } from "lucide-react"
 
 type SortKey = "id" | "clientName" | "status" | "riskScore" | "eta"
@@ -50,7 +48,6 @@ export function ShipmentTable() {
   const [zoneFilter, setZoneFilter] = useState("all")
   const [sortKey, setSortKey] = useState<SortKey>("eta")
   const [sortDir, setSortDir] = useState<SortDir>("asc")
-  const [selectedShipment, setSelectedShipment] = useState<Shipment | null>(null)
 
   const tenantId = isClientRole(user?.role ?? "driver") ? user?.tenantId : null
 
@@ -92,25 +89,27 @@ export function ShipmentTable() {
   return (
     <div className="flex flex-col gap-4">
       {/* Filter bar */}
-      <div className="flex items-center gap-3 flex-wrap">
+      <div className="flex items-center gap-2.5 flex-wrap">
         <div className="relative flex-1 min-w-[200px]">
-          <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: "var(--ao-text-muted)" }} />
+          <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5" style={{ color: "var(--ao-text-muted)" }} aria-hidden="true" />
           <input
             type="text"
             value={search}
             onChange={(e) => setSearch(e.target.value)}
             placeholder="Search shipments…"
-            className="w-full pl-9 pr-4 py-2.5 rounded-lg text-sm outline-none"
+            className="w-full pl-10 pr-4 py-2.5 rounded-xl text-[13px] outline-none transition-all"
             style={{
-              backgroundColor: "var(--ao-surface)",
-              border: "1px solid var(--ao-border)",
+              background: "rgba(12,22,42,0.8)",
+              border: "1px solid rgba(30,48,80,0.8)",
               color: "var(--ao-text-primary)",
               fontFamily: "var(--ao-font-body)",
             }}
+            onFocus={(e) => { e.target.style.borderColor = "rgba(0,200,168,0.4)"; e.target.style.boxShadow = "0 0 0 3px rgba(0,200,168,0.06)" }}
+            onBlur={(e) => { e.target.style.borderColor = "rgba(30,48,80,0.8)"; e.target.style.boxShadow = "none" }}
           />
           {search && (
-            <button onClick={() => setSearch("")} className="absolute right-3 top-1/2 -translate-y-1/2">
-              <X className="w-3.5 h-3.5" style={{ color: "var(--ao-text-muted)" }} />
+            <button onClick={() => setSearch("")} className="absolute right-3 top-1/2 -translate-y-1/2 p-0.5 rounded hover:opacity-80" aria-label="Clear search">
+              <X className="w-3.5 h-3.5" style={{ color: "var(--ao-text-muted)" }} aria-hidden="true" />
             </button>
           )}
         </div>
@@ -118,8 +117,14 @@ export function ShipmentTable() {
         <select
           value={statusFilter}
           onChange={(e) => setStatusFilter(e.target.value as ShipmentStatus | "all")}
-          className="px-3 py-2.5 rounded-lg text-sm outline-none"
-          style={{ backgroundColor: "var(--ao-surface)", border: "1px solid var(--ao-border)", color: "var(--ao-text-secondary)", fontFamily: "var(--ao-font-body)" }}
+          className="px-3 py-2.5 rounded-xl text-[13px] outline-none cursor-pointer"
+          style={{
+            background: "rgba(12,22,42,0.8)",
+            border: "1px solid rgba(30,48,80,0.8)",
+            color: "var(--ao-text-secondary)",
+            fontFamily: "var(--ao-font-body)",
+          }}
+          aria-label="Filter by status"
         >
           {STATUS_OPTIONS.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
         </select>
@@ -127,8 +132,14 @@ export function ShipmentTable() {
         <select
           value={zoneFilter}
           onChange={(e) => setZoneFilter(e.target.value)}
-          className="px-3 py-2.5 rounded-lg text-sm outline-none"
-          style={{ backgroundColor: "var(--ao-surface)", border: "1px solid var(--ao-border)", color: "var(--ao-text-secondary)", fontFamily: "var(--ao-font-body)" }}
+          className="px-3 py-2.5 rounded-xl text-[13px] outline-none cursor-pointer"
+          style={{
+            background: "rgba(12,22,42,0.8)",
+            border: "1px solid rgba(30,48,80,0.8)",
+            color: "var(--ao-text-secondary)",
+            fontFamily: "var(--ao-font-body)",
+          }}
+          aria-label="Filter by temperature zone"
         >
           {ZONE_OPTIONS.map((o) => <option key={o.value} value={o.value}>{o.label}</option>)}
         </select>
@@ -142,11 +153,11 @@ export function ShipmentTable() {
           icon={Package}
         />
       ) : (
-        <div className="rounded-xl border overflow-hidden" style={{ borderColor: "var(--ao-border)" }}>
-          <div className="overflow-x-auto">
-            <table className="w-full" aria-label="Shipments table">
+        <div className="rounded-2xl border" style={{ borderColor: "rgba(30,48,80,0.7)", boxShadow: "0 4px 24px rgba(0,0,0,0.15)", overflow: "visible" }}>
+        <div className="overflow-x-auto" style={{ overflow: "visible" }}>
+            <table className="w-full" aria-label="Shipments table" style={{ borderCollapse: "separate", borderSpacing: 0 }}>
               <thead>
-                <tr style={{ backgroundColor: "rgba(12,22,42,0.8)", borderBottom: "1px solid var(--ao-border)" }}>
+                <tr style={{ background: "linear-gradient(180deg, rgba(7,12,25,0.98) 0%, rgba(13,24,41,0.95) 100%)", borderBottom: "1px solid rgba(30,48,80,0.7)" }}>
                   {[
                     { label: "ID", key: "id" as SortKey },
                     { label: "Client", key: "clientName" as SortKey },
@@ -160,13 +171,13 @@ export function ShipmentTable() {
                     <th
                       key={label}
                       className={cn(
-                        "px-4 py-3 text-left text-[11px] font-semibold uppercase tracking-wider",
+                        "px-4 py-3.5 text-left text-[10px] font-bold uppercase tracking-widest",
                         key && "cursor-pointer select-none hover:opacity-80"
                       )}
                       style={{ color: "var(--ao-text-muted)", fontFamily: "var(--ao-font-body)" }}
                       onClick={key ? () => toggleSort(key) : undefined}
                     >
-                      <div className="flex items-center gap-1">
+                      <div className="flex items-center gap-1.5">
                         {label}
                         {key && <SortIcon k={key} />}
                       </div>
@@ -175,42 +186,71 @@ export function ShipmentTable() {
                 </tr>
               </thead>
               <tbody>
-                {filtered.map((shipment) => {
+                {filtered.map((shipment, idx) => {
                   const statusCfg = SHIPMENT_STATUSES[shipment.status]
                   const tempHistory = getHistory(shipment.id, 24).map((r) => r.temperature)
                   const latestTemp = tempHistory.at(-1)
                   return (
-                    <tr
+                    <motion.tr
                       key={shipment.id}
-                      onClick={() => setSelectedShipment(shipment)}
-                      className="cursor-pointer transition-colors border-t hover:bg-[rgba(255,255,255,0.03)]"
-                      style={{ borderColor: "var(--ao-border)" }}
+                      initial={false}
+                      whileHover={{
+                        scale: 1.018,
+                        zIndex: 10,
+                        transition: { type: "spring", stiffness: 380, damping: 28 },
+                      }}
+                      style={{
+                        borderBottom: "1px solid rgba(30,48,80,0.4)",
+                        background: idx % 2 === 0 ? "rgba(7,12,25,0.6)" : "rgba(13,24,41,0.4)",
+                        position: "relative",
+                        cursor: "default",
+                        transformOrigin: "center",
+                      }}
+                      onMouseEnter={(e) => {
+                        const el = e.currentTarget as HTMLElement
+                        el.style.background = "linear-gradient(90deg, rgba(12,22,42,0.95) 0%, rgba(10,20,38,0.98) 100%)"
+                        el.style.boxShadow = "0 0 0 1.5px rgba(0,200,168,0.22), 0 8px 32px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.04)"
+                        el.style.borderRadius = "10px"
+                        el.style.backdropFilter = "blur(6px)"
+                      }}
+                      onMouseLeave={(e) => {
+                        const el = e.currentTarget as HTMLElement
+                        el.style.background = idx % 2 === 0 ? "rgba(7,12,25,0.6)" : "rgba(13,24,41,0.4)"
+                        el.style.boxShadow = "none"
+                        el.style.borderRadius = "0"
+                        el.style.backdropFilter = "none"
+                      }}
                     >
-                      <td className="px-4 py-3">
-                        <span className="text-[13px] font-bold" style={{ color: "var(--ao-accent)", fontFamily: "var(--ao-font-mono)" }}>
+                      <td className="px-4 py-3.5">
+                        <span className="text-[12px] font-bold" style={{ color: "var(--ao-accent)", fontFamily: "var(--ao-font-mono)" }}>
                           {shipment.id}
                         </span>
                       </td>
-                      <td className="px-4 py-3">
-                        <span className="text-[13px]" style={{ color: "var(--ao-text-primary)", fontFamily: "var(--ao-font-body)" }}>
+                      <td className="px-4 py-3.5">
+                        <span className="text-[13px] font-medium" style={{ color: "var(--ao-text-primary)", fontFamily: "var(--ao-font-body)" }}>
                           {shipment.clientName}
                         </span>
                       </td>
-                      <td className="px-4 py-3">
+                      <td className="px-4 py-3.5">
                         <span className="text-[12px]" style={{ color: "var(--ao-text-secondary)", fontFamily: "var(--ao-font-body)" }}>
                           {shipment.origin.split(",")[0]} → {shipment.destination.split(",")[0]}
                         </span>
                       </td>
-                      <td className="px-4 py-3">
+                      <td className="px-4 py-3.5">
                         <span
-                          className="inline-flex items-center gap-1 px-2.5 py-1 rounded-full text-[11px] font-medium"
-                          style={{ color: statusCfg.color, backgroundColor: statusCfg.bgColor, fontFamily: "var(--ao-font-body)" }}
+                          className="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[10px] font-semibold"
+                          style={{
+                            color: statusCfg.color,
+                            backgroundColor: statusCfg.bgColor,
+                            border: `1px solid ${statusCfg.color}30`,
+                            fontFamily: "var(--ao-font-body)",
+                          }}
                         >
                           {statusCfg.label}
                         </span>
                       </td>
-                      <td className="px-4 py-3">
-                        <div className="flex items-center gap-2">
+                      <td className="px-4 py-3.5">
+                        <div className="flex items-center gap-2.5">
                           {latestTemp !== undefined && (
                             <TemperatureBadge
                               temperature={latestTemp}
@@ -233,20 +273,20 @@ export function ShipmentTable() {
                           )}
                         </div>
                       </td>
-                      <td className="px-4 py-3">
+                      <td className="px-4 py-3.5">
                         <span className="text-[12px]" style={{ color: "var(--ao-text-secondary)", fontFamily: "var(--ao-font-mono)" }}>
                           {formatEta(shipment.eta)}
                         </span>
                       </td>
-                      <td className="px-4 py-3">
+                      <td className="px-4 py-3.5">
                         <RiskScore score={shipment.riskScore} size="sm" showLabel={false} />
                       </td>
-                      <td className="px-4 py-3">
+                      <td className="px-4 py-3.5">
                         <span className="text-[12px]" style={{ color: "var(--ao-text-muted)", fontFamily: "var(--ao-font-body)" }}>
                           {shipment.carrierName}
                         </span>
                       </td>
-                    </tr>
+                    </motion.tr>
                   )
                 })}
               </tbody>
@@ -256,24 +296,15 @@ export function ShipmentTable() {
           {/* Pagination footer */}
           <div
             className="flex items-center justify-between px-4 py-3 border-t"
-            style={{ borderColor: "var(--ao-border)", backgroundColor: "rgba(12,22,42,0.6)" }}
+            style={{ borderColor: "rgba(30,48,80,0.6)", background: "rgba(5,10,19,0.7)" }}
           >
             <span className="text-[12px]" style={{ color: "var(--ao-text-muted)", fontFamily: "var(--ao-font-body)" }}>
-              {filtered.length} shipment{filtered.length !== 1 ? "s" : ""}
+              Showing <span style={{ color: "var(--ao-text-secondary)", fontFamily: "var(--ao-font-mono)" }}>{filtered.length}</span> shipment{filtered.length !== 1 ? "s" : ""}
             </span>
           </div>
         </div>
       )}
 
-      {/* Shipment detail modal */}
-      {selectedShipment && (
-        <ModalPortal>
-          <ShipmentDetailModal
-            shipment={selectedShipment}
-            onClose={() => setSelectedShipment(null)}
-          />
-        </ModalPortal>
-      )}
     </div>
   )
 }

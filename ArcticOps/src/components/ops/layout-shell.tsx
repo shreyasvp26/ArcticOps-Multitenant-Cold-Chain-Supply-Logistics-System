@@ -14,7 +14,6 @@ const PAGE_TITLES: Record<string, string> = {
   "/shipments": "Shipments",
   "/inventory": "Inventory",
   "/route-planner": "Route Planner",
-  "/carriers": "Carriers",
   "/transport": "Transport",
   "/compliance": "Compliance",
   "/analytics": "Analytics",
@@ -44,7 +43,11 @@ export function OpsLayoutShell({ children }: { children: React.ReactNode }) {
         <OpsSidebar />
         <div className="flex flex-col flex-1 min-w-0 overflow-hidden">
           <OpsHeader title={title} />
-          <main className="flex-1 overflow-auto" id="main-content">
+          <main
+            className="flex-1 overflow-auto"
+            id="main-content"
+            style={{ background: "linear-gradient(180deg, rgba(5,10,19,0.5) 0%, transparent 100%)" }}
+          >
             <AnimatePresence mode="wait">
               <motion.div
                 key={pathname}

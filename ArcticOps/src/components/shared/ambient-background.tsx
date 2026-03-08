@@ -7,23 +7,23 @@ export function AmbientBackground({ className }: { className?: string }) {
 
   const backgrounds = {
     serene: {
-      bg: "#0A1628",
-      overlay: "radial-gradient(ellipse 80% 60% at 50% 0%, rgba(0,212,170,0.06) 0%, transparent 60%)",
+      bg: "#060D1B",
+      overlay: "radial-gradient(ellipse 80% 60% at 50% 0%, rgba(0,200,168,0.06) 0%, transparent 60%)",
       animation: "arctic-aurora 20s ease-in-out infinite",
     },
     attentive: {
-      bg: "#0D1830",
-      overlay: "radial-gradient(ellipse 80% 60% at 50% 0%, rgba(0,212,170,0.04) 0%, transparent 50%)",
+      bg: "#08111E",
+      overlay: "radial-gradient(ellipse 80% 60% at 50% 0%, rgba(0,200,168,0.04) 0%, transparent 50%)",
       animation: "none",
     },
     urgent: {
-      bg: "#1A1520",
-      overlay: "radial-gradient(ellipse 60% 40% at 100% 100%, rgba(255,71,87,0.06) 0%, transparent 50%)",
+      bg: "#160E1C",
+      overlay: "radial-gradient(ellipse 60% 40% at 100% 100%, rgba(255,61,84,0.06) 0%, transparent 50%)",
       animation: "none",
     },
     emergency: {
-      bg: "#1F1520",
-      overlay: "radial-gradient(ellipse 80% 40% at 50% 100%, rgba(255,71,87,0.12) 0%, transparent 50%)",
+      bg: "#1C0B12",
+      overlay: "radial-gradient(ellipse 80% 40% at 50% 100%, rgba(255,61,84,0.12) 0%, transparent 50%)",
       animation: "warm-pulse 4s ease-in-out infinite",
     },
   }

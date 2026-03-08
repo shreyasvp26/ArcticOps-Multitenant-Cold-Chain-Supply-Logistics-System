@@ -3,7 +3,6 @@ import { useEffect, useState } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { X, Info, AlertTriangle, XCircle, Zap } from "lucide-react"
 import { useNotificationStore } from "@/lib/store/notification-store"
-import { useUIStore } from "@/lib/store/ui-store"
 import { useAuthStore } from "@/lib/store/auth-store"
 import { useDriverStore } from "@/lib/store/driver-store"
 import { CLIENT_ROLES } from "@/lib/constants/roles"
@@ -47,32 +46,21 @@ export function ToastProvider() {
 
   if (isClient) return null
 
-  // Emergency banner - filtered for drivers
-  const emergencyAlert = notifications.find((n) => {
-    if (n.severity !== "emergency" || n.read) return false
-    if (isDriver) {
-      if (!currentAssignment) return false
-      return n.relatedEntityId === currentAssignment.id
-    }
-    return true
-  })
-
-  // Watch for new unread notifications and convert to toasts
+  // Watch for new unread notifications and convert to toasts.
+  // Show only 1 alert at a time — highest priority (emergency > critical > warning > info).
   useEffect(() => {
-    const recent = notifications
-      .filter((n) => {
-        if (n.read || shownIds.has(n.id)) return false
-        if (isDriver) {
-          if (!currentAssignment) return false
-          return n.relatedEntityId === currentAssignment.id
-        }
-        return true
-      })
-      .slice(0, 3)
+    const candidates = notifications.filter((n) => {
+      if (n.read || shownIds.has(n.id)) return false
+      if (isDriver) {
+        if (!currentAssignment) return false
+        return n.relatedEntityId === currentAssignment.id
+      }
+      return true
+    })
 
-    if (recent.length === 0) return
+    if (candidates.length === 0) return
 
-    const newToasts: Toast[] = recent.map((n) => {
+    const newToasts: Toast[] = candidates.map((n) => {
       shownIds.add(n.id)
       return {
         id: n.id,
@@ -83,7 +71,16 @@ export function ToastProvider() {
       }
     })
 
-    setToasts((prev) => [...newToasts, ...prev].slice(0, 5))
+    setToasts((prev) => {
+      const merged = [...newToasts, ...prev]
+      const bucketOrder = ["emergency", "critical", "warning", "info"] as AlertSeverity[]
+      // Take the single highest-priority toast
+      for (const bucket of bucketOrder) {
+        const match = merged.find((t) => t.severity === bucket)
+        if (match) return [match]
+      }
+      return prev
+    })
   }, [notifications, isDriver, currentAssignment])
 
   const dismiss = (id: string) => setToasts((prev) => prev.filter((t) => t.id !== id))
@@ -100,28 +97,6 @@ export function ToastProvider() {
 
   return (
     <>
-      {/* Emergency full-width banner */}
-      <AnimatePresence>
-        {emergencyAlert && (
-          <motion.div
-            initial={{ y: -60, opacity: 0 }}
-            animate={{ y: 0, opacity: 1, transition: { type: "spring", stiffness: 400, damping: 30 } }}
-            exit={{ y: -60, opacity: 0, transition: { duration: 0.2 } }}
-            className="fixed top-0 left-0 right-0 z-[200] flex items-center gap-3 px-5 py-3"
-            style={{ backgroundColor: "#FF4757", color: "white" }}
-          >
-            <Zap className="w-5 h-5 shrink-0 animate-bounce" />
-            <p className="flex-1 text-sm font-bold" style={{ fontFamily: "var(--ao-font-body)" }}>
-              EMERGENCY — {emergencyAlert.title}: {emergencyAlert.message}
-            </p>
-            <button onClick={() => useNotificationStore.getState().markRead(emergencyAlert.id)}
-              className="p-1 rounded hover:bg-[rgba(255,255,255,0.2)]">
-              <X className="w-4 h-4" />
-            </button>
-          </motion.div>
-        )}
-      </AnimatePresence>
-
       {/* Toast stack */}
       <div className="fixed bottom-5 right-5 z-[190] flex flex-col gap-2 w-[360px] max-w-[calc(100vw-24px)]">
         <AnimatePresence>
@@ -139,12 +114,12 @@ export function ToastProvider() {
                   transition: { type: "spring", stiffness: 380, damping: 28 },
                 }}
                 exit={{ x: 80, opacity: 0, scale: 0.95, transition: { duration: 0.18 } }}
-                className={cn("rounded-xl overflow-hidden shadow-2xl", isCritical && "animate-shake")}
+                className={cn("rounded-2xl overflow-hidden", isCritical && "animate-shake")}
                 style={{
-                  backgroundColor: cfg.bg,
+                  background: `linear-gradient(135deg, ${cfg.bg} 0%, rgba(6,13,27,0.95) 100%)`,
                   border: `1px solid ${cfg.border}`,
-                  backdropFilter: "blur(20px)",
-                  boxShadow: `0 8px 32px ${isCritical ? "rgba(255,71,87,0.25)" : "rgba(0,0,0,0.4)"}`,
+                  backdropFilter: "blur(32px)",
+                  boxShadow: `0 12px 40px ${isCritical ? "rgba(255,71,87,0.2)" : "rgba(0,0,0,0.4)"}, 0 0 0 1px rgba(255,255,255,0.02)`,
                 }}
                 role="alert"
                 aria-live={isCritical ? "assertive" : "polite"}

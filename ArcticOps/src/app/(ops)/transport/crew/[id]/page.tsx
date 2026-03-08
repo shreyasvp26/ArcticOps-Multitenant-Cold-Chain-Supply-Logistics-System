@@ -97,12 +97,12 @@ export default function CrewProfilePage({ params }: { params: Promise<{ id: stri
         {/* Middle: documents */}
         <div className="lg:col-span-2 flex flex-col gap-4">
           <div className="rounded-xl border overflow-hidden" style={{ borderColor: "var(--ao-border)" }}>
-            <div className="px-4 py-3 border-b" style={{ borderColor: "var(--ao-border)", backgroundColor: "rgba(12,22,42,0.7)" }}>
+            <div className="px-4 py-3 border-b" style={{ borderColor: "var(--ao-border)", backgroundColor: "rgba(13,24,41,0.7)" }}>
               <p className="text-sm font-semibold" style={{ color: "var(--ao-text-primary)", fontFamily: "var(--ao-font-body)" }}>Documents</p>
             </div>
             <table className="w-full">
               <thead>
-                <tr style={{ backgroundColor: "rgba(12,22,42,0.4)", borderBottom: "1px solid var(--ao-border)" }}>
+                <tr style={{ backgroundColor: "rgba(13,24,41,0.4)", borderBottom: "1px solid var(--ao-border)" }}>
                   {["Document", "Status", "Expires", "Days Left"].map((h) => (
                     <th key={h} className="px-4 py-2.5 text-left text-[10px] font-semibold uppercase tracking-wider"
                       style={{ color: "var(--ao-text-muted)", fontFamily: "var(--ao-font-body)" }}>{h}</th>

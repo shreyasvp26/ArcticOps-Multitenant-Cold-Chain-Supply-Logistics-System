@@ -21,7 +21,7 @@ const MODE_COLORS = { air: "#3B82F6", sea: "#06B6D4", rail: "#7C3AED", road: "#F
 
 const STATUS_CONFIG = {
   available: { color: "#2ED573", label: "Available" },
-  "on_duty": { color: "#00D4AA", label: "On Duty" },
+  "on_duty": { color: "#00C8A8", label: "On Duty" },
   "off_duty": { color: "#64748B", label: "Off Duty" },
 }
 
@@ -69,7 +69,7 @@ export default function TransportPage() {
       {/* Crew list */}
       <div className="rounded-xl border overflow-hidden" style={{ borderColor: "var(--ao-border)" }}>
         <div className="px-5 py-3 border-b flex items-center justify-between"
-          style={{ borderColor: "var(--ao-border)", backgroundColor: "rgba(12,22,42,0.7)" }}>
+          style={{ borderColor: "var(--ao-border)", backgroundColor: "rgba(13,24,41,0.7)" }}>
           <p className="text-sm font-semibold" style={{ color: "var(--ao-text-primary)", fontFamily: "var(--ao-font-body)" }}>Crew Members</p>
           <button onClick={() => router.push("/transport/system-health")}
             className="flex items-center gap-1 text-[12px] transition-opacity hover:opacity-80"
@@ -79,7 +79,7 @@ export default function TransportPage() {
         </div>
         <table className="w-full" aria-label="Crew list">
           <thead>
-            <tr style={{ backgroundColor: "rgba(12,22,42,0.5)", borderBottom: "1px solid var(--ao-border)" }}>
+            <tr style={{ backgroundColor: "rgba(13,24,41,0.5)", borderBottom: "1px solid var(--ao-border)" }}>
               {["Name", "Mode", "Assignment", "Status", "Doc Compliance", "Score"].map((h) => (
                 <th key={h} className="px-4 py-3 text-left text-[11px] font-semibold uppercase tracking-wider"
                   style={{ color: "var(--ao-text-muted)", fontFamily: "var(--ao-font-body)" }}>{h}</th>

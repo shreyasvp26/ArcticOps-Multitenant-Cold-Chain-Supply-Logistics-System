@@ -80,7 +80,7 @@ export default function SetupPage() {
 
   // Cold-to-warm gradient background based on step
   const stepGradients = [
-    "radial-gradient(ellipse 80% 60% at 50% 0%, rgba(0,212,170,0.06) 0%, transparent 70%)",
+    "radial-gradient(ellipse 80% 60% at 50% 0%, rgba(0,200,168,0.06) 0%, transparent 70%)",
     "radial-gradient(ellipse 80% 60% at 50% 0%, rgba(59,130,246,0.06) 0%, transparent 70%)",
     "radial-gradient(ellipse 80% 60% at 50% 0%, rgba(124,58,237,0.06) 0%, transparent 70%)",
   ]
@@ -105,9 +105,9 @@ export default function SetupPage() {
       <div
         className="relative rounded-2xl overflow-hidden"
         style={{
-          background: "rgba(17,29,51,0.88)",
+          background: "rgba(13,22,41,0.88)",
           backdropFilter: "blur(24px)",
-          border: "1px solid rgba(36,51,82,0.8)",
+          border: "1px solid rgba(30,48,80,0.8)",
           boxShadow: "0 25px 60px rgba(0,0,0,0.4)",
         }}
       >
@@ -124,7 +124,7 @@ export default function SetupPage() {
         <div className="p-8">
           {/* Logo */}
           <div className="flex items-center gap-3 mb-6">
-            <div className="p-2 rounded-xl" style={{ backgroundColor: "rgba(0,212,170,0.12)" }}>
+            <div className="p-2 rounded-xl" style={{ backgroundColor: "rgba(0,200,168,0.12)" }}>
               <Snowflake className="w-5 h-5" style={{ color: "var(--ao-accent)" }} aria-hidden="true" />
             </div>
             <span className="text-sm font-medium" style={{ fontFamily: "var(--ao-font-body)", color: "var(--ao-text-muted)" }}>
@@ -176,7 +176,7 @@ export default function SetupPage() {
                   onClick={goNext}
                   disabled={!orgName.trim() || !contactName.trim() || !contactEmail.trim()}
                   className="w-full py-3 rounded-lg font-semibold text-sm flex items-center justify-center gap-2 transition-all hover:brightness-110 disabled:opacity-50 mt-6"
-                  style={{ backgroundColor: "var(--ao-accent)", color: "#0A1628", fontFamily: "var(--ao-font-body)" }}
+                  style={{ backgroundColor: "var(--ao-accent)", color: "#060D1B", fontFamily: "var(--ao-font-body)" }}
                 >
                   Next: Compliance <ArrowRight className="w-4 h-4" aria-hidden="true" />
                 </button>

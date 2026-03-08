@@ -38,7 +38,7 @@ export default function AssignmentPage() {
       {/* Current assignment card */}
       <motion.div initial={{ opacity: 0, y: 8 }} animate={{ opacity: 1, y: 0 }}
         className="rounded-2xl border overflow-hidden"
-        style={{ backgroundColor: "var(--ao-surface)", borderColor: "var(--ao-accent)", boxShadow: "0 0 20px rgba(0,212,170,0.10)" }}>
+        style={{ backgroundColor: "var(--ao-surface)", borderColor: "var(--ao-accent)", boxShadow: "0 0 20px rgba(0,200,168,0.10)" }}>
         <div className="p-4">
           <div className="flex items-center justify-between mb-3">
             <div>
@@ -46,7 +46,7 @@ export default function AssignmentPage() {
               <p className="text-lg font-bold" style={{ color: "var(--ao-accent)", fontFamily: "var(--ao-font-mono)" }}>{assignment.id}</p>
             </div>
             <span className="px-3 py-1 rounded-full text-[11px] font-bold"
-              style={{ backgroundColor: "rgba(0,212,170,0.12)", color: "var(--ao-accent)", border: "1px solid rgba(0,212,170,0.3)", fontFamily: "var(--ao-font-body)" }}>
+              style={{ backgroundColor: "rgba(0,200,168,0.12)", color: "var(--ao-accent)", border: "1px solid rgba(0,200,168,0.3)", fontFamily: "var(--ao-font-body)" }}>
               In Transit
             </span>
           </div>
@@ -125,7 +125,7 @@ export default function AssignmentPage() {
           {PAST_DELIVERIES.map((d) => (
             <div key={d.id} className="flex items-center gap-3 px-3 py-2.5 rounded-lg border"
               style={{ backgroundColor: "var(--ao-surface)", borderColor: "var(--ao-border)" }}>
-              <div className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: "#2ED573" }} />
+              <div className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: "#22E574" }} />
               <span className="text-[11px] font-bold" style={{ color: "var(--ao-accent)", fontFamily: "var(--ao-font-mono)" }}>{d.id}</span>
               <span className="text-[11px]" style={{ color: "var(--ao-text-muted)", fontFamily: "var(--ao-font-body)" }}>{d.origin} → {d.destination}</span>
               <span className="ml-auto text-[11px]" style={{ color: "var(--ao-text-muted)", fontFamily: "var(--ao-font-mono)" }}>{d.date}</span>

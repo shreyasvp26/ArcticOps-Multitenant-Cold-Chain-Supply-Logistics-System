@@ -51,19 +51,49 @@ interface KpiCardProps {
   className?: string
 }
 
-export function KpiCard({ label, value, icon: Icon, trend, sentiment = "neutral", emphasized, className }: KpiCardProps) {
-  const sentimentColors = {
-    positive: "text-[var(--ao-success)]",
-    negative: "text-[var(--ao-danger)]",
-    neutral: "text-[var(--ao-text-primary)]",
-    warning: "text-[var(--ao-warning)]",
-  }
+const SENTIMENT_CONFIG = {
+  positive: {
+    valueColor: "#2ED573",
+    iconBg: "rgba(46,213,115,0.1)",
+    iconColor: "#2ED573",
+    glowColor: "rgba(46,213,115,0.08)",
+    borderAccent: "rgba(46,213,115,0.2)",
+  },
+  negative: {
+    valueColor: "#FF4757",
+    iconBg: "rgba(255,71,87,0.1)",
+    iconColor: "#FF4757",
+    glowColor: "rgba(255,71,87,0.08)",
+    borderAccent: "rgba(255,71,87,0.2)",
+  },
+  warning: {
+    valueColor: "#FFA502",
+    iconBg: "rgba(255,165,2,0.1)",
+    iconColor: "#FFA502",
+    glowColor: "rgba(255,165,2,0.06)",
+    borderAccent: "rgba(255,165,2,0.2)",
+  },
+  neutral: {
+    valueColor: "var(--ao-text-primary)",
+    iconBg: "rgba(0,200,168,0.08)",
+    iconColor: "var(--ao-accent)",
+    glowColor: "rgba(0,200,168,0.04)",
+    borderAccent: "rgba(0,200,168,0.12)",
+  },
+}
 
-  const trendColors = {
-    up: trend?.direction === "up" && sentiment === "positive" ? "text-[var(--ao-success)]" : "text-[var(--ao-danger)]",
-    down: trend?.direction === "down" && sentiment === "negative" ? "text-[var(--ao-danger)]" : "text-[var(--ao-success)]",
-    flat: "text-[var(--ao-text-muted)]",
-  }
+export function KpiCard({ label, value, icon: Icon, trend, sentiment = "neutral", emphasized, className }: KpiCardProps) {
+  const config = SENTIMENT_CONFIG[sentiment]
+
+  const trendIsPositive =
+    (trend?.direction === "up" && sentiment === "positive") ||
+    (trend?.direction === "down" && sentiment === "negative")
+
+  const trendColor = trend?.direction === "flat"
+    ? "var(--ao-text-muted)"
+    : trendIsPositive
+    ? "#2ED573"
+    : "#FF4757"
 
   const TrendIcon = trend?.direction === "up" ? TrendingUp : trend?.direction === "down" ? TrendingDown : Minus
 
@@ -74,38 +104,70 @@ export function KpiCard({ label, value, icon: Icon, trend, sentiment = "neutral"
       animate="animate"
       whileHover={{ scale: 1.015, transition: { duration: 0.2, ease: "easeOut" } }}
       className={cn(
-        "relative rounded-xl border p-5 transition-colors duration-300",
-        "bg-[var(--ao-surface)] border-[var(--ao-border)]",
-        "hover:border-[var(--ao-border-hover)] cursor-default",
-        emphasized && "ring-1 ring-[var(--ao-accent)] shadow-[0_0_20px_rgba(0,212,170,0.15)]",
+        "relative rounded-2xl border p-5 overflow-hidden transition-all duration-300 cursor-default",
         className
       )}
+      style={{
+        background: emphasized
+          ? `linear-gradient(135deg, rgba(0,200,168,0.08) 0%, rgba(10,22,40,0.95) 100%)`
+          : `linear-gradient(135deg, rgba(13,22,41,0.95) 0%, rgba(7,12,25,0.95) 100%)`,
+        borderColor: emphasized
+          ? "rgba(0,200,168,0.25)"
+          : config.borderAccent,
+        boxShadow: emphasized
+          ? "0 0 30px rgba(0,200,168,0.1), 0 4px 16px rgba(0,0,0,0.2)"
+          : "0 4px 16px rgba(0,0,0,0.15)",
+      }}
     >
-      <div className="flex items-start justify-between mb-3">
-        <span className="text-[13px] text-[var(--ao-text-secondary)] font-medium uppercase tracking-wider leading-none"
-          style={{ fontFamily: "var(--ao-font-body)" }}>
-          {label}
-        </span>
-        <div className="p-1.5 rounded-lg bg-[var(--ao-surface-elevated)]">
-          <Icon className="w-4 h-4 text-[var(--ao-text-muted)]" aria-hidden="true" />
-        </div>
-      </div>
-
+      {/* Background gradient orb */}
       <div
-        className={cn("text-3xl font-semibold mb-2 tabular-nums", sentimentColors[sentiment])}
-        style={{ fontFamily: "var(--ao-font-mono)" }}
-      >
-        <CountUp value={value} />
-      </div>
+        className="absolute -top-4 -right-4 w-24 h-24 rounded-full pointer-events-none"
+        style={{
+          background: `radial-gradient(circle, ${config.glowColor} 0%, transparent 70%)`,
+          filter: "blur(8px)",
+        }}
+        aria-hidden="true"
+      />
 
-      {trend && (
-        <div className={cn("flex items-center gap-1 text-[12px]", trendColors[trend.direction])}
-          style={{ fontFamily: "var(--ao-font-body)" }}>
-          <TrendIcon className="w-3.5 h-3.5" aria-hidden="true" />
-          <span>{trend.percent}%</span>
-          {trend.label && <span className="text-[var(--ao-text-muted)] ml-1">{trend.label}</span>}
+      <div className="relative">
+        <div className="flex items-start justify-between mb-4">
+          <span
+            className="text-[11px] font-semibold uppercase tracking-widest leading-none"
+            style={{ fontFamily: "var(--ao-font-body)", color: "var(--ao-text-muted)" }}
+          >
+            {label}
+          </span>
+          <div
+            className="p-2 rounded-xl flex items-center justify-center"
+            style={{
+              backgroundColor: config.iconBg,
+              border: `1px solid ${config.borderAccent}`,
+            }}
+          >
+            <Icon className="w-4 h-4" style={{ color: config.iconColor }} aria-hidden="true" />
+          </div>
         </div>
-      )}
+
+        <div
+          className="text-[32px] font-bold mb-2 leading-none tabular-nums"
+          style={{ fontFamily: "var(--ao-font-mono)", color: config.valueColor, letterSpacing: "-0.02em" }}
+        >
+          <CountUp value={value} />
+        </div>
+
+        {trend && (
+          <div
+            className="flex items-center gap-1.5 text-[12px]"
+            style={{ fontFamily: "var(--ao-font-body)", color: trendColor }}
+          >
+            <TrendIcon className="w-3.5 h-3.5" aria-hidden="true" />
+            <span className="font-medium">{trend.percent}%</span>
+            {trend.label && (
+              <span style={{ color: "var(--ao-text-muted)" }}>{trend.label}</span>
+            )}
+          </div>
+        )}
+      </div>
     </motion.div>
   )
 }

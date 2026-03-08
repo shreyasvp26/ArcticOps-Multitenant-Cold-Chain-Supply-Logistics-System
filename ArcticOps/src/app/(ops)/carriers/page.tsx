@@ -35,20 +35,25 @@ function ReliabilityBadge({ score }: { score: number }) {
 }
 
 function CarrierCard({ carrier, onSelect, selected }: { carrier: Carrier; onSelect: () => void; selected: boolean }) {
+  const modeColor = MODE_COLORS[carrier.primaryMode as keyof typeof MODE_COLORS] ?? "#64748B"
   return (
     <motion.div
       variants={staggerChild}
       onClick={onSelect}
-      className={cn("rounded-xl border p-4 cursor-pointer transition-all hover:scale-[1.01]", selected ? "ring-1 ring-[var(--ao-accent)]" : "")}
+      className="rounded-xl p-4 cursor-pointer transition-all hover:scale-[1.01] hover:brightness-105"
       style={{
-        backgroundColor: selected ? "rgba(0,212,170,0.04)" : "var(--ao-surface)",
-        borderColor: selected ? "var(--ao-accent)" : "var(--ao-border)",
+        background: selected
+          ? "linear-gradient(135deg, rgba(0,200,168,0.12) 0%, rgba(6,13,27,0.9) 100%)"
+          : "linear-gradient(135deg, rgba(11,18,34,0.7) 0%, rgba(6,13,27,0.85) 100%)",
+        border: `1px solid ${selected ? "rgba(0,200,168,0.4)" : "var(--ao-border)"}`,
+        backdropFilter: "blur(12px)",
+        boxShadow: selected ? "0 0 20px rgba(0,200,168,0.1)" : "none",
       }}
     >
       <div className="flex items-start justify-between mb-3">
         <div className="flex items-center gap-2">
           <div className="w-9 h-9 rounded-lg flex items-center justify-center text-sm font-bold shrink-0"
-            style={{ backgroundColor: "rgba(0,212,170,0.10)", color: "var(--ao-accent)", fontFamily: "var(--ao-font-mono)" }}>
+            style={{ backgroundColor: "rgba(0,200,168,0.10)", color: "var(--ao-accent)", fontFamily: "var(--ao-font-mono)" }}>
             {carrier.name.substring(0, 2).toUpperCase()}
           </div>
           <div>
@@ -127,7 +132,7 @@ function CapacityCalendar({ carriers }: { carriers: Carrier[] }) {
                 // Deterministic mock blocks from carrier seed
                 const seed = (carrier.id.charCodeAt(0) + i) % 10
                 const type = seed < 3 ? "booked" : seed < 7 ? "available" : "maintenance"
-                const colors = { booked: "#1A293F", available: "#00D4AA", maintenance: "#374151" }
+                const colors = { booked: "#1A293F", available: "#00C8A8", maintenance: "#374151" }
                 const labels = { booked: `Capacity: ${70 + seed * 3}%`, available: "Available", maintenance: "Maintenance window" }
                 return (
                   <div
@@ -145,7 +150,7 @@ function CapacityCalendar({ carriers }: { carriers: Carrier[] }) {
 
         {/* Legend */}
         <div className="flex items-center gap-4 pt-3 pl-[160px] text-[11px]" style={{ fontFamily: "var(--ao-font-body)" }}>
-          {[{ color: "#1A293F", label: "Booked" }, { color: "#00D4AA", label: "Available" }, { color: "#374151", label: "Maintenance" }].map(({ color, label }) => (
+          {[{ color: "#1A293F", label: "Booked" }, { color: "#00C8A8", label: "Available" }, { color: "#374151", label: "Maintenance" }].map(({ color, label }) => (
             <div key={label} className="flex items-center gap-1.5">
               <div className="w-3 h-3 rounded-sm" style={{ backgroundColor: color }} />
               <span style={{ color: "var(--ao-text-muted)" }}>{label}</span>
@@ -168,7 +173,12 @@ function PerformanceTab({ carriers }: { carriers: Carrier[] }) {
         { data: reliabilityData, label: "Reliability Score", goodColor: "#2ED573" },
         { data: capacityData, label: "Available Capacity (slots)", goodColor: "#3B82F6" },
       ].map(({ data, label, goodColor }) => (
-        <div key={label} className="rounded-xl border p-4" style={{ backgroundColor: "var(--ao-surface)", borderColor: "var(--ao-border)" }}>
+        <div key={label} className="rounded-xl border p-4"
+          style={{
+            background: "linear-gradient(135deg, rgba(11,18,34,0.8) 0%, rgba(6,13,27,0.9) 100%)",
+            borderColor: "var(--ao-border)",
+            backdropFilter: "blur(12px)",
+          }}>
           <p className="text-sm font-semibold mb-3" style={{ color: "var(--ao-text-primary)", fontFamily: "var(--ao-font-body)" }}>{label}</p>
           <ResponsiveContainer width="100%" height={160}>
             <BarChart data={data} margin={{ top: 0, right: 0, bottom: 20, left: -20 }}>
@@ -203,19 +213,36 @@ export default function CarriersPage() {
   return (
     <div className="flex flex-col h-full">
       {/* Tabs */}
-      <div className="flex border-b shrink-0" style={{ borderColor: "var(--ao-border)", backgroundColor: "rgba(12,22,42,0.6)" }}>
-        {[
-          { id: "directory", label: "Directory" },
-          { id: "calendar", label: "Capacity Calendar" },
-          { id: "performance", label: "Performance" },
-        ].map(({ id, label }) => (
-          <button key={id} onClick={() => setTab(id as typeof tab)}
-            className={cn("px-5 py-3 text-[13px] font-medium border-b-2 transition-colors",
-              tab === id ? "border-[var(--ao-accent)]" : "border-transparent hover:bg-[rgba(255,255,255,0.03)]")}
-            style={{ color: tab === id ? "var(--ao-accent)" : "var(--ao-text-muted)", fontFamily: "var(--ao-font-body)" }}>
-            {label}
-          </button>
-        ))}
+      <div className="shrink-0 px-6 py-4 border-b"
+        style={{
+          borderColor: "var(--ao-border)",
+          background: "linear-gradient(180deg, rgba(7,12,22,0.8) 0%, rgba(5,10,19,0.5) 100%)",
+          backdropFilter: "blur(12px)",
+        }}>
+        <div className="flex gap-1">
+          {[
+            { id: "directory", label: "Directory" },
+            { id: "calendar", label: "Capacity Calendar" },
+            { id: "performance", label: "Performance" },
+          ].map(({ id, label }) => {
+            const isActive = tab === id
+            return (
+              <button key={id} onClick={() => setTab(id as typeof tab)}
+                className="px-4 py-2 rounded-lg text-[12px] font-medium transition-all"
+                style={{
+                  background: isActive
+                    ? "linear-gradient(135deg, rgba(0,200,168,0.18) 0%, rgba(0,200,168,0.08) 100%)"
+                    : "transparent",
+                  color: isActive ? "var(--ao-accent)" : "var(--ao-text-muted)",
+                  border: isActive ? "1px solid rgba(0,200,168,0.3)" : "1px solid transparent",
+                  fontFamily: "var(--ao-font-body)",
+                  boxShadow: isActive ? "0 0 12px rgba(0,200,168,0.1)" : "none",
+                }}>
+                {label}
+              </button>
+            )
+          })}
+        </div>
       </div>
 
       <AnimatePresence mode="wait">
@@ -228,15 +255,15 @@ export default function CarriersPage() {
                 <div className="relative flex-1 min-w-[180px]">
                   <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: "var(--ao-text-muted)" }} />
                   <input type="text" value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search carriers…"
-                    className="w-full pl-9 pr-3 py-2.5 rounded-lg text-sm outline-none"
-                    style={{ backgroundColor: "var(--ao-surface)", border: "1px solid var(--ao-border)", color: "var(--ao-text-primary)", fontFamily: "var(--ao-font-body)" }} />
+                    className="w-full pl-9 pr-3 py-2.5 rounded-lg text-sm outline-none transition-all"
+                    style={{ background: "rgba(11,18,34,0.6)", border: "1px solid var(--ao-border)", color: "var(--ao-text-primary)", fontFamily: "var(--ao-font-body)", backdropFilter: "blur(8px)" }} />
                 </div>
                 {["all", "air", "sea", "rail", "road"].map((m) => (
                   <button key={m} onClick={() => setModeFilter(m)}
                     className="px-3 py-1.5 rounded-lg text-[12px] font-medium transition-all capitalize"
                     style={{
-                      backgroundColor: modeFilter === m ? "rgba(0,212,170,0.12)" : "var(--ao-surface)",
-                      border: `1px solid ${modeFilter === m ? "var(--ao-accent)" : "var(--ao-border)"}`,
+                      background: modeFilter === m ? "rgba(0,200,168,0.12)" : "rgba(11,18,34,0.4)",
+                      border: `1px solid ${modeFilter === m ? "rgba(0,200,168,0.4)" : "var(--ao-border)"}`,
                       color: modeFilter === m ? "var(--ao-accent)" : "var(--ao-text-muted)",
                       fontFamily: "var(--ao-font-body)",
                     }}>
@@ -267,7 +294,11 @@ export default function CarriersPage() {
                   animate={{ x: 0, opacity: 1, transition: { type: "spring", stiffness: 280, damping: 28 } }}
                   exit={{ x: "100%", opacity: 0, transition: { duration: 0.2 } }}
                   className="w-72 border-l shrink-0 overflow-y-auto p-5 flex flex-col gap-4"
-                  style={{ backgroundColor: "var(--ao-surface)", borderColor: "var(--ao-border)" }}
+                  style={{
+                    background: "linear-gradient(180deg, rgba(11,18,34,0.95) 0%, rgba(6,13,27,0.98) 100%)",
+                    borderColor: "var(--ao-border)",
+                    backdropFilter: "blur(20px)",
+                  }}
                 >
                   <div className="flex items-center justify-between">
                     <p className="font-semibold" style={{ color: "var(--ao-text-primary)", fontFamily: "var(--ao-font-display)" }}>{selectedCarrier.name}</p>
