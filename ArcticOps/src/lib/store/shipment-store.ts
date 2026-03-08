@@ -24,6 +24,7 @@ interface ShipmentState {
   updateStatus: (id: string, status: ShipmentStatus) => void
   updateCoordinates: (id: string, coords: [number, number]) => void
   setViewMode: (mode: ViewMode) => void
+  addShipment: (shipment: Shipment) => void
   getFilteredShipments: (tenantId?: string | null) => Shipment[]
 }
 
@@ -48,6 +49,9 @@ export const useShipmentStore = create<ShipmentState>()((set, get) => ({
     })),
 
   setViewMode: (mode) => set({ viewMode: mode }),
+
+  addShipment: (shipment) =>
+    set((s) => ({ shipments: [shipment, ...s.shipments] })),
 
   getFilteredShipments: (tenantId) => {
     const { shipments, filters } = get()

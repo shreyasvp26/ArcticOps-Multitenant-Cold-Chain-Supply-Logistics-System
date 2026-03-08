@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from "framer-motion"
 import {
   Plane, Ship, Train, Truck, Leaf, Clock, DollarSign,
   ChevronDown, ChevronUp, Award, ArrowRight,
-  AlertTriangle, RefreshCcw
+  AlertTriangle, MapPin
 } from "lucide-react"
 import { useRouteStore } from "@/lib/store/route-store"
 import { RiskScore } from "@/components/shared/risk-score"
@@ -26,6 +26,13 @@ const MODE_COLORS: Record<string, string> = {
   sea: "#06B6D4",
   rail: "#7C3AED",
   road: "#F59E0B",
+}
+
+const MODE_LABELS: Record<string, string> = {
+  air: "Air",
+  sea: "Sea",
+  rail: "Rail",
+  road: "Road",
 }
 
 function TempConfidenceBar({ pct }: { pct: number }) {
@@ -50,13 +57,17 @@ interface RouteCardProps {
   route: ComputedRoute
   selected: boolean
   onSelect: () => void
+  onSelectRoute: (route: ComputedRoute) => void
 }
 
-function RouteCard({ route, selected, onSelect }: RouteCardProps) {
+function RouteCard({ route, selected, onSelect, onSelectRoute }: RouteCardProps) {
   const [expanded, setExpanded] = useState(false)
   const isRecommended = route.isRecommended
   const etaDays = Math.floor(route.computedEtaHours / 24)
   const etaHours = route.computedEtaHours % 24
+
+  // Build a readable "mode mix" label  e.g. "Air → Road"
+  const modeMix = route.legs.map((l) => MODE_LABELS[l.mode] ?? l.mode).join(" → ")
 
   return (
     <motion.div
@@ -87,7 +98,8 @@ function RouteCard({ route, selected, onSelect }: RouteCardProps) {
               </span>
             )}
           </div>
-          <div className="flex items-center gap-1.5">
+          {/* Mode icons with labels */}
+          <div className="flex items-center gap-1.5 shrink-0">
             {route.legs.map((leg, i) => {
               const Icon = MODE_ICONS[leg.mode as keyof typeof MODE_ICONS] ?? Truck
               return (
@@ -100,11 +112,19 @@ function RouteCard({ route, selected, onSelect }: RouteCardProps) {
           </div>
         </div>
 
+        {/* Mode mix pill */}
+        <div className="mb-3">
+          <span className="inline-flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-medium"
+            style={{ backgroundColor: "rgba(99,102,241,0.1)", color: "#818CF8", border: "1px solid rgba(99,102,241,0.2)", fontFamily: "var(--ao-font-mono)" }}>
+            {modeMix}
+          </span>
+        </div>
+
         <div className="grid grid-cols-2 gap-x-4 gap-y-2 mb-3">
           <div>
             <p className="text-[10px] uppercase tracking-wider mb-0.5" style={{ color: "var(--ao-text-muted)", fontFamily: "var(--ao-font-body)" }}>ETA</p>
             <p className="text-[15px] font-bold" style={{ color: "var(--ao-text-primary)", fontFamily: "var(--ao-font-mono)" }}>
-              {etaDays}d {etaHours}h
+              {etaDays > 0 ? `${etaDays}d ` : ""}{etaHours}h
             </p>
           </div>
           <div>
@@ -125,6 +145,12 @@ function RouteCard({ route, selected, onSelect }: RouteCardProps) {
               {route.co2EstimateKg.toLocaleString()} kg
             </p>
           </div>
+          <div className="col-span-2">
+            <p className="text-[10px] uppercase tracking-wider mb-0.5" style={{ color: "var(--ao-text-muted)", fontFamily: "var(--ao-font-body)" }}>Load Capacity</p>
+            <p className="text-[13px] font-semibold" style={{ color: "#818CF8", fontFamily: "var(--ao-font-mono)" }}>
+              {route.capacityVials.toLocaleString()} vials
+            </p>
+          </div>
         </div>
 
         <div className="mb-3">
@@ -134,9 +160,16 @@ function RouteCard({ route, selected, onSelect }: RouteCardProps) {
           <TempConfidenceBar pct={route.tempMaintenanceConfidence} />
         </div>
 
+        {route.notes && (
+          <p className="text-[11px] mb-3 rounded-lg px-3 py-2"
+            style={{ color: "#FFA502", backgroundColor: "rgba(255,165,2,0.06)", border: "1px solid rgba(255,165,2,0.2)", fontFamily: "var(--ao-font-body)" }}>
+            ⚠ {route.notes}
+          </p>
+        )}
+
         <div className="flex items-center gap-2">
           <button
-            onClick={onSelect}
+            onClick={() => onSelectRoute(route)}
             className="flex-1 py-2 rounded-lg text-sm font-medium transition-all"
             style={selected
               ? { backgroundColor: "var(--ao-accent)", color: "#0A1628" }
@@ -169,8 +202,14 @@ function RouteCard({ route, selected, onSelect }: RouteCardProps) {
                 const Icon = MODE_ICONS[leg.mode as keyof typeof MODE_ICONS] ?? Truck
                 const color = MODE_COLORS[leg.mode] ?? "#64748B"
                 return (
-                  <div key={i} className="flex items-center gap-3 text-[12px]">
-                    <Icon className="w-3.5 h-3.5 shrink-0" style={{ color }} />
+                  <div key={i} className="flex items-center gap-3 text-[12px] p-2 rounded-lg"
+                    style={{ backgroundColor: "var(--ao-surface-elevated)", border: "1px solid var(--ao-border)" }}>
+                    <div className="flex items-center gap-1.5 shrink-0">
+                      <Icon className="w-3.5 h-3.5" style={{ color }} />
+                      <span className="text-[10px] font-medium uppercase" style={{ color, fontFamily: "var(--ao-font-mono)" }}>
+                        {MODE_LABELS[leg.mode] ?? leg.mode}
+                      </span>
+                    </div>
                     <span style={{ color: "var(--ao-text-secondary)", fontFamily: "var(--ao-font-body)" }}>
                       {leg.origin} → {leg.destination}
                     </span>
@@ -198,9 +237,13 @@ const SCENARIOS = [
 interface RouteComparisonProps {
   routes: RouteOption[]
   isGenerating: boolean
+  origin?: string
+  destination?: string
+  onSelectRoute?: (route: RouteOption) => void
+  minVials?: number
 }
 
-export function RouteComparison({ routes, isGenerating }: RouteComparisonProps) {
+export function RouteComparison({ routes, isGenerating, origin, destination, onSelectRoute, minVials = 0 }: RouteComparisonProps) {
   const { selectedRouteId, selectRoute } = useRouteStore()
   const [activeScenarios, setActiveScenarios] = useState<Set<string>>(new Set())
   const [scenarioOpen, setScenarioOpen] = useState(true)
@@ -231,7 +274,9 @@ export function RouteComparison({ routes, isGenerating }: RouteComparisonProps) 
     return { ...route, computedCost: cost, computedEtaHours: etaHours, affected }
   }
 
-  const computedRoutes = routes.map(applyScenarios)
+  const computedRoutes = routes
+    .map(applyScenarios)
+    .filter((r) => r.capacityVials >= minVials)
 
   const impactLines: string[] = []
   if (activeScenarios.has("port_strike")) impactLines.push("Port strike adds ~40% to sea route ETAs")
@@ -255,7 +300,7 @@ export function RouteComparison({ routes, isGenerating }: RouteComparisonProps) 
       <div className="flex flex-col items-center justify-center h-64 gap-3">
         <ArrowRight className="w-10 h-10" style={{ color: "var(--ao-text-muted)" }} />
         <p className="text-sm" style={{ color: "var(--ao-text-muted)", fontFamily: "var(--ao-font-body)" }}>
-          Enter route criteria and click "Generate Routes"
+          Enter route criteria and click &quot;Generate Routes&quot;
         </p>
       </div>
     )
@@ -263,15 +308,48 @@ export function RouteComparison({ routes, isGenerating }: RouteComparisonProps) 
 
   return (
     <div className="flex flex-col gap-4">
+      {/* Origin → Destination header */}
+      {origin && destination && (
+        <div className="flex items-center gap-2 pb-2 border-b" style={{ borderColor: "var(--ao-border)" }}>
+          <MapPin className="w-4 h-4 shrink-0" style={{ color: "var(--ao-accent)" }} />
+          <span className="text-sm font-semibold" style={{ color: "var(--ao-text-primary)", fontFamily: "var(--ao-font-display)" }}>
+            {origin}
+          </span>
+          <ArrowRight className="w-4 h-4" style={{ color: "var(--ao-text-muted)" }} />
+          <span className="text-sm font-semibold" style={{ color: "var(--ao-text-primary)", fontFamily: "var(--ao-font-display)" }}>
+            {destination}
+          </span>
+          <span className="ml-auto text-[11px]" style={{ color: "var(--ao-text-muted)", fontFamily: "var(--ao-font-mono)" }}>
+            {routes.length} routes found
+          </span>
+        </div>
+      )}
+
       <motion.div variants={staggerContainer} initial="initial" animate="animate" className="flex flex-col gap-3">
-        {computedRoutes.map((route) => (
-          <RouteCard
-            key={route.id}
-            route={route}
-            selected={selectedRouteId === route.id}
-            onSelect={() => selectRoute(route.id)}
-          />
-        ))}
+        {computedRoutes.length === 0 && minVials > 0 ? (
+          <div className="flex flex-col items-center justify-center py-10 gap-3 rounded-xl border"
+            style={{ borderColor: "var(--ao-border)", backgroundColor: "var(--ao-surface)" }}>
+            <p className="text-sm font-semibold" style={{ color: "#FFA502", fontFamily: "var(--ao-font-body)" }}>
+              No routes meet the required capacity
+            </p>
+            <p className="text-[12px]" style={{ color: "var(--ao-text-muted)", fontFamily: "var(--ao-font-body)" }}>
+              Reduce the vials requirement or try a different route.
+            </p>
+          </div>
+        ) : (
+          computedRoutes.map((route) => (
+            <RouteCard
+              key={route.id}
+              route={route}
+              selected={selectedRouteId === route.id}
+              onSelect={() => selectRoute(route.id)}
+              onSelectRoute={(r) => {
+                selectRoute(r.id)
+                onSelectRoute?.(r)
+              }}
+            />
+          ))
+        )}
       </motion.div>
 
       {/* Scenario simulator */}
