@@ -28,6 +28,7 @@ const STATUS_BG: Record<string, string> = {
   cancelled: "rgba(255,71,87,0.1)",
 }
 
+<<<<<<< Updated upstream
 const TEMP_ZONE_COLOR: Record<string, string> = {
   ultra_cold: "#7C3AED",
   frozen: "#3B82F6",
@@ -182,6 +183,17 @@ function ShipmentListPanel({
         )}
       </div>
     </div>
+=======
+export function GlobeMap({ tenantId }: { tenantId?: string | null }) {
+  const [weatherVisible, setWeatherVisible] = useState(false)
+  const [popup, setPopup] = useState<ShipmentPopup | null>(null)
+  const [mapLoaded, setMapLoaded] = useState(false)
+  const shipments = useShipmentStore((s) => s.shipments)
+  const getLatestTemp = useTemperatureStore((s) => s.getLatest)
+
+  const activeShipments = shipments.filter(
+    (s) => s.status !== "cancelled" && (!tenantId || s.tenantId === tenantId)
+>>>>>>> Stashed changes
   )
 }
 
@@ -560,11 +572,12 @@ export function GlobeMap() {
   }
   return (
     <div className="relative w-full h-full">
-      <MapboxMap />
+      <MapboxMap tenantId={tenantId} />
     </div>
   )
 }
 
+<<<<<<< Updated upstream
 // ---------- Leaflet implementation ----------
 function LeafletMap() {
   const containerRef = useRef<HTMLDivElement>(null)
@@ -772,6 +785,10 @@ function LeafletMap() {
 
 // ---------- Mapbox implementation ----------
 function MapboxMap() {
+=======
+// Separate component that handles Mapbox initialization
+function MapboxMap({ tenantId }: { tenantId?: string | null }) {
+>>>>>>> Stashed changes
   const mapContainerRef = useRef<HTMLDivElement>(null)
   const mapRef = useRef<import("mapbox-gl").Map | null>(null)
   const mapboxMarkersRef = useRef<Map<string, import("mapbox-gl").Marker>>(new Map())
@@ -788,6 +805,10 @@ function MapboxMap() {
     const stop = startLiveTracking()
     return stop
   }, [startLiveTracking, tempInitialized, initTemp])
+
+  const activeShipments = shipments.filter(
+    (s) => s.status !== "cancelled" && (!tenantId || s.tenantId === tenantId)
+  )
 
   useEffect(() => {
     if (!mapContainerRef.current || !MAPBOX_TOKEN) return
@@ -810,6 +831,7 @@ function MapboxMap() {
       map.on("load", () => {
         const active = shipments.filter((s) => s.status !== "cancelled")
 
+<<<<<<< Updated upstream
         active.forEach((sh) => {
           const el = document.createElement("div")
           el.innerHTML = buildMarkerHtml(STATUS_COLORS[sh.status] ?? "#64748B", sh.status === "in_transit", sh.riskScore)
@@ -818,6 +840,22 @@ function MapboxMap() {
           el.addEventListener("click", () => setSelectedId((prev) => prev === sh.id ? null : sh.id))
           mapboxMarkersRef.current.set(sh.id, marker)
         })
+=======
+        activeShipments
+          .forEach((sh) => {
+            const el = document.createElement("div")
+            el.className = "shipment-marker"
+            el.style.cssText = `
+              width: 12px; height: 12px; border-radius: 50%;
+              background: ${STATUS_COLORS[sh.status] ?? "#64748B"};
+              border: 2px solid rgba(255,255,255,0.3);
+              cursor: pointer;
+              box-shadow: 0 0 8px ${STATUS_COLORS[sh.status] ?? "#64748B"}80;
+            `
+            if (sh.status === "in_transit") {
+              el.style.animation = "checkpoint-pulse 2s ease-in-out infinite"
+            }
+>>>>>>> Stashed changes
 
         active.filter((s) => s.status === "in_transit").forEach((sh) => {
           const id = `route-${sh.id}`
@@ -825,12 +863,26 @@ function MapboxMap() {
           const passedCoords = sh.checkpoints.filter((cp) => cp.status === "passed" || cp.status === "current").map((cp) => cp.coordinates)
           const upcomingCoords = sh.checkpoints.filter((cp) => cp.status === "upcoming").map((cp) => cp.coordinates)
 
+<<<<<<< Updated upstream
           const completedLine = toCurvedLine([sh.originCoordinates, ...passedCoords])
           if (completedLine.length >= 2) {
             map!.addSource(`${id}-done`, { type: "geojson", data: { type: "Feature", geometry: { type: "LineString", coordinates: completedLine }, properties: {} } })
             map!.addLayer({ id: `${id}-done-glow`, type: "line", source: `${id}-done`, paint: { "line-color": color, "line-width": 6, "line-opacity": 0.07 } })
             map!.addLayer({ id: `${id}-done-layer`, type: "line", source: `${id}-done`, paint: { "line-color": color, "line-width": 2.5, "line-opacity": 0.8 } })
           }
+=======
+        // Route lines for in_transit shipments
+        activeShipments
+          .filter((s) => s.status === "in_transit")
+          .forEach((sh) => {
+            const sourceId = `route-${sh.id}`
+            const completedCoords = sh.checkpoints
+              .filter((cp) => cp.status === "passed" || cp.status === "current")
+              .map((cp) => cp.coordinates)
+            const upcomingCoords = sh.checkpoints
+              .filter((cp) => cp.status === "upcoming")
+              .map((cp) => cp.coordinates)
+>>>>>>> Stashed changes
 
           const upcomingLine = toCurvedLine([sh.currentCoordinates, ...upcomingCoords, sh.destinationCoordinates])
           if (upcomingLine.length >= 2) {

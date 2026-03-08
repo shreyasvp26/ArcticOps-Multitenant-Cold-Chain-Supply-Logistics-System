@@ -6,6 +6,7 @@ import { useNotificationStore } from "@/lib/store/notification-store"
 import { useUIStore } from "@/lib/store/ui-store"
 import { useAuthStore } from "@/lib/store/auth-store"
 import { useDriverStore } from "@/lib/store/driver-store"
+import { CLIENT_ROLES } from "@/lib/constants/roles"
 import type { AlertSeverity } from "@/lib/types/notification"
 import { cn } from "@/lib/utils/cn"
 
@@ -42,6 +43,9 @@ export function ToastProvider() {
   const [toasts, setToasts] = useState<Toast[]>([])
 
   const isDriver = user?.role === "driver"
+  const isClient = user?.role && (CLIENT_ROLES as string[]).includes(user.role)
+
+  if (isClient) return null
 
   // Emergency banner - filtered for drivers
   const emergencyAlert = notifications.find((n) => {

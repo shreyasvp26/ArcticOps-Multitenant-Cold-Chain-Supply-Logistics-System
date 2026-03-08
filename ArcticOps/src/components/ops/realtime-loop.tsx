@@ -8,12 +8,15 @@ import { createTemperatureSimulator } from "@/lib/mock-data/temperature"
 import { createGPSSimulator } from "@/lib/mock-data/gps"
 import { MOCK_SHIPMENTS } from "@/lib/mock-data/shipments"
 import { calculateStressLevel } from "@/lib/utils/risk"
+import { useAuthStore } from "@/lib/store/auth-store"
+import { CLIENT_ROLES } from "@/lib/constants/roles"
 
 const TEMP_INTERVAL_MS = 5000
 const GPS_INTERVAL_MS = 8000
 const STRESS_INTERVAL_MS = 10000
 
 export function RealtimeLoop() {
+  const { user } = useAuthStore()
   const { initialize: initTemp, addReading, getActiveExcursions } = useTemperatureStore()
   const { addNotification } = useNotificationStore()
   const { updateStressLevel } = useUIStore()
@@ -21,6 +24,8 @@ export function RealtimeLoop() {
   const simulatorsRef = useRef<Map<string, () => import("@/lib/types/temperature").TempReading>>(new Map())
   const gpsSimulatorsRef = useRef<Map<string, () => [number, number]>>(new Map())
   const excursionAlertedRef = useRef<Set<string>>(new Set())
+
+  const isClient = user?.role && (CLIENT_ROLES as string[]).includes(user.role)
 
   // Initialize temperature history once
   useEffect(() => {
@@ -49,7 +54,7 @@ export function RealtimeLoop() {
         addReading(reading)
 
         // Fire excursion notification once per session
-        if (reading.isExcursion && !excursionAlertedRef.current.has(shipmentId)) {
+        if (reading.isExcursion && !excursionAlertedRef.current.has(shipmentId) && !isClient) {
           excursionAlertedRef.current.add(shipmentId)
           addNotification({
             id: `exc_notif_${shipmentId}_${Date.now()}`,
