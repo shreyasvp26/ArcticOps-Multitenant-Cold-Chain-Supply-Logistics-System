@@ -4,6 +4,8 @@ import { motion, AnimatePresence } from "framer-motion"
 import { X, Info, AlertTriangle, XCircle, Zap } from "lucide-react"
 import { useNotificationStore } from "@/lib/store/notification-store"
 import { useUIStore } from "@/lib/store/ui-store"
+import { useAuthStore } from "@/lib/store/auth-store"
+import { useDriverStore } from "@/lib/store/driver-store"
 import type { AlertSeverity } from "@/lib/types/notification"
 import { cn } from "@/lib/utils/cn"
 
@@ -35,15 +37,33 @@ const shownIds = new Set<string>()
 
 export function ToastProvider() {
   const notifications = useNotificationStore((s) => s.notifications)
+  const { user } = useAuthStore()
+  const { currentAssignment } = useDriverStore()
   const [toasts, setToasts] = useState<Toast[]>([])
 
-  // Emergency banner
-  const emergencyAlert = notifications.find((n) => n.severity === "emergency" && !n.read)
+  const isDriver = user?.role === "driver"
+
+  // Emergency banner - filtered for drivers
+  const emergencyAlert = notifications.find((n) => {
+    if (n.severity !== "emergency" || n.read) return false
+    if (isDriver) {
+      if (!currentAssignment) return false
+      return n.relatedEntityId === currentAssignment.id
+    }
+    return true
+  })
 
   // Watch for new unread notifications and convert to toasts
   useEffect(() => {
     const recent = notifications
-      .filter((n) => !n.read && !shownIds.has(n.id))
+      .filter((n) => {
+        if (n.read || shownIds.has(n.id)) return false
+        if (isDriver) {
+          if (!currentAssignment) return false
+          return n.relatedEntityId === currentAssignment.id
+        }
+        return true
+      })
       .slice(0, 3)
 
     if (recent.length === 0) return
@@ -60,7 +80,7 @@ export function ToastProvider() {
     })
 
     setToasts((prev) => [...newToasts, ...prev].slice(0, 5))
-  }, [notifications])
+  }, [notifications, isDriver, currentAssignment])
 
   const dismiss = (id: string) => setToasts((prev) => prev.filter((t) => t.id !== id))
 

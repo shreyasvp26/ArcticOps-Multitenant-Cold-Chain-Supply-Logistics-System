@@ -1,5 +1,5 @@
 "use client"
-import { useState, useRef } from "react"
+import { useState, useRef, useEffect } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import { Check, CheckCircle2, Camera, FileSignature, Thermometer, ClipboardList, ArrowRight, Package } from "lucide-react"
 import { useDriverStore } from "@/lib/store/driver-store"
@@ -23,19 +23,38 @@ export default function DeliverPage() {
   const [signed, setSigned] = useState(false)
   const [condition, setCondition] = useState("")
   const [complete, setComplete] = useState(false)
+  const [fluctuation, setFluctuation] = useState(0)
   const canvasRef = useRef<HTMLCanvasElement>(null)
+  const fileInputRef = useRef<HTMLInputElement>(null)
   const isDrawing = useRef(false)
+
+  useEffect(() => {
+    if (step === 3) {
+      const interval = setInterval(() => {
+        setFluctuation((Math.random() - 0.5) * 0.4)
+      }, 2000)
+      return () => clearInterval(interval)
+    }
+  }, [step])
 
   const { currentAssignment, submitDelivery } = useDriverStore()
   const getLatest = useTemperatureStore((s) => s.getLatest)
   const shipment = currentAssignment ?? MOCK_SHIPMENTS.find((s) => s.status === "in_transit")
-  const latestTemp = shipment ? getLatest(shipment.id) : null
+  const latestReading = shipment ? getLatest(shipment.id) : null
+  const baseTemp = latestReading?.temperature ?? (shipment ? (shipment.requiredTempMin + shipment.requiredTempMax) / 2 : 0)
+  const latestTemp = baseTemp + fluctuation
 
   const stepItems = STEPS.map((s) => ({ id: s.id, label: s.label }))
 
   const handleSubmit = () => {
     if (shipment) submitDelivery()
     setComplete(true)
+  }
+
+  const handlePhotoUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      setPhotoCapture(true)
+    }
   }
 
   // Canvas drawing for signature
@@ -114,11 +133,18 @@ export default function DeliverPage() {
           <p className="text-sm text-center" style={{ color: "var(--ao-text-secondary)", fontFamily: "var(--ao-font-body)" }}>
             Capture photo proof of delivery
           </p>
+          <input
+            type="file"
+            ref={fileInputRef}
+            onChange={handlePhotoUpload}
+            accept="image/*"
+            className="hidden"
+          />
           {!photoCapture ? (
-            <button onClick={() => setPhotoCapture(true)}
+            <button onClick={() => fileInputRef.current?.click()}
               className="w-full max-w-xs py-3.5 rounded-xl text-base font-bold"
               style={{ backgroundColor: "var(--ao-accent)", color: "#0A1628", fontFamily: "var(--ao-font-body)" }}>
-              <Camera className="w-4 h-4 inline mr-2" /> Capture Photo
+              <Camera className="w-4 h-4 inline mr-2" /> Upload Photo
             </button>
           ) : (
             <div className="w-full max-w-xs h-40 rounded-xl flex items-center justify-center text-[12px]"
@@ -157,7 +183,7 @@ export default function DeliverPage() {
           <Thermometer className="w-10 h-10" style={{ color: "var(--ao-accent)" }} />
           <p className="text-sm" style={{ color: "var(--ao-text-secondary)", fontFamily: "var(--ao-font-body)" }}>Temperature at Delivery</p>
           <p className="text-4xl font-bold" style={{ color: "var(--ao-accent)", fontFamily: "var(--ao-font-mono)" }}>
-            {latestTemp ? formatTemp(latestTemp.temperature) : "—"}
+            {latestTemp ? formatTemp(latestTemp) : "—"}
           </p>
           <p className="text-[12px]" style={{ color: "#2ED573", fontFamily: "var(--ao-font-body)" }}>✓ Within required range</p>
         </div>

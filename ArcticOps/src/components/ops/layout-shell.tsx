@@ -6,7 +6,6 @@ import { OpsHeader } from "@/components/ops/header"
 import { AmbientBackground } from "@/components/shared/ambient-background"
 import { CommandPalette } from "@/components/shared/command-palette"
 import { ToastProvider } from "@/components/shared/toast-provider"
-import { RealtimeLoop } from "@/components/ops/realtime-loop"
 import { CrossDashboardBridge } from "@/components/ops/cross-dashboard-bridge"
 import { pageVariants } from "@/lib/utils/motion"
 
@@ -38,7 +37,6 @@ export function OpsLayoutShell({ children }: { children: React.ReactNode }) {
   return (
     <>
       <AmbientBackground />
-      <RealtimeLoop />
       <CrossDashboardBridge />
       <CommandPalette />
       <ToastProvider />
