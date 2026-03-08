@@ -93,8 +93,8 @@ export default function DriverDocumentsPage() {
               className="w-full flex items-center justify-center gap-2 py-4 rounded-xl text-lg font-bold transition-all hover:scale-[1.02] active:scale-[0.98]"
               style={{
                 backgroundColor: "var(--ao-accent)",
-                color: "#0A1628",
-                boxShadow: "0 0 25px rgba(0,212,170,0.3)"
+                color: "#060D1B",
+                boxShadow: "0 0 25px rgba(0,200,168,0.3)"
               }}
             >
               <QrCode className="w-6 h-6" />
@@ -154,7 +154,7 @@ export default function DriverDocumentsPage() {
                     onClick={() => handleUploadClick(doc)}
                     disabled={isUploading === doc}
                     className="flex items-center gap-1.5 text-[11px] px-2.5 py-1 rounded-lg disabled:opacity-50"
-                    style={{ backgroundColor: "rgba(0,212,170,0.10)", color: "var(--ao-accent)", border: "1px solid rgba(0,212,170,0.2)", fontFamily: "var(--ao-font-body)" }}>
+                    style={{ backgroundColor: "rgba(0,200,168,0.10)", color: "var(--ao-accent)", border: "1px solid rgba(0,200,168,0.2)", fontFamily: "var(--ao-font-body)" }}>
                     {isUploading === doc ? "Uploading..." : <><Upload className="w-3 h-3" /> Upload</>}
                   </button>
                 )}

@@ -65,15 +65,15 @@ function DocumentRepository() {
         <div className="relative flex-1 min-w-[180px]">
           <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: "var(--ao-text-muted)" }} />
           <input type="text" value={search} onChange={(e) => setSearch(e.target.value)} placeholder="Search shipments…"
-            className="w-full pl-9 pr-3 py-2.5 rounded-lg text-sm outline-none"
-            style={{ backgroundColor: "var(--ao-surface)", border: "1px solid var(--ao-border)", color: "var(--ao-text-primary)", fontFamily: "var(--ao-font-body)" }} />
+            className="w-full pl-9 pr-3 py-2.5 rounded-lg text-sm outline-none transition-all"
+            style={{ background: "rgba(11,18,34,0.6)", border: "1px solid var(--ao-border)", color: "var(--ao-text-primary)", fontFamily: "var(--ao-font-body)", backdropFilter: "blur(8px)" }} />
         </div>
         {["all", "complete", "pending", "missing"].map((s) => (
           <button key={s} onClick={() => setStatusFilter(s)}
             className="px-3 py-1.5 rounded-lg text-[12px] font-medium transition-all capitalize"
             style={{
-              backgroundColor: statusFilter === s ? "rgba(0,212,170,0.12)" : "var(--ao-surface)",
-              border: `1px solid ${statusFilter === s ? "var(--ao-accent)" : "var(--ao-border)"}`,
+              background: statusFilter === s ? "rgba(0,200,168,0.12)" : "rgba(11,18,34,0.4)",
+              border: `1px solid ${statusFilter === s ? "rgba(0,200,168,0.4)" : "var(--ao-border)"}`,
               color: statusFilter === s ? "var(--ao-accent)" : "var(--ao-text-muted)",
               fontFamily: "var(--ao-font-body)",
             }}>{s === "all" ? "All Status" : s}</button>
@@ -141,7 +141,7 @@ function DocumentRepository() {
                               <Download className="w-3 h-3" />
                             </button>
                           : <button className="flex items-center gap-1 text-[11px] px-2 py-0.5 rounded"
-                              style={{ color: "var(--ao-accent)", backgroundColor: "rgba(0,212,170,0.10)", border: "1px solid rgba(0,212,170,0.2)", fontFamily: "var(--ao-font-body)" }}>
+                              style={{ color: "var(--ao-accent)", backgroundColor: "rgba(0,200,168,0.10)", border: "1px solid rgba(0,200,168,0.2)", fontFamily: "var(--ao-font-body)" }}>
                               <Upload className="w-3 h-3" /> Upload
                             </button>
                         }
@@ -207,7 +207,7 @@ function AuditLog() {
         </select>
         <button onClick={downloadCSV}
           className="flex items-center gap-2 px-3 py-2.5 rounded-lg text-[12px] font-medium transition-all hover:brightness-110"
-          style={{ backgroundColor: "rgba(0,212,170,0.10)", color: "var(--ao-accent)", border: "1px solid rgba(0,212,170,0.25)", fontFamily: "var(--ao-font-body)" }}>
+          style={{ backgroundColor: "rgba(0,200,168,0.10)", color: "var(--ao-accent)", border: "1px solid rgba(0,200,168,0.25)", fontFamily: "var(--ao-font-body)" }}>
           <Download className="w-3.5 h-3.5" /> Export CSV
         </button>
       </div>
@@ -215,7 +215,7 @@ function AuditLog() {
       <div className="rounded-xl border overflow-hidden" style={{ borderColor: "var(--ao-border)" }}>
         <table className="w-full">
           <thead>
-            <tr style={{ backgroundColor: "rgba(12,22,42,0.8)", borderBottom: "1px solid var(--ao-border)" }}>
+            <tr style={{ backgroundColor: "rgba(13,24,41,0.8)", borderBottom: "1px solid var(--ao-border)" }}>
               {["Timestamp", "User", "Action", "Entity", "Details", "IP"].map((h) => (
                 <th key={h} className="px-4 py-3 text-left text-[10px] font-semibold uppercase tracking-wider"
                   style={{ color: "var(--ao-text-muted)", fontFamily: "var(--ao-font-body)" }}>{h}</th>
@@ -231,7 +231,7 @@ function AuditLog() {
                 <td className="px-4 py-2.5 text-[12px]" style={{ color: "var(--ao-text-secondary)", fontFamily: "var(--ao-font-mono)" }}>{entry.user}</td>
                 <td className="px-4 py-2.5">
                   <span className="text-[11px] px-1.5 py-0.5 rounded"
-                    style={{ backgroundColor: "rgba(0,212,170,0.08)", color: "var(--ao-accent)", fontFamily: "var(--ao-font-mono)" }}>
+                    style={{ backgroundColor: "rgba(0,200,168,0.08)", color: "var(--ao-accent)", fontFamily: "var(--ao-font-mono)" }}>
                     {entry.action.replace(/_/g, " ")}
                   </span>
                 </td>
@@ -243,7 +243,7 @@ function AuditLog() {
           </tbody>
         </table>
         <div className="px-4 py-2 border-t text-[11px]"
-          style={{ borderColor: "var(--ao-border)", color: "var(--ao-text-muted)", fontFamily: "var(--ao-font-body)", backgroundColor: "rgba(12,22,42,0.5)" }}>
+          style={{ borderColor: "var(--ao-border)", color: "var(--ao-text-muted)", fontFamily: "var(--ao-font-body)", backgroundColor: "rgba(13,24,41,0.5)" }}>
           Showing {Math.min(filtered.length, 50)} of {filtered.length} entries
         </div>
       </div>
@@ -294,21 +294,67 @@ function RegulatoryCalendar() {
 export default function CompliancePage() {
   const [tab, setTab] = useState<"documents" | "audit" | "calendar">("documents")
 
+  const TABS = [
+    { id: "documents", label: "Documents", icon: FileText, desc: "Shipment document repository" },
+    { id: "audit", label: "Audit Trail", icon: Shield, desc: "All system actions and changes" },
+    { id: "calendar", label: "Regulatory Calendar", icon: Calendar, desc: "Upcoming deadlines and renewals" },
+  ]
+
+  const activeTab = TABS.find((t) => t.id === tab)
+
   return (
     <div className="flex flex-col h-full">
-      <div className="flex border-b shrink-0" style={{ borderColor: "var(--ao-border)", backgroundColor: "rgba(12,22,42,0.6)" }}>
-        {[
-          { id: "documents", label: "Documents", icon: FileText },
-          { id: "audit", label: "Audit Trail", icon: Shield },
-          { id: "calendar", label: "Regulatory Calendar", icon: Calendar },
-        ].map(({ id, label, icon: Icon }) => (
-          <button key={id} onClick={() => setTab(id as typeof tab)}
-            className={cn("flex items-center gap-2 px-5 py-3 text-[13px] font-medium border-b-2 transition-colors",
-              tab === id ? "border-[var(--ao-accent)]" : "border-transparent hover:bg-[rgba(255,255,255,0.03)]")}
-            style={{ color: tab === id ? "var(--ao-accent)" : "var(--ao-text-muted)", fontFamily: "var(--ao-font-body)" }}>
-            <Icon className="w-4 h-4" /> {label}
-          </button>
-        ))}
+      {/* Page header bar */}
+      <div
+        className="shrink-0 px-6 py-4 border-b"
+        style={{
+          borderColor: "var(--ao-border)",
+          background: "linear-gradient(180deg, rgba(7,12,22,0.8) 0%, rgba(5,10,19,0.5) 100%)",
+          backdropFilter: "blur(12px)",
+        }}
+      >
+        <div className="flex items-center gap-3 mb-4">
+          <div
+            className="w-8 h-8 rounded-lg flex items-center justify-center"
+            style={{ background: "linear-gradient(135deg, rgba(0,200,168,0.2) 0%, rgba(0,200,168,0.08) 100%)", border: "1px solid rgba(0,200,168,0.25)" }}
+          >
+            <Shield className="w-4 h-4" style={{ color: "var(--ao-accent)" }} />
+          </div>
+          <div>
+            <p className="text-[11px] uppercase tracking-widest font-semibold" style={{ color: "var(--ao-text-muted)", fontFamily: "var(--ao-font-body)", letterSpacing: "0.12em" }}>
+              Compliance &amp; Governance
+            </p>
+            <p className="text-[13px] font-medium" style={{ color: "var(--ao-text-secondary)", fontFamily: "var(--ao-font-body)" }}>
+              {activeTab?.desc}
+            </p>
+          </div>
+        </div>
+
+        {/* Tab bar */}
+        <div className="flex gap-1">
+          {TABS.map(({ id, label, icon: Icon }) => {
+            const isActive = tab === id
+            return (
+              <button
+                key={id}
+                onClick={() => setTab(id as typeof tab)}
+                className="flex items-center gap-2 px-4 py-2 rounded-lg text-[12px] font-medium transition-all"
+                style={{
+                  background: isActive
+                    ? "linear-gradient(135deg, rgba(0,200,168,0.18) 0%, rgba(0,200,168,0.08) 100%)"
+                    : "transparent",
+                  color: isActive ? "var(--ao-accent)" : "var(--ao-text-muted)",
+                  border: isActive ? "1px solid rgba(0,200,168,0.3)" : "1px solid transparent",
+                  fontFamily: "var(--ao-font-body)",
+                  boxShadow: isActive ? "0 0 12px rgba(0,200,168,0.1)" : "none",
+                }}
+              >
+                <Icon className="w-3.5 h-3.5" />
+                {label}
+              </button>
+            )
+          })}
+        </div>
       </div>
 
       <AnimatePresence mode="wait">

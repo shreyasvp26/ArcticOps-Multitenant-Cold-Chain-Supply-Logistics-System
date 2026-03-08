@@ -135,7 +135,7 @@ export default function MonitorPage() {
           <div className="flex gap-2 mt-2">
             <button onClick={submitReport}
               className="flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-medium"
-              style={{ backgroundColor: "#FFA502", color: "#0A1628", fontFamily: "var(--ao-font-body)" }}>
+              style={{ backgroundColor: "#FFB020", color: "#060D1B", fontFamily: "var(--ao-font-body)" }}>
               <Send className="w-3.5 h-3.5" /> Send Report
             </button>
             <button onClick={() => setReportOpen(false)}

@@ -44,15 +44,52 @@ export default function DashboardPage() {
     ? notifications.filter((n) => n.severity === "critical" || n.severity === "emergency" || n.severity === "warning")
     : notifications
 
-  const stressBorder = {
-    serene: "var(--ao-border)",
+  const stressBorderColor = {
+    serene: "rgba(30,48,80,0.7)",
     attentive: "rgba(255,165,2,0.2)",
-    urgent: "rgba(255,71,87,0.2)",
-    emergency: "rgba(255,71,87,0.4)",
+    urgent: "rgba(255,71,87,0.25)",
+    emergency: "rgba(255,71,87,0.45)",
   }
 
   return (
-    <div className="flex flex-col h-full p-4 gap-4">
+    <div className="flex flex-col h-full p-5 gap-4">
+      {/* Section label */}
+      <div className="flex items-center justify-between shrink-0">
+        <div className="flex items-center gap-2">
+          <div className="w-1 h-4 rounded-full" style={{ backgroundColor: "var(--ao-accent)" }} aria-hidden="true" />
+          <span className="text-[11px] font-semibold uppercase tracking-widest" style={{ color: "var(--ao-text-muted)", fontFamily: "var(--ao-font-body)" }}>
+            Live Metrics
+          </span>
+        </div>
+        {stressLevel !== "serene" && (
+          <div
+            className="flex items-center gap-2 px-3 py-1.5 rounded-full text-[11px] font-medium"
+            style={{
+              backgroundColor: stressLevel === "emergency"
+                ? "rgba(255,71,87,0.1)"
+                : stressLevel === "urgent"
+                ? "rgba(255,71,87,0.08)"
+                : "rgba(255,165,2,0.08)",
+              border: `1px solid ${stressLevel === "emergency" || stressLevel === "urgent" ? "rgba(255,71,87,0.3)" : "rgba(255,165,2,0.25)"}`,
+              color: stressLevel === "emergency" || stressLevel === "urgent" ? "#FF4757" : "#FFA502",
+              fontFamily: "var(--ao-font-body)",
+            }}
+          >
+            <div
+              className="w-1.5 h-1.5 rounded-full"
+              style={{
+                backgroundColor: "currentColor",
+                animation: "checkpoint-pulse 1.5s ease-in-out infinite",
+              }}
+              aria-hidden="true"
+            />
+            <span style={{ fontFamily: "var(--ao-font-mono)" }}>
+              {stressLevel === "emergency" ? "Emergency" : stressLevel === "urgent" ? "Urgent" : "Attentive"} — {stressScore}
+            </span>
+          </div>
+        )}
+      </div>
+
       {/* KPI Cards row */}
       <motion.div
         variants={staggerContainer}
@@ -106,72 +143,54 @@ export default function DashboardPage() {
         <motion.div
           initial={{ opacity: 0, scale: 0.99 }}
           animate={{ opacity: 1, scale: 1, transition: { duration: 0.4, delay: 0.15 } }}
-          className="flex-[7] rounded-xl overflow-hidden border relative"
+          className="flex-[7] rounded-2xl overflow-hidden relative"
           style={{
-            borderColor: stressBorder[stressLevel],
+            border: `1px solid ${stressBorderColor[stressLevel]}`,
             minHeight: "400px",
-            transition: "border-color 1s ease",
+            transition: "border-color 1.5s ease",
+            boxShadow: stressLevel !== "serene"
+              ? `0 0 30px ${stressLevel === "emergency" || stressLevel === "urgent" ? "rgba(255,71,87,0.08)" : "rgba(255,165,2,0.05)"}`
+              : "none",
           }}
         >
           <GlobeMap />
-
-          {/* Stress level indicator overlay — centered top */}
-          {stressLevel !== "serene" && (
-            <div
-              className="absolute top-3 left-1/2 -translate-x-1/2 flex items-center gap-2 px-3 py-1.5 rounded-full text-[12px] font-medium pointer-events-none"
-              style={{
-                zIndex: 999,
-                backgroundColor: stressLevel === "emergency"
-                  ? "rgba(255,71,87,0.15)"
-                  : stressLevel === "urgent"
-                  ? "rgba(255,71,87,0.10)"
-                  : "rgba(255,165,2,0.10)",
-                border: `1px solid ${stressLevel === "emergency" || stressLevel === "urgent" ? "rgba(255,71,87,0.4)" : "rgba(255,165,2,0.3)"}`,
-                color: stressLevel === "emergency" || stressLevel === "urgent" ? "#FF4757" : "#FFA502",
-                fontFamily: "var(--ao-font-body)",
-              }}
-            >
-              <div
-                className="w-1.5 h-1.5 rounded-full"
-                style={{
-                  backgroundColor: "currentColor",
-                  animation: "checkpoint-pulse 1.5s ease-in-out infinite",
-                }}
-                aria-hidden="true"
-              />
-              {stressLevel === "emergency" ? "Emergency" : stressLevel === "urgent" ? "Urgent" : "Attentive"} — {stressScore}
-            </div>
-          )}
         </motion.div>
 
         {/* Activity Feed — 30% */}
         <motion.div
           initial={{ opacity: 0, x: 20 }}
           animate={{ opacity: 1, x: 0, transition: { duration: 0.4, delay: 0.2 } }}
-          className="flex-[3] rounded-xl border overflow-hidden flex flex-col min-w-[280px]"
+          className="flex-[3] rounded-2xl overflow-hidden flex flex-col min-w-[280px]"
           style={{
-            backgroundColor: "rgba(12,22,42,0.8)",
-            backdropFilter: "blur(12px)",
-            borderColor: "var(--ao-border)",
+            background: "linear-gradient(180deg, rgba(7,12,25,0.95) 0%, rgba(5,10,19,0.95) 100%)",
+            backdropFilter: "blur(16px)",
+            border: "1px solid rgba(30,48,80,0.7)",
+            boxShadow: "0 4px 24px rgba(0,0,0,0.2)",
           }}
         >
           {/* Feed header */}
           <div
-            className="flex items-center justify-between px-4 py-3 border-b shrink-0"
-            style={{ borderColor: "var(--ao-border)" }}
+            className="flex items-center justify-between px-4 py-3.5 border-b shrink-0"
+            style={{ borderColor: "rgba(30,48,80,0.6)" }}
           >
-            <span
-              className="text-[13px] font-semibold"
-              style={{ fontFamily: "var(--ao-font-body)", color: "var(--ao-text-primary)" }}
-            >
-              Live Activity
-            </span>
-            <span
-              className="text-[11px]"
-              style={{ color: "var(--ao-text-muted)", fontFamily: "var(--ao-font-mono)" }}
-            >
-              {feedNotifications.filter((n) => !n.read).length} unread
-            </span>
+            <div className="flex items-center gap-2">
+              <div className="w-1 h-3.5 rounded-full" style={{ backgroundColor: "var(--ao-accent)" }} aria-hidden="true" />
+              <span
+                className="text-[13px] font-semibold"
+                style={{ fontFamily: "var(--ao-font-body)", color: "var(--ao-text-primary)" }}
+              >
+                Live Activity
+              </span>
+            </div>
+            <div className="flex items-center gap-1.5">
+              <div className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: "#22E574", animation: "checkpoint-pulse 2s ease-in-out infinite", boxShadow: "0 0 6px rgba(46,213,115,0.5)" }} aria-hidden="true" />
+              <span
+                className="text-[11px] font-medium"
+                style={{ color: "#2ED573", fontFamily: "var(--ao-font-mono)" }}
+              >
+                {feedNotifications.filter((n) => !n.read).length} unread
+              </span>
+            </div>
           </div>
 
           {/* Feed content */}

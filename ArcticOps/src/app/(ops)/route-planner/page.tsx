@@ -16,10 +16,17 @@ import type { Shipment, ShipmentLeg } from "@/lib/types/shipment"
 import type { Tenant } from "@/lib/types/auth"
 
 const URGENCY_OPTIONS = [
-  { value: "standard", label: "Standard", sublabel: "7–14 days", color: "#64748B" },
-  { value: "express", label: "Express", sublabel: "3–5 days", color: "#FFA502" },
-  { value: "emergency", label: "Emergency", sublabel: "1–2 days", color: "#FF4757" },
+  { value: "standard", label: "Standard", sublabel: "7–14 days", daysMin: 7, daysMax: 14, color: "#64748B" },
+  { value: "express", label: "Express", sublabel: "3–5 days", daysMin: 3, daysMax: 5, color: "#FFA502" },
+  { value: "emergency", label: "Emergency", sublabel: "1–2 days", daysMin: 1, daysMax: 2, color: "#FF4757" },
 ]
+
+function getExpectedDelivery(daysMin: number, daysMax: number): string {
+  const fmt = (d: Date) => d.toLocaleDateString("en-GB", { day: "numeric", month: "short" })
+  const from = new Date(); from.setDate(from.getDate() + daysMin)
+  const to = new Date(); to.setDate(to.getDate() + daysMax)
+  return `${fmt(from)} – ${fmt(to)}`
+}
 
 const ZONE_OPTIONS = [
   { value: "ultra_cold", label: "Ultra-Cold", range: "−70°C" },
@@ -65,7 +72,6 @@ export default function RoutePlannerPage() {
   const [materials, setMaterials] = useState<string[]>([])
   const [zone, setZone] = useState("refrigerated")
   const [urgency, setUrgency] = useState("standard")
-  const [deadline, setDeadline] = useState("")
   const [originSuggestions, setOriginSuggestions] = useState<string[]>([])
   const [destSuggestions, setDestSuggestions] = useState<string[]>([])
   const [matSearch, setMatSearch] = useState("")
@@ -191,7 +197,6 @@ export default function RoutePlannerPage() {
             destination={destination}
             zone={zone}
             urgency={urgency}
-            deadline={deadline}
             client={selectedClient}
             onConfirm={handleConfirm}
             onCancel={() => setConfirmRoute(null)}
@@ -203,12 +208,24 @@ export default function RoutePlannerPage() {
         {/* Left input panel — 35% */}
         <div
           className="w-[35%] shrink-0 border-r overflow-y-auto p-5 flex flex-col gap-5"
-          style={{ borderColor: "var(--ao-border)", backgroundColor: "rgba(12,22,42,0.7)" }}
+          style={{
+            borderColor: "var(--ao-border)",
+            background: "linear-gradient(180deg, rgba(7,12,22,0.85) 0%, rgba(6,13,27,0.9) 100%)",
+            backdropFilter: "blur(12px)",
+          }}
         >
           <div>
-            <h2 className="text-[13px] font-semibold uppercase tracking-wider mb-4" style={{ color: "var(--ao-text-muted)", fontFamily: "var(--ao-font-body)" }}>
-              Route Criteria
-            </h2>
+            <div className="flex items-center gap-2 mb-4">
+              <div
+                className="w-6 h-6 rounded flex items-center justify-center"
+                style={{ background: "rgba(0,200,168,0.15)", border: "1px solid rgba(0,200,168,0.25)" }}
+              >
+                <Zap className="w-3 h-3" style={{ color: "var(--ao-accent)" }} />
+              </div>
+              <h2 className="text-[12px] font-semibold uppercase tracking-widest" style={{ color: "var(--ao-text-muted)", fontFamily: "var(--ao-font-body)", letterSpacing: "0.12em" }}>
+                Route Criteria
+              </h2>
+            </div>
 
             {/* ── Client Selector ───────────────────────────────────── */}
             <div className="mb-4">
@@ -227,9 +244,9 @@ export default function RoutePlannerPage() {
                     fontFamily: "var(--ao-font-body)",
                   }}
                 >
-                  <option value="" style={{ backgroundColor: "#0A1628", color: "#64748B" }}>Select client…</option>
+                  <option value="" style={{ backgroundColor: "#060D1B", color: "#64748B" }}>Select client…</option>
                   {MOCK_CLIENTS.map((c) => (
-                    <option key={c.id} value={c.id} style={{ backgroundColor: "#0A1628", color: "#F1F5F9" }}>
+                    <option key={c.id} value={c.id} style={{ backgroundColor: "#060D1B", color: "#F1F5F9" }}>
                       {c.name}
                     </option>
                   ))}
@@ -265,7 +282,7 @@ export default function RoutePlannerPage() {
                   }}
                 >
                   {VIAL_OPTIONS.map((o) => (
-                    <option key={o.value} value={o.value} style={{ backgroundColor: "#0A1628", color: "#F1F5F9" }}>
+                    <option key={o.value} value={o.value} style={{ backgroundColor: "#060D1B", color: "#F1F5F9" }}>
                       {o.label}
                     </option>
                   ))}
@@ -325,7 +342,7 @@ export default function RoutePlannerPage() {
                   <button key={value} onClick={() => setZone(value)}
                     className="flex-1 py-2 rounded-lg text-center transition-all"
                     style={{
-                      backgroundColor: zone === value ? "rgba(0,212,170,0.12)" : "var(--ao-surface)",
+                      backgroundColor: zone === value ? "rgba(0,200,168,0.12)" : "var(--ao-surface)",
                       border: `1px solid ${zone === value ? "var(--ao-accent)" : "var(--ao-border)"}`,
                       color: zone === value ? "var(--ao-accent)" : "var(--ao-text-muted)",
                     }}>
@@ -336,19 +353,11 @@ export default function RoutePlannerPage() {
               </div>
             </div>
 
-            {/* ── Deadline ─────────────────────────────────────────── */}
-            <div className="mb-3">
-              <label className="block text-[11px] font-medium mb-1.5" style={{ color: "var(--ao-text-muted)", fontFamily: "var(--ao-font-body)" }}>Delivery Deadline</label>
-              <input type="date" value={deadline} onChange={(e) => setDeadline(e.target.value)}
-                className="w-full px-3 py-2.5 rounded-lg text-sm outline-none"
-                style={{ backgroundColor: "var(--ao-surface)", border: "1px solid var(--ao-border)", color: "var(--ao-text-primary)", fontFamily: "var(--ao-font-mono)" }} />
-            </div>
-
             {/* ── Urgency ──────────────────────────────────────────── */}
             <div className="mb-3">
               <label className="block text-[11px] font-medium mb-1.5" style={{ color: "var(--ao-text-muted)", fontFamily: "var(--ao-font-body)" }}>Urgency Level</label>
               <div className="flex flex-col gap-1.5">
-                {URGENCY_OPTIONS.map(({ value, label, sublabel, color }) => (
+                {URGENCY_OPTIONS.map(({ value, label, sublabel, daysMin, daysMax, color }) => (
                   <label key={value} className="flex items-center gap-3 p-2.5 rounded-lg cursor-pointer transition-all"
                     style={{
                       backgroundColor: urgency === value ? `${color}0D` : "var(--ao-surface)",
@@ -359,9 +368,14 @@ export default function RoutePlannerPage() {
                       style={{ borderColor: urgency === value ? color : "var(--ao-border)", backgroundColor: urgency === value ? color : "transparent" }}>
                       {urgency === value && <div className="w-1.5 h-1.5 rounded-full bg-white" />}
                     </div>
-                    <div>
-                      <p className="text-[13px] font-medium" style={{ color: "var(--ao-text-primary)", fontFamily: "var(--ao-font-body)" }}>{label}</p>
-                      <p className="text-[11px]" style={{ color: "var(--ao-text-muted)", fontFamily: "var(--ao-font-body)" }}>{sublabel}</p>
+                    <div className="flex-1 min-w-0">
+                      <div className="flex items-center justify-between gap-2">
+                        <p className="text-[13px] font-medium" style={{ color: "var(--ao-text-primary)", fontFamily: "var(--ao-font-body)" }}>{label}</p>
+                        <p className="text-[10px] font-semibold" style={{ color, fontFamily: "var(--ao-font-mono)" }}>{sublabel}</p>
+                      </div>
+                      <p className="text-[11px] mt-0.5" style={{ color: "var(--ao-text-muted)", fontFamily: "var(--ao-font-mono)" }}>
+                        Est. delivery: {getExpectedDelivery(daysMin, daysMax)}
+                      </p>
                     </div>
                   </label>
                 ))}
@@ -381,7 +395,7 @@ export default function RoutePlannerPage() {
                     <button key={m.id} onClick={() => toggleMaterial(m.id)}
                       className="px-2.5 py-1 rounded-full text-[11px] font-medium transition-all"
                       style={{
-                        backgroundColor: selected ? "rgba(0,212,170,0.12)" : "var(--ao-surface-elevated)",
+                        backgroundColor: selected ? "rgba(0,200,168,0.12)" : "var(--ao-surface-elevated)",
                         border: `1px solid ${selected ? "var(--ao-accent)" : "var(--ao-border)"}`,
                         color: selected ? "var(--ao-accent)" : "var(--ao-text-muted)",
                         fontFamily: "var(--ao-font-body)",
@@ -397,8 +411,13 @@ export default function RoutePlannerPage() {
             <button
               onClick={handleGenerate}
               disabled={!origin || !destination || isGenerating}
-              className="w-full flex items-center justify-center gap-2 py-3 rounded-lg text-sm font-bold transition-all disabled:opacity-50 disabled:cursor-not-allowed"
-              style={{ backgroundColor: "var(--ao-accent)", color: "#0A1628", fontFamily: "var(--ao-font-body)" }}
+              className="w-full flex items-center justify-center gap-2 py-3 rounded-xl text-sm font-bold transition-all disabled:opacity-50 disabled:cursor-not-allowed"
+              style={{
+                background: "linear-gradient(135deg, var(--ao-accent) 0%, #00B894 100%)",
+                color: "#060D1B",
+                fontFamily: "var(--ao-font-body)",
+                boxShadow: "0 4px 20px rgba(0,200,168,0.3)",
+              }}
             >
               {isGenerating ? <RefreshCcw className="w-4 h-4 animate-spin" /> : <Zap className="w-4 h-4" />}
               {isGenerating ? "Generating…" : "Generate Routes"}

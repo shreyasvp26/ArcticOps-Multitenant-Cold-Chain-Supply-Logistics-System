@@ -75,7 +75,7 @@ function RouteCard({ route, selected, onSelect, onSelectRoute }: RouteCardProps)
       layout
       className={cn("rounded-xl border transition-all", selected ? "ring-1 ring-[var(--ao-accent)]" : "")}
       style={{
-        backgroundColor: selected ? "rgba(0,212,170,0.06)" : "var(--ao-surface)",
+        backgroundColor: selected ? "rgba(0,200,168,0.06)" : "var(--ao-surface)",
         borderColor: selected ? "var(--ao-accent)" : route.affected ? "#FFA502" : "var(--ao-border)",
       }}
     >
@@ -87,7 +87,7 @@ function RouteCard({ route, selected, onSelect, onSelectRoute }: RouteCardProps)
             </span>
             {isRecommended && (
               <span className="flex items-center gap-1 px-2 py-0.5 rounded-full text-[10px] font-bold"
-                style={{ backgroundColor: "rgba(0,212,170,0.12)", color: "var(--ao-accent)", border: "1px solid rgba(0,212,170,0.3)", fontFamily: "var(--ao-font-body)" }}>
+                style={{ backgroundColor: "rgba(0,200,168,0.12)", color: "var(--ao-accent)", border: "1px solid rgba(0,200,168,0.3)", fontFamily: "var(--ao-font-body)" }}>
                 <Award className="w-3 h-3" /> Recommended
               </span>
             )}
@@ -172,8 +172,8 @@ function RouteCard({ route, selected, onSelect, onSelectRoute }: RouteCardProps)
             onClick={() => onSelectRoute(route)}
             className="flex-1 py-2 rounded-lg text-sm font-medium transition-all"
             style={selected
-              ? { backgroundColor: "var(--ao-accent)", color: "#0A1628" }
-              : { backgroundColor: "rgba(0,212,170,0.10)", color: "var(--ao-accent)", border: "1px solid rgba(0,212,170,0.25)" }}
+              ? { backgroundColor: "var(--ao-accent)", color: "#060D1B" }
+              : { backgroundColor: "rgba(0,200,168,0.10)", color: "var(--ao-accent)", border: "1px solid rgba(0,200,168,0.25)" }}
           >
             {selected ? "Selected ✓" : "Select Route"}
           </button>
@@ -393,7 +393,7 @@ export function RouteComparison({ routes, isGenerating, origin, destination, onS
                               borderColor: active ? "#FFA502" : "var(--ao-border)",
                               backgroundColor: active ? "#FFA502" : "transparent",
                             }}>
-                            {active && <svg viewBox="0 0 10 8" className="w-2.5 h-2.5" fill="none"><path d="M1 4l2.5 3L9 1" stroke="#0A1628" strokeWidth="1.5" strokeLinecap="round" /></svg>}
+                            {active && <svg viewBox="0 0 10 8" className="w-2.5 h-2.5" fill="none"><path d="M1 4l2.5 3L9 1" stroke="#060D1B" strokeWidth="1.5" strokeLinecap="round" /></svg>}
                           </div>
                         </div>
                         <div>

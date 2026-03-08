@@ -12,7 +12,7 @@ interface SparklineProps {
   ariaLabel?: string
 }
 
-export function Sparkline({ data, color = "#00D4AA", height = 24, width = 80, className, showDot = true, ariaLabel }: SparklineProps) {
+export function Sparkline({ data, color = "#00C8A8", height = 24, width = 80, className, showDot = true, ariaLabel }: SparklineProps) {
   const points = useMemo(() => {
     if (!data || data.length < 2) return ""
     const min = Math.min(...data)

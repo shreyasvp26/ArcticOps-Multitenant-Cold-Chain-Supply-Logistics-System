@@ -17,11 +17,13 @@ export function DriverBottomNav() {
 
   return (
     <nav
-      className="flex items-stretch h-16 border-t shrink-0"
+      className="flex items-stretch shrink-0"
       style={{
-        backgroundColor: "rgba(10,22,40,0.98)",
-        borderColor: "var(--ao-border)",
-        backdropFilter: "blur(20px)",
+        background: "linear-gradient(180deg, rgba(7,12,25,0.98) 0%, rgba(5,10,19,0.99) 100%)",
+        borderTop: "1px solid rgba(30,48,80,0.7)",
+        backdropFilter: "blur(24px)",
+        height: "68px",
+        paddingBottom: "env(safe-area-inset-bottom, 0px)",
       }}
       aria-label="Driver navigation"
     >
@@ -32,20 +34,36 @@ export function DriverBottomNav() {
             key={href}
             href={href}
             className={cn(
-              "flex-1 flex flex-col items-center justify-center gap-1 transition-all",
-              active ? "" : "opacity-50 hover:opacity-75"
+              "flex-1 flex flex-col items-center justify-center gap-1.5 transition-all relative py-2",
+              active ? "" : "hover:opacity-75"
             )}
             aria-current={active ? "page" : undefined}
           >
-            <Icon
-              className="w-5 h-5"
-              style={{ color: active ? "var(--ao-accent)" : "var(--ao-text-muted)" }}
-              aria-hidden="true"
-            />
+            {/* Active indicator */}
+            {active && (
+              <div
+                className="absolute top-0 left-1/2 -translate-x-1/2 w-6 h-0.5 rounded-full"
+                style={{ backgroundColor: "var(--ao-accent)", boxShadow: "0 0 8px rgba(0,200,168,0.6)" }}
+                aria-hidden="true"
+              />
+            )}
+            <div
+              className="p-1.5 rounded-xl transition-all"
+              style={active ? {
+                backgroundColor: "rgba(0,200,168,0.1)",
+                border: "1px solid rgba(0,200,168,0.15)",
+              } : {}}
+            >
+              <Icon
+                className="w-5 h-5"
+                style={{ color: active ? "var(--ao-accent)" : "rgba(148,163,184,0.5)" }}
+                aria-hidden="true"
+              />
+            </div>
             <span
-              className="text-[10px] font-medium"
+              className="text-[10px] font-semibold uppercase tracking-wide"
               style={{
-                color: active ? "var(--ao-accent)" : "var(--ao-text-muted)",
+                color: active ? "var(--ao-accent)" : "rgba(100,116,139,0.7)",
                 fontFamily: "var(--ao-font-body)",
               }}
             >

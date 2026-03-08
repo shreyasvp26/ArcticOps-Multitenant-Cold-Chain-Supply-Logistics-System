@@ -50,8 +50,10 @@ export function TemperatureBadge({ temperature, zone, requiredMin, requiredMax, 
         padding: s.padding,
         fontSize: s.fontSize,
         color: displayColor,
-        backgroundColor: isExcursion ? "rgba(255,71,87,0.12)" : isApproaching ? "rgba(245,158,11,0.12)" : `${zoneColor}18`,
+        backgroundColor: isExcursion ? "rgba(255,71,87,0.08)" : isApproaching ? "rgba(245,158,11,0.08)" : `${zoneColor}12`,
+        border: `1px solid ${isExcursion ? "rgba(255,71,87,0.3)" : isApproaching ? "rgba(245,158,11,0.25)" : `${zoneColor}30`}`,
         fontFamily: "var(--ao-font-mono)",
+        letterSpacing: "-0.01em",
       }}
       aria-label={`Temperature: ${temperature.toFixed(1)}°C — ${ZONE_LABELS[zone]}${isExcursion ? " (Excursion)" : isApproaching ? " (Approaching limit)" : ""}`}
     >

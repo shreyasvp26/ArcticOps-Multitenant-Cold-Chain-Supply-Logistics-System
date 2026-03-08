@@ -48,8 +48,12 @@ function MaterialDetail({ material, onClose }: { material: Material; onClose: ()
       initial={{ x: "100%", opacity: 0 }}
       animate={{ x: 0, opacity: 1, transition: { type: "spring", stiffness: 280, damping: 28 } }}
       exit={{ x: "100%", opacity: 0, transition: { duration: 0.2 } }}
-      className="w-80 border-l shrink-0 flex flex-col overflow-y-auto"
-      style={{ backgroundColor: "var(--ao-surface)", borderColor: "var(--ao-border)" }}
+      className="w-80 shrink-0 flex flex-col overflow-y-auto border-l"
+      style={{
+        background: "linear-gradient(180deg, rgba(11,18,34,0.95) 0%, rgba(6,13,27,0.98) 100%)",
+        borderColor: "var(--ao-border)",
+        backdropFilter: "blur(20px)",
+      }}
     >
       <div className="flex items-center justify-between px-5 py-4 border-b" style={{ borderColor: "var(--ao-border)" }}>
         <h3 className="text-sm font-semibold" style={{ color: "var(--ao-text-primary)", fontFamily: "var(--ao-font-body)" }}>Material Details</h3>
@@ -65,7 +69,7 @@ function MaterialDetail({ material, onClose }: { material: Material; onClose: ()
         <div className="flex flex-wrap gap-1.5">
           {material.certifications.map((cert) => (
             <span key={cert} className="px-2 py-0.5 rounded-full text-[10px] font-medium"
-              style={{ backgroundColor: "rgba(0,212,170,0.10)", color: "var(--ao-accent)", border: "1px solid rgba(0,212,170,0.2)", fontFamily: "var(--ao-font-mono)" }}>
+              style={{ backgroundColor: "rgba(0,200,168,0.10)", color: "var(--ao-accent)", border: "1px solid rgba(0,200,168,0.2)", fontFamily: "var(--ao-font-mono)" }}>
               {cert}
             </span>
           ))}
@@ -127,30 +131,79 @@ export default function InventoryPage() {
     ? procurementRequests.filter((r) => r.tenantId === user?.tenantId)
     : procurementRequests
 
+  const pendingCount = procurementRequests.filter((r) => r.status === "pending").length
+  const criticalCount = stockLevels.filter((s) => s.status === "critical").length
+
   return (
     <div className="flex flex-col h-full">
-      {/* Tab bar */}
-      <div className="flex border-b shrink-0" style={{ borderColor: "var(--ao-border)", backgroundColor: "rgba(12,22,42,0.6)" }}>
-        <button
-          onClick={() => setTab("catalog")}
-          className={cn("px-5 py-3 text-[13px] font-medium border-b-2 transition-colors",
-            tab === "catalog" ? "border-[var(--ao-accent)]" : "border-transparent hover:bg-[rgba(255,255,255,0.03)]")}
-          style={{ color: tab === "catalog" ? "var(--ao-accent)" : "var(--ao-text-muted)", fontFamily: "var(--ao-font-body)" }}>
-          Material Catalog
-        </button>
-        <button
-          onClick={() => setTab("procurement")}
-          className={cn("px-5 py-3 text-[13px] font-medium border-b-2 transition-colors",
-            tab === "procurement" ? "border-[var(--ao-accent)]" : "border-transparent hover:bg-[rgba(255,255,255,0.03)]")}
-          style={{ color: tab === "procurement" ? "var(--ao-accent)" : "var(--ao-text-muted)", fontFamily: "var(--ao-font-body)" }}>
-          Procurement Queue
-          {procurementRequests.filter((r) => r.status === "pending").length > 0 && (
-            <span className="ml-2 px-1.5 py-0.5 rounded-full text-[10px]"
-              style={{ backgroundColor: "#FFA50220", color: "#FFA502", fontFamily: "var(--ao-font-mono)" }}>
-              {procurementRequests.filter((r) => r.status === "pending").length}
-            </span>
+      {/* Page header bar */}
+      <div
+        className="shrink-0 px-6 py-4 border-b"
+        style={{
+          borderColor: "var(--ao-border)",
+          background: "linear-gradient(180deg, rgba(7,12,22,0.8) 0%, rgba(5,10,19,0.5) 100%)",
+          backdropFilter: "blur(12px)",
+        }}
+      >
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center gap-3">
+            <div
+              className="w-8 h-8 rounded-lg flex items-center justify-center"
+              style={{ background: "linear-gradient(135deg, rgba(0,200,168,0.2) 0%, rgba(0,200,168,0.08) 100%)", border: "1px solid rgba(0,200,168,0.25)" }}
+            >
+              <Boxes className="w-4 h-4" style={{ color: "var(--ao-accent)" }} />
+            </div>
+            <div>
+              <p className="text-[11px] uppercase tracking-widest font-semibold" style={{ color: "var(--ao-text-muted)", fontFamily: "var(--ao-font-body)", letterSpacing: "0.12em" }}>
+                Cold-Chain Materials
+              </p>
+              <p className="text-[13px] font-medium" style={{ color: "var(--ao-text-secondary)", fontFamily: "var(--ao-font-body)" }}>
+                {filteredMaterials.length} materials · {criticalCount > 0 ? `${criticalCount} critical stock` : "Stock healthy"}
+              </p>
+            </div>
+          </div>
+          {criticalCount > 0 && (
+            <div className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-[11px] font-semibold"
+              style={{ background: "rgba(255,71,87,0.12)", border: "1px solid rgba(255,71,87,0.25)", color: "#FF4757" }}>
+              <span className="w-1.5 h-1.5 rounded-full bg-red-400 animate-pulse" />
+              {criticalCount} Critical
+            </div>
           )}
-        </button>
+        </div>
+
+        {/* Tab bar */}
+        <div className="flex gap-1">
+          {[
+            { id: "catalog", label: "Material Catalog" },
+            { id: "procurement", label: "Procurement Queue", badge: pendingCount > 0 ? pendingCount : null },
+          ].map(({ id, label, badge }) => {
+            const isActive = tab === id
+            return (
+              <button
+                key={id}
+                onClick={() => setTab(id as "catalog" | "procurement")}
+                className="flex items-center gap-2 px-4 py-2 rounded-lg text-[12px] font-medium transition-all"
+                style={{
+                  background: isActive
+                    ? "linear-gradient(135deg, rgba(0,200,168,0.18) 0%, rgba(0,200,168,0.08) 100%)"
+                    : "transparent",
+                  color: isActive ? "var(--ao-accent)" : "var(--ao-text-muted)",
+                  border: isActive ? "1px solid rgba(0,200,168,0.3)" : "1px solid transparent",
+                  fontFamily: "var(--ao-font-body)",
+                  boxShadow: isActive ? "0 0 12px rgba(0,200,168,0.1)" : "none",
+                }}
+              >
+                {label}
+                {badge !== null && badge !== undefined && (
+                  <span className="px-1.5 py-0.5 rounded-full text-[10px] font-bold"
+                    style={{ background: "rgba(255,165,2,0.2)", color: "#FFA502", border: "1px solid rgba(255,165,2,0.3)" }}>
+                    {badge}
+                  </span>
+                )}
+              </button>
+            )
+          })}
+        </div>
       </div>
 
       <AnimatePresence mode="wait">
@@ -166,15 +219,21 @@ export default function InventoryPage() {
                   <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4" style={{ color: "var(--ao-text-muted)" }} />
                   <input type="text" value={search} onChange={(e) => setSearch(e.target.value)}
                     placeholder="Search materials…"
-                    className="w-full pl-9 pr-3 py-2.5 rounded-lg text-sm outline-none"
-                    style={{ backgroundColor: "var(--ao-surface)", border: "1px solid var(--ao-border)", color: "var(--ao-text-primary)", fontFamily: "var(--ao-font-body)" }} />
+                    className="w-full pl-9 pr-3 py-2.5 rounded-lg text-sm outline-none transition-all"
+                    style={{
+                      background: "rgba(11,18,34,0.6)",
+                      border: "1px solid var(--ao-border)",
+                      color: "var(--ao-text-primary)",
+                      fontFamily: "var(--ao-font-body)",
+                      backdropFilter: "blur(8px)",
+                    }} />
                 </div>
                 {ZONE_FILTERS.map((z) => (
                   <button key={z} onClick={() => setZoneFilter(z)}
                     className="px-3 py-1.5 rounded-lg text-[12px] font-medium transition-all"
                     style={{
-                      backgroundColor: zoneFilter === z ? "rgba(0,212,170,0.12)" : "var(--ao-surface)",
-                      border: `1px solid ${zoneFilter === z ? "var(--ao-accent)" : "var(--ao-border)"}`,
+                      background: zoneFilter === z ? "rgba(0,200,168,0.12)" : "rgba(11,18,34,0.4)",
+                      border: `1px solid ${zoneFilter === z ? "rgba(0,200,168,0.4)" : "var(--ao-border)"}`,
                       color: zoneFilter === z ? "var(--ao-accent)" : "var(--ao-text-muted)",
                       fontFamily: "var(--ao-font-body)",
                     }}>
@@ -185,8 +244,8 @@ export default function InventoryPage() {
                   <button key={s} onClick={() => setStockFilter(s)}
                     className="px-3 py-1.5 rounded-lg text-[12px] font-medium transition-all"
                     style={{
-                      backgroundColor: stockFilter === s ? "rgba(0,212,170,0.08)" : "var(--ao-surface)",
-                      border: `1px solid ${stockFilter === s ? "var(--ao-border-hover)" : "var(--ao-border)"}`,
+                      background: stockFilter === s ? "rgba(0,200,168,0.08)" : "rgba(11,18,34,0.4)",
+                      border: `1px solid ${stockFilter === s ? "rgba(0,200,168,0.25)" : "var(--ao-border)"}`,
                       color: stockFilter === s ? "var(--ao-text-primary)" : "var(--ao-text-muted)",
                       fontFamily: "var(--ao-font-body)",
                     }}>
@@ -205,26 +264,33 @@ export default function InventoryPage() {
                     const stock = stockLevels.find((s) => s.materialId === material.id)
                     const stockColor = stock?.status === "critical" ? "#FF4757" : stock?.status === "low" ? "#FFA502" : "#2ED573"
                     const isSelected = selectedMaterial?.id === material.id
+                    const zoneColor = getTempZoneColor(material.temperatureZone)
 
                     return (
                       <motion.div key={material.id} variants={staggerChild}
                         onClick={() => setSelectedMaterial(isSelected ? null : material)}
-                        className={cn("rounded-xl border p-4 cursor-pointer transition-all hover:scale-[1.01]",
-                          isSelected && "ring-1 ring-[var(--ao-accent)]")}
-                        style={{ backgroundColor: "var(--ao-surface)", borderColor: isSelected ? "var(--ao-accent)" : "var(--ao-border)" }}>
+                        className={cn("rounded-xl p-4 cursor-pointer transition-all hover:scale-[1.01] hover:brightness-110")}
+                        style={{
+                          background: isSelected
+                            ? "linear-gradient(135deg, rgba(0,200,168,0.12) 0%, rgba(6,13,27,0.9) 100%)"
+                            : "linear-gradient(135deg, rgba(11,18,34,0.7) 0%, rgba(6,13,27,0.85) 100%)",
+                          border: `1px solid ${isSelected ? "rgba(0,200,168,0.4)" : "var(--ao-border)"}`,
+                          backdropFilter: "blur(12px)",
+                          boxShadow: isSelected ? "0 0 20px rgba(0,200,168,0.1)" : "none",
+                        }}>
                         <div className="flex items-start justify-between mb-2">
                           <h4 className="text-[13px] font-semibold leading-tight" style={{ color: "var(--ao-text-primary)", fontFamily: "var(--ao-font-body)" }}>
                             {material.name}
                           </h4>
-                          <div className="w-2 h-2 rounded-full shrink-0 mt-1" style={{ backgroundColor: stockColor }} aria-hidden="true" />
+                          <div className="w-2 h-2 rounded-full shrink-0 mt-1" style={{ backgroundColor: stockColor, boxShadow: `0 0 6px ${stockColor}80` }} aria-hidden="true" />
                         </div>
                         <div className="flex items-center gap-1.5 flex-wrap mb-3">
                           <span className="text-[10px] px-1.5 py-0.5 rounded"
-                            style={{ backgroundColor: "rgba(0,212,170,0.08)", color: "var(--ao-accent)", fontFamily: "var(--ao-font-mono)", border: "1px solid rgba(0,212,170,0.15)" }}>
+                            style={{ background: "rgba(0,200,168,0.08)", color: "var(--ao-accent)", fontFamily: "var(--ao-font-mono)", border: "1px solid rgba(0,200,168,0.15)" }}>
                             {material.grade}
                           </span>
                           <span className="text-[10px] px-1.5 py-0.5 rounded"
-                            style={{ backgroundColor: `${getTempZoneColor(material.temperatureZone)}14`, color: getTempZoneColor(material.temperatureZone), fontFamily: "var(--ao-font-mono)", border: `1px solid ${getTempZoneColor(material.temperatureZone)}30` }}>
+                            style={{ background: `${zoneColor}14`, color: zoneColor, fontFamily: "var(--ao-font-mono)", border: `1px solid ${zoneColor}30` }}>
                             {material.requiredTempMin}°C – {material.requiredTempMax}°C
                           </span>
                         </div>
@@ -235,7 +301,8 @@ export default function InventoryPage() {
                           <span style={{ color: "var(--ao-text-muted)", fontFamily: "var(--ao-font-body)" }}>
                             {formatCurrency(material.unitPrice)}/{material.unit}
                           </span>
-                          <span style={{ color: stockColor, fontFamily: "var(--ao-font-body)" }}>
+                          <span className="px-1.5 py-0.5 rounded text-[10px] font-semibold"
+                            style={{ background: `${stockColor}18`, color: stockColor, border: `1px solid ${stockColor}30`, fontFamily: "var(--ao-font-body)" }}>
                             {stock?.status?.charAt(0).toUpperCase()}{stock?.status?.slice(1)}
                           </span>
                         </div>
@@ -259,10 +326,11 @@ export default function InventoryPage() {
         {tab === "procurement" && (
           <motion.div key="procurement" variants={fadeVariants} initial="initial" animate="animate" exit="exit"
             className="flex-1 overflow-auto p-6">
-            <div className="rounded-xl border overflow-hidden" style={{ borderColor: "var(--ao-border)" }}>
+            <div className="rounded-xl border overflow-hidden"
+              style={{ borderColor: "var(--ao-border)", background: "linear-gradient(135deg, rgba(11,18,34,0.8) 0%, rgba(6,13,27,0.9) 100%)", backdropFilter: "blur(12px)" }}>
               <table className="w-full" aria-label="Procurement requests">
                 <thead>
-                  <tr style={{ backgroundColor: "rgba(12,22,42,0.8)", borderBottom: "1px solid var(--ao-border)" }}>
+                  <tr style={{ background: "rgba(0,0,0,0.3)", borderBottom: "1px solid var(--ao-border)" }}>
                     {["Request ID", "Client", "Material", "Qty", "Zone", "Priority", "Status", "Date", ...(isOps ? ["Actions"] : [])].map((h) => (
                       <th key={h} className="px-4 py-3 text-left text-[11px] font-semibold uppercase tracking-wider whitespace-nowrap"
                         style={{ color: "var(--ao-text-muted)", fontFamily: "var(--ao-font-body)" }}>{h}</th>
@@ -271,7 +339,7 @@ export default function InventoryPage() {
                 </thead>
                 <tbody>
                   {filteredRequests.map((req) => (
-                    <tr key={req.id} className="border-t" style={{ borderColor: "var(--ao-border)" }}>
+                    <tr key={req.id} className="border-t transition-colors hover:bg-white/[0.02]" style={{ borderColor: "var(--ao-border)" }}>
                       <td className="px-4 py-3">
                         <span className="text-[12px] font-bold" style={{ color: "var(--ao-accent)", fontFamily: "var(--ao-font-mono)" }}>{req.id}</span>
                       </td>
@@ -280,15 +348,17 @@ export default function InventoryPage() {
                       <td className="px-4 py-3 text-[12px]" style={{ color: "var(--ao-text-primary)", fontFamily: "var(--ao-font-mono)" }}>{req.quantity} {req.unit}</td>
                       <td className="px-4 py-3">
                         <span className="text-[10px] px-1.5 py-0.5 rounded" style={{
-                          backgroundColor: `${getTempZoneColor(req.temperatureZone)}14`,
+                          background: `${getTempZoneColor(req.temperatureZone)}14`,
                           color: getTempZoneColor(req.temperatureZone),
                           fontFamily: "var(--ao-font-mono)",
+                          border: `1px solid ${getTempZoneColor(req.temperatureZone)}30`,
                         }}>{getTempZoneLabel(req.temperatureZone)}</span>
                       </td>
                       <td className="px-4 py-3">
                         <span className={cn("text-[11px] px-2 py-0.5 rounded-full font-medium")} style={{
-                          backgroundColor: req.priority === "emergency" ? "rgba(255,71,87,0.10)" : req.priority === "express" ? "rgba(255,165,2,0.10)" : "rgba(100,116,139,0.10)",
+                          background: req.priority === "emergency" ? "rgba(255,71,87,0.12)" : req.priority === "express" ? "rgba(255,165,2,0.12)" : "rgba(100,116,139,0.12)",
                           color: req.priority === "emergency" ? "#FF4757" : req.priority === "express" ? "#FFA502" : "#64748B",
+                          border: req.priority === "emergency" ? "1px solid rgba(255,71,87,0.3)" : req.priority === "express" ? "1px solid rgba(255,165,2,0.3)" : "1px solid rgba(100,116,139,0.3)",
                           fontFamily: "var(--ao-font-body)",
                         }}>{req.priority}</span>
                       </td>
@@ -305,13 +375,13 @@ export default function InventoryPage() {
                           {req.status === "pending" && (
                             <div className="flex items-center gap-1.5">
                               <button onClick={() => approveProcurement(req.id)}
-                                className="flex items-center gap-1 text-[11px] px-2 py-1 rounded-md"
-                                style={{ backgroundColor: "rgba(46,213,115,0.12)", color: "#2ED573", fontFamily: "var(--ao-font-body)" }}>
+                                className="flex items-center gap-1 text-[11px] px-2 py-1 rounded-md transition-all hover:brightness-110"
+                                style={{ background: "rgba(46,213,115,0.12)", color: "#2ED573", border: "1px solid rgba(46,213,115,0.25)", fontFamily: "var(--ao-font-body)" }}>
                                 <Check className="w-3 h-3" /> Approve
                               </button>
                               <button onClick={() => rejectProcurement(req.id)}
-                                className="flex items-center gap-1 text-[11px] px-2 py-1 rounded-md"
-                                style={{ backgroundColor: "rgba(255,71,87,0.10)", color: "#FF4757", fontFamily: "var(--ao-font-body)" }}>
+                                className="flex items-center gap-1 text-[11px] px-2 py-1 rounded-md transition-all hover:brightness-110"
+                                style={{ background: "rgba(255,71,87,0.10)", color: "#FF4757", border: "1px solid rgba(255,71,87,0.25)", fontFamily: "var(--ao-font-body)" }}>
                                 <XCircle className="w-3 h-3" /> Reject
                               </button>
                             </div>

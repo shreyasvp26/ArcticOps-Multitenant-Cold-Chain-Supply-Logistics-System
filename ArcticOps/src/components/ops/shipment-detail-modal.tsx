@@ -125,7 +125,7 @@ export function ShipmentDetailModal({ shipment, onClose }: ShipmentDetailModalPr
 
                     {/* ── Tab bar ── */}
                     <div className="flex border-b shrink-0"
-                        style={{ borderColor: "var(--ao-border)", backgroundColor: "rgba(12,22,42,0.6)" }}>
+                        style={{ borderColor: "var(--ao-border)", backgroundColor: "rgba(13,24,41,0.6)" }}>
                         {TABS.map(({ id: tabId, label, icon: Icon }) => (
                             <button
                                 key={tabId}
@@ -217,7 +217,7 @@ export function ShipmentDetailModal({ shipment, onClose }: ShipmentDetailModalPr
                                                                 <div className="w-3 h-3 rounded-full mt-0.5"
                                                                     style={{
                                                                         backgroundColor: cp.status === "passed" ? "#2ED573" : cp.status === "current" ? "var(--ao-accent)" : "var(--ao-border)",
-                                                                        boxShadow: cp.status === "current" ? "0 0 0 3px rgba(0,212,170,0.2)" : undefined,
+                                                                        boxShadow: cp.status === "current" ? "0 0 0 3px rgba(0,200,168,0.2)" : undefined,
                                                                     }} />
                                                                 {!isLast && <div className="w-0.5 h-8 mt-1" style={{ backgroundColor: "var(--ao-border)" }} />}
                                                             </div>
@@ -226,7 +226,7 @@ export function ShipmentDetailModal({ shipment, onClose }: ShipmentDetailModalPr
                                                                     <span className="text-[13px] font-medium" style={{ color: "var(--ao-text-primary)", fontFamily: "var(--ao-font-body)" }}>{cp.name}</span>
                                                                     {cp.status === "passed" && <CheckCircle2 className="w-3.5 h-3.5" style={{ color: "#2ED573" }} />}
                                                                     {cp.status === "current" && (
-                                                                        <span className="text-[10px] px-1.5 py-0.5 rounded-full" style={{ backgroundColor: "rgba(0,212,170,0.12)", color: "var(--ao-accent)", fontFamily: "var(--ao-font-body)" }}>
+                                                                        <span className="text-[10px] px-1.5 py-0.5 rounded-full" style={{ backgroundColor: "rgba(0,200,168,0.12)", color: "var(--ao-accent)", fontFamily: "var(--ao-font-body)" }}>
                                                                             Current
                                                                         </span>
                                                                     )}

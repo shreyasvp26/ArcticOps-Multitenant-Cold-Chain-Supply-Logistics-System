@@ -92,7 +92,7 @@ export default function ProcurementPage() {
   return (
     <div className="flex flex-col h-full">
       {/* View toggle */}
-      <div className="flex border-b shrink-0" style={{ borderColor: "var(--ao-border)", backgroundColor: "rgba(12,22,42,0.6)" }}>
+      <div className="flex border-b shrink-0" style={{ borderColor: "var(--ao-border)", backgroundColor: "rgba(13,24,41,0.6)" }}>
         {[
           { id: "catalog", label: "Material Catalog" },
           { id: "wizard", label: "New Order" },
@@ -105,7 +105,7 @@ export default function ProcurementPage() {
             {label}
             {id === "wizard" && basket.length > 0 && (
               <span className="ml-2 px-1.5 py-0.5 rounded-full text-[10px]"
-                style={{ backgroundColor: "rgba(0,212,170,0.15)", color: "var(--ao-accent)", fontFamily: "var(--ao-font-mono)" }}>
+                style={{ backgroundColor: "rgba(0,200,168,0.15)", color: "var(--ao-accent)", fontFamily: "var(--ao-font-mono)" }}>
                 {basket.length}
               </span>
             )}
@@ -129,7 +129,7 @@ export default function ProcurementPage() {
                 <button key={z} onClick={() => setZoneFilter(z)}
                   className="px-3 py-1.5 rounded-lg text-[12px] font-medium transition-all"
                   style={{
-                    backgroundColor: zoneFilter === z ? "rgba(0,212,170,0.12)" : "var(--ao-surface)",
+                    backgroundColor: zoneFilter === z ? "rgba(0,200,168,0.12)" : "var(--ao-surface)",
                     border: `1px solid ${zoneFilter === z ? "var(--ao-accent)" : "var(--ao-border)"}`,
                     color: zoneFilter === z ? "var(--ao-accent)" : "var(--ao-text-muted)",
                     fontFamily: "var(--ao-font-body)",
@@ -147,7 +147,7 @@ export default function ProcurementPage() {
                     <div className="flex flex-wrap gap-1 mb-3">
                       {m.certifications.slice(0, 2).map((c) => (
                         <span key={c} className="text-[9px] px-1.5 py-0.5 rounded"
-                          style={{ backgroundColor: "rgba(0,212,170,0.08)", color: "var(--ao-accent)", fontFamily: "var(--ao-font-mono)" }}>{c}</span>
+                          style={{ backgroundColor: "rgba(0,200,168,0.08)", color: "var(--ao-accent)", fontFamily: "var(--ao-font-mono)" }}>{c}</span>
                       ))}
                     </div>
                     <p className="text-[12px] mb-3" style={{ color: getTempZoneColor(m.temperatureZone), fontFamily: "var(--ao-font-mono)" }}>
@@ -161,7 +161,7 @@ export default function ProcurementPage() {
                         onClick={() => inBasket ? removeFromBasket(m.id) : addToBasket(m)}
                         className="flex items-center gap-1 px-3 py-1.5 rounded-lg text-[12px] font-medium transition-all"
                         style={inBasket
-                          ? { backgroundColor: "rgba(0,212,170,0.12)", color: "var(--ao-accent)", border: "1px solid rgba(0,212,170,0.3)" }
+                          ? { backgroundColor: "rgba(0,200,168,0.12)", color: "var(--ao-accent)", border: "1px solid rgba(0,200,168,0.3)" }
                           : { backgroundColor: "var(--ao-surface-elevated)", color: "var(--ao-text-muted)", border: "1px solid var(--ao-border)" }}>
                         {inBasket ? <><Check className="w-3 h-3" /> Added</> : <><Plus className="w-3 h-3" /> Add</>}
                       </button>
@@ -174,7 +174,7 @@ export default function ProcurementPage() {
             {basket.length > 0 && (
               <button onClick={() => setView("wizard")}
                 className="fixed bottom-6 right-6 flex items-center gap-2 px-5 py-3 rounded-xl text-sm font-bold shadow-xl"
-                style={{ backgroundColor: "var(--ao-accent)", color: "#0A1628", fontFamily: "var(--ao-font-body)" }}>
+                style={{ backgroundColor: "var(--ao-accent)", color: "#060D1B", fontFamily: "var(--ao-font-body)" }}>
                 <ShoppingCart className="w-4 h-4" />
                 {basket.length} item{basket.length > 1 ? "s" : ""} in basket → Continue
               </button>
@@ -271,7 +271,7 @@ export default function ProcurementPage() {
                         { v: "emergency", l: "Emergency — 1–2 days", c: "$$$" },
                       ].map(({ v, l, c }) => (
                         <label key={v} className="flex items-center gap-3 p-3 rounded-lg mb-2 cursor-pointer transition-all"
-                          style={{ backgroundColor: urgency === v ? "rgba(0,212,170,0.08)" : "var(--ao-surface)", border: `1px solid ${urgency === v ? "var(--ao-accent)" : "var(--ao-border)"}` }}>
+                          style={{ backgroundColor: urgency === v ? "rgba(0,200,168,0.08)" : "var(--ao-surface)", border: `1px solid ${urgency === v ? "var(--ao-accent)" : "var(--ao-border)"}` }}>
                           <input type="radio" checked={urgency === v} onChange={() => setUrgency(v)} className="sr-only" />
                           <div className="w-4 h-4 rounded-full border-2 flex items-center justify-center"
                             style={{ borderColor: urgency === v ? "var(--ao-accent)" : "var(--ao-border)" }}>
@@ -292,7 +292,7 @@ export default function ProcurementPage() {
                     {ROUTE_OPTIONS.map((r) => (
                       <label key={r.id} className="flex items-start gap-3 p-4 rounded-xl border cursor-pointer transition-all"
                         style={{
-                          backgroundColor: selectedRoute === r.id ? "rgba(0,212,170,0.06)" : "var(--ao-surface)",
+                          backgroundColor: selectedRoute === r.id ? "rgba(0,200,168,0.06)" : "var(--ao-surface)",
                           borderColor: selectedRoute === r.id ? "var(--ao-accent)" : "var(--ao-border)",
                         }}>
                         <input type="radio" checked={selectedRoute === r.id} onChange={() => setSelectedRoute(r.id)} className="sr-only" />
@@ -303,7 +303,7 @@ export default function ProcurementPage() {
                         <div className="flex-1">
                           <div className="flex items-center gap-2">
                             <p className="font-semibold text-[13px]" style={{ color: "var(--ao-text-primary)", fontFamily: "var(--ao-font-body)" }}>{r.name}</p>
-                            {r.recommended && <span className="text-[10px] px-1.5 py-0.5 rounded-full" style={{ backgroundColor: "rgba(0,212,170,0.12)", color: "var(--ao-accent)", fontFamily: "var(--ao-font-body)" }}>Recommended</span>}
+                            {r.recommended && <span className="text-[10px] px-1.5 py-0.5 rounded-full" style={{ backgroundColor: "rgba(0,200,168,0.12)", color: "var(--ao-accent)", fontFamily: "var(--ao-font-body)" }}>Recommended</span>}
                           </div>
                           <div className="flex items-center gap-4 mt-1.5 text-[12px]" style={{ fontFamily: "var(--ao-font-mono)" }}>
                             <span style={{ color: "var(--ao-text-primary)" }}>{r.etaDays}d ETA</span>
@@ -346,7 +346,7 @@ export default function ProcurementPage() {
                       <input type="checkbox" checked={agreed} onChange={(e) => setAgreed(e.target.checked)} className="sr-only" />
                       <div className="w-4 h-4 rounded border-2 flex items-center justify-center"
                         style={{ borderColor: agreed ? "var(--ao-accent)" : "var(--ao-border)", backgroundColor: agreed ? "var(--ao-accent)" : "transparent" }}>
-                        {agreed && <svg viewBox="0 0 10 8" className="w-2.5 h-2.5" fill="none"><path d="M1 4l2.5 3L9 1" stroke="#0A1628" strokeWidth="1.5" strokeLinecap="round" /></svg>}
+                        {agreed && <svg viewBox="0 0 10 8" className="w-2.5 h-2.5" fill="none"><path d="M1 4l2.5 3L9 1" stroke="#060D1B" strokeWidth="1.5" strokeLinecap="round" /></svg>}
                       </div>
                       <span className="text-[12px]" style={{ color: "var(--ao-text-muted)", fontFamily: "var(--ao-font-body)" }}>
                         I accept the terms and confirm this order
@@ -354,7 +354,7 @@ export default function ProcurementPage() {
                     </label>
                     <button onClick={submitOrder} disabled={!agreed || basket.length === 0}
                       className="w-full py-3.5 rounded-xl text-base font-bold transition-all disabled:opacity-40"
-                      style={{ backgroundColor: "#2ED573", color: "#0A1628", fontFamily: "var(--ao-font-body)" }}>
+                      style={{ backgroundColor: "#22E574", color: "#060D1B", fontFamily: "var(--ao-font-body)" }}>
                       Submit Order
                     </button>
                   </div>
@@ -371,7 +371,7 @@ export default function ProcurementPage() {
                     <button onClick={() => setWizardStep((s) => Math.min(4, s + 1))}
                       disabled={wizardStep === 0 && basket.length === 0}
                       className="flex items-center gap-1.5 px-4 py-2 rounded-lg text-sm font-medium transition-all disabled:opacity-40"
-                      style={{ backgroundColor: "var(--ao-accent)", color: "#0A1628", fontFamily: "var(--ao-font-body)" }}>
+                      style={{ backgroundColor: "var(--ao-accent)", color: "#060D1B", fontFamily: "var(--ao-font-body)" }}>
                       Next <ArrowRight className="w-4 h-4" />
                     </button>
                   )}
@@ -388,7 +388,7 @@ export default function ProcurementPage() {
             <div className="rounded-xl border overflow-hidden" style={{ borderColor: "var(--ao-border)" }}>
               <table className="w-full">
                 <thead>
-                  <tr style={{ backgroundColor: "rgba(12,22,42,0.8)", borderBottom: "1px solid var(--ao-border)" }}>
+                  <tr style={{ backgroundColor: "rgba(13,24,41,0.8)", borderBottom: "1px solid var(--ao-border)" }}>
                     {["Order ID", "Date", "Material", "Status", "Cost"].map((h) => (
                       <th key={h} className="px-4 py-3 text-left text-[11px] font-semibold uppercase tracking-wider"
                         style={{ color: "var(--ao-text-muted)", fontFamily: "var(--ao-font-body)" }}>{h}</th>

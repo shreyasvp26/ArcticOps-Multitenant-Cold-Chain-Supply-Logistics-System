@@ -2,16 +2,16 @@
 import { useState } from "react"
 import { useRouter } from "next/navigation"
 import { motion } from "framer-motion"
-import { Eye, EyeOff, Snowflake, LogIn } from "lucide-react"
+import { Eye, EyeOff, Snowflake, LogIn, Thermometer } from "lucide-react"
 import Link from "next/link"
 import { useAuthStore } from "@/lib/store/auth-store"
 import { pageVariants, cardVariants, staggerContainer, staggerChild } from "@/lib/utils/motion"
 import { DEMO_USERS, ROLE_DASHBOARD } from "@/lib/constants/roles"
 
 const DEMO_BUTTONS = [
-  { key: "ops_manager" as const, label: "Login as Ops Manager", color: "#00D4AA" },
-  { key: "client_admin" as const, label: "Login as Client Admin", color: "#3B82F6" },
-  { key: "driver" as const, label: "Login as Driver", color: "#7C3AED" },
+  { key: "ops_manager" as const, label: "Ops Manager", role: "Operations", color: "#00C8A8", bgColor: "rgba(0,200,168,0.08)" },
+  { key: "client_admin" as const, label: "Client Admin", role: "Pharma Client", color: "#4D9EFF", bgColor: "rgba(77,158,255,0.08)" },
+  { key: "driver" as const, label: "Driver", role: "Transport", color: "#8B5CF6", bgColor: "rgba(139,92,246,0.08)" },
 ]
 
 function isValidEmail(s: string) {
@@ -66,57 +66,76 @@ export default function LoginPage() {
       initial="initial"
       animate="animate"
       exit="exit"
-      className="w-full max-w-[480px] px-4"
+      className="w-full max-w-[440px] px-4 mx-auto"
     >
-      {/* Glass card */}
       <motion.div
         variants={cardVariants}
         className="relative rounded-2xl overflow-hidden"
         style={{
-          background: "rgba(17,29,51,0.85)",
-          backdropFilter: "blur(20px)",
-          border: "1px solid rgba(36,51,82,0.8)",
-          boxShadow: "0 25px 60px rgba(0,0,0,0.4), 0 0 0 1px rgba(0,212,170,0.04)",
+          background: "rgba(8,14,28,0.94)",
+          backdropFilter: "blur(32px)",
+          border: "1px solid rgba(30,48,80,0.65)",
+          boxShadow: "0 0 0 1px rgba(0,200,168,0.06), 0 32px 80px rgba(0,0,0,0.55), 0 0 120px rgba(0,200,168,0.02)",
         }}
       >
-        {/* Top glow accent */}
+        {/* Top teal line */}
         <div
-          className="absolute top-0 left-1/2 -translate-x-1/2 h-px w-3/4"
-          style={{ background: "linear-gradient(90deg, transparent, var(--ao-accent), transparent)" }}
+          className="absolute top-0 left-0 right-0 h-[2px]"
+          style={{ background: "linear-gradient(90deg, transparent 0%, rgba(0,200,168,0.5) 35%, rgba(0,200,168,0.85) 50%, rgba(0,200,168,0.5) 65%, transparent 100%)" }}
+          aria-hidden="true"
+        />
+
+        {/* Faint inner glow */}
+        <div
+          className="absolute top-0 left-0 right-0 h-32 pointer-events-none"
+          style={{ background: "radial-gradient(ellipse 80% 100% at 50% 0%, rgba(0,200,168,0.05) 0%, transparent 100%)" }}
           aria-hidden="true"
         />
 
         <div className="p-8">
-          {/* Logo */}
+          {/* Brand header */}
           <div className="flex items-center gap-3 mb-8">
-            <div className="p-2 rounded-xl" style={{ backgroundColor: "rgba(0,212,170,0.12)" }}>
-              <Snowflake className="w-6 h-6" style={{ color: "var(--ao-accent)" }} aria-hidden="true" />
+            <div
+              className="p-2.5 rounded-xl flex items-center justify-center"
+              style={{
+                background: "radial-gradient(circle at 30% 30%, rgba(0,200,168,0.2) 0%, rgba(0,200,168,0.08) 100%)",
+                border: "1px solid rgba(0,200,168,0.2)",
+                boxShadow: "0 0 20px rgba(0,200,168,0.1)",
+              }}
+            >
+              <Snowflake className="w-5 h-5" style={{ color: "var(--ao-accent)" }} aria-hidden="true" />
             </div>
             <div>
-              <h1 className="text-xl font-bold" style={{ fontFamily: "var(--ao-font-display)", color: "var(--ao-text-primary)" }}>
+              <h1 className="text-[18px] font-bold leading-none" style={{ fontFamily: "var(--ao-font-display)", color: "var(--ao-text-primary)", letterSpacing: "-0.02em" }}>
                 ArcticOps
               </h1>
-              <p className="text-[12px]" style={{ fontFamily: "var(--ao-font-body)", color: "var(--ao-text-muted)" }}>
+              <p className="text-[11px] mt-0.5 tracking-wide uppercase" style={{ fontFamily: "var(--ao-font-body)", color: "var(--ao-text-muted)" }}>
                 Cold-Chain Control Tower
               </p>
             </div>
+            <div className="ml-auto flex items-center gap-1.5 px-2.5 py-1 rounded-full" style={{ backgroundColor: "rgba(46,213,115,0.08)", border: "1px solid rgba(46,213,115,0.2)" }}>
+              <div className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: "#22E574", boxShadow: "0 0 6px rgba(46,213,115,0.6)" }} aria-hidden="true" />
+              <span className="text-[10px] font-medium" style={{ color: "#2ED573", fontFamily: "var(--ao-font-mono)" }}>Online</span>
+            </div>
           </div>
 
-          <h2 className="text-2xl font-semibold mb-1" style={{ fontFamily: "var(--ao-font-display)", color: "var(--ao-text-primary)" }}>
-            Sign in
-          </h2>
-          <p className="text-sm mb-6" style={{ fontFamily: "var(--ao-font-body)", color: "var(--ao-text-secondary)" }}>
-            Enter your credentials to access your dashboard
-          </p>
+          <div className="mb-6">
+            <h2 className="text-[24px] font-semibold mb-1.5" style={{ fontFamily: "var(--ao-font-display)", color: "var(--ao-text-primary)", letterSpacing: "-0.02em" }}>
+              Sign in
+            </h2>
+            <p className="text-sm" style={{ fontFamily: "var(--ao-font-body)", color: "var(--ao-text-secondary)" }}>
+              Enter your credentials to access your dashboard
+            </p>
+          </div>
 
           {/* Login form */}
-          <form onSubmit={onSubmit} noValidate>
+          <form onSubmit={onSubmit} noValidate className="space-y-4">
             {/* Email */}
-            <div className="mb-4">
+            <div>
               <label
                 htmlFor="email"
-                className="block text-sm font-medium mb-1.5"
-                style={{ fontFamily: "var(--ao-font-body)", color: "var(--ao-text-secondary)" }}
+                className="block text-[12px] font-semibold mb-2 tracking-wide uppercase"
+                style={{ fontFamily: "var(--ao-font-body)", color: "var(--ao-text-muted)" }}
               >
                 Email address
               </label>
@@ -126,30 +145,33 @@ export default function LoginPage() {
                 autoComplete="email"
                 value={email}
                 onChange={(e) => { setEmail(e.target.value); setFieldErrors((p) => ({ ...p, email: undefined })) }}
-                className="w-full px-4 py-2.5 rounded-lg text-sm outline-none transition-all"
+                className="w-full px-4 py-3 rounded-xl text-[14px] outline-none transition-all"
                 style={{
-                  backgroundColor: "rgba(26,41,66,0.8)",
-                  border: `1px solid ${fieldErrors.email ? "var(--ao-danger)" : "var(--ao-border)"}`,
+                  backgroundColor: "rgba(12,22,42,0.8)",
+                  border: `1px solid ${fieldErrors.email ? "rgba(255,71,87,0.6)" : "rgba(30,48,80,0.8)"}`,
                   color: "var(--ao-text-primary)",
                   fontFamily: "var(--ao-font-body)",
+                  boxShadow: fieldErrors.email ? "0 0 0 3px rgba(255,71,87,0.08)" : "none",
                 }}
                 placeholder="you@company.com"
                 aria-invalid={!!fieldErrors.email}
                 aria-describedby={fieldErrors.email ? "email-error" : undefined}
+                onFocus={(e) => { e.target.style.borderColor = "rgba(0,200,168,0.5)"; e.target.style.boxShadow = "0 0 0 3px rgba(0,200,168,0.08)" }}
+                onBlur={(e) => { e.target.style.borderColor = fieldErrors.email ? "rgba(255,71,87,0.6)" : "rgba(30,48,80,0.8)"; e.target.style.boxShadow = fieldErrors.email ? "0 0 0 3px rgba(255,71,87,0.08)" : "none" }}
               />
               {fieldErrors.email && (
-                <p id="email-error" className="mt-1 text-[12px]" style={{ color: "var(--ao-danger)", fontFamily: "var(--ao-font-body)" }}>
-                  {fieldErrors.email}
+                <p id="email-error" className="mt-1.5 text-[12px] flex items-center gap-1" style={{ color: "var(--ao-danger)", fontFamily: "var(--ao-font-body)" }}>
+                  <span aria-hidden="true">↑</span> {fieldErrors.email}
                 </p>
               )}
             </div>
 
             {/* Password */}
-            <div className="mb-5">
+            <div>
               <label
                 htmlFor="password"
-                className="block text-sm font-medium mb-1.5"
-                style={{ fontFamily: "var(--ao-font-body)", color: "var(--ao-text-secondary)" }}
+                className="block text-[12px] font-semibold mb-2 tracking-wide uppercase"
+                style={{ fontFamily: "var(--ao-font-body)", color: "var(--ao-text-muted)" }}
               >
                 Password
               </label>
@@ -160,21 +182,24 @@ export default function LoginPage() {
                   autoComplete="current-password"
                   value={password}
                   onChange={(e) => { setPassword(e.target.value); setFieldErrors((p) => ({ ...p, password: undefined })) }}
-                  className="w-full px-4 py-2.5 pr-11 rounded-lg text-sm outline-none transition-all"
+                  className="w-full px-4 py-3 pr-12 rounded-xl text-[14px] outline-none transition-all"
                   style={{
-                    backgroundColor: "rgba(26,41,66,0.8)",
-                    border: `1px solid ${fieldErrors.password ? "var(--ao-danger)" : "var(--ao-border)"}`,
+                    backgroundColor: "rgba(12,22,42,0.8)",
+                    border: `1px solid ${fieldErrors.password ? "rgba(255,71,87,0.6)" : "rgba(30,48,80,0.8)"}`,
                     color: "var(--ao-text-primary)",
                     fontFamily: "var(--ao-font-body)",
+                    boxShadow: fieldErrors.password ? "0 0 0 3px rgba(255,71,87,0.08)" : "none",
                   }}
                   placeholder="••••••••"
                   aria-invalid={!!fieldErrors.password}
                   aria-describedby={fieldErrors.password ? "password-error" : undefined}
+                  onFocus={(e) => { e.target.style.borderColor = "rgba(0,200,168,0.5)"; e.target.style.boxShadow = "0 0 0 3px rgba(0,200,168,0.08)" }}
+                  onBlur={(e) => { e.target.style.borderColor = fieldErrors.password ? "rgba(255,71,87,0.6)" : "rgba(30,48,80,0.8)"; e.target.style.boxShadow = fieldErrors.password ? "0 0 0 3px rgba(255,71,87,0.08)" : "none" }}
                 />
                 <button
                   type="button"
                   onClick={() => setShowPassword((v) => !v)}
-                  className="absolute right-3 top-1/2 -translate-y-1/2"
+                  className="absolute right-3.5 top-1/2 -translate-y-1/2 p-0.5 rounded transition-colors hover:opacity-80"
                   aria-label={showPassword ? "Hide password" : "Show password"}
                 >
                   {showPassword
@@ -183,7 +208,7 @@ export default function LoginPage() {
                 </button>
               </div>
               {fieldErrors.password && (
-                <p id="password-error" className="mt-1 text-[12px]" style={{ color: "var(--ao-danger)", fontFamily: "var(--ao-font-body)" }}>
+                <p id="password-error" className="mt-1.5 text-[12px]" style={{ color: "var(--ao-danger)", fontFamily: "var(--ao-font-body)" }}>
                   {fieldErrors.password}
                 </p>
               )}
@@ -191,15 +216,16 @@ export default function LoginPage() {
 
             {serverError && (
               <div
-                className="mb-4 px-4 py-3 rounded-lg text-sm"
+                className="px-4 py-3 rounded-xl text-[13px] flex items-start gap-2.5"
                 role="alert"
                 style={{
-                  backgroundColor: "rgba(255,71,87,0.10)",
-                  border: "1px solid rgba(255,71,87,0.3)",
+                  backgroundColor: "rgba(255,71,87,0.08)",
+                  border: "1px solid rgba(255,71,87,0.25)",
                   color: "var(--ao-danger)",
                   fontFamily: "var(--ao-font-body)",
                 }}
               >
+                <span className="text-[16px] leading-none mt-0.5" aria-hidden="true">⚠</span>
                 {serverError}
               </div>
             )}
@@ -207,11 +233,15 @@ export default function LoginPage() {
             <button
               type="submit"
               disabled={isSubmitting}
-              className="w-full py-3 rounded-lg font-semibold text-sm flex items-center justify-center gap-2 transition-all hover:brightness-110 disabled:opacity-60"
+              className="w-full py-3.5 rounded-xl font-semibold text-[14px] flex items-center justify-center gap-2.5 transition-all"
               style={{
-                backgroundColor: "var(--ao-accent)",
-                color: "#0A1628",
+                background: isSubmitting
+                  ? "rgba(0,200,168,0.5)"
+                  : "linear-gradient(135deg, #00C8A8 0%, #00A88C 100%)",
+                color: "#060D1B",
                 fontFamily: "var(--ao-font-body)",
+                boxShadow: isSubmitting ? "none" : "0 4px 20px rgba(0,200,168,0.25), 0 0 0 1px rgba(0,200,168,0.2)",
+                cursor: isSubmitting ? "not-allowed" : "pointer",
               }}
             >
               <LogIn className="w-4 h-4" aria-hidden="true" />
@@ -221,11 +251,11 @@ export default function LoginPage() {
 
           {/* Divider */}
           <div className="flex items-center gap-3 my-6">
-            <div className="flex-1 h-px" style={{ backgroundColor: "var(--ao-border)" }} />
-            <span className="text-[11px] uppercase tracking-wider" style={{ color: "var(--ao-text-muted)", fontFamily: "var(--ao-font-body)" }}>
+            <div className="flex-1 h-px" style={{ background: "linear-gradient(90deg, transparent, rgba(30,48,80,0.8))" }} />
+            <span className="text-[10px] uppercase tracking-widest px-1" style={{ color: "var(--ao-text-muted)", fontFamily: "var(--ao-font-body)" }}>
               Demo Access
             </span>
-            <div className="flex-1 h-px" style={{ backgroundColor: "var(--ao-border)" }} />
+            <div className="flex-1 h-px" style={{ background: "linear-gradient(90deg, rgba(30,48,80,0.8), transparent)" }} />
           </div>
 
           {/* Quick-login demo buttons */}
@@ -233,39 +263,46 @@ export default function LoginPage() {
             variants={staggerContainer}
             initial="initial"
             animate="animate"
-            className="flex flex-col gap-2"
+            className="grid grid-cols-3 gap-2"
           >
-            {DEMO_BUTTONS.map(({ key, label, color }) => (
+            {DEMO_BUTTONS.map(({ key, label, role, color, bgColor }) => (
               <motion.button
                 key={key}
                 type="button"
                 variants={staggerChild}
                 onClick={() => handleDemoLogin(key)}
-                className="w-full py-2.5 px-4 rounded-lg text-sm font-medium text-left flex items-center gap-3 transition-all hover:brightness-110"
+                className="flex flex-col items-center gap-1.5 py-3 px-2 rounded-xl transition-all"
                 style={{
-                  backgroundColor: `${color}14`,
-                  border: `1px solid ${color}30`,
-                  color,
-                  fontFamily: "var(--ao-font-body)",
+                  backgroundColor: bgColor,
+                  border: `1px solid ${color}25`,
+                  cursor: "pointer",
                 }}
+                onMouseEnter={(e) => { (e.currentTarget as HTMLElement).style.borderColor = `${color}50`; (e.currentTarget as HTMLElement).style.backgroundColor = `${color}12` }}
+                onMouseLeave={(e) => { (e.currentTarget as HTMLElement).style.borderColor = `${color}25`; (e.currentTarget as HTMLElement).style.backgroundColor = bgColor }}
               >
-                <div className="w-2 h-2 rounded-full flex-shrink-0" style={{ backgroundColor: color }} aria-hidden="true" />
-                {label}
-                <span className="ml-auto text-[11px] opacity-60" style={{ fontFamily: "var(--ao-font-mono)" }}>
-                  {DEMO_USERS[key].email}
-                </span>
+                <div className="w-2 h-2 rounded-full" style={{ backgroundColor: color, boxShadow: `0 0 6px ${color}60` }} aria-hidden="true" />
+                <span className="text-[12px] font-semibold leading-none" style={{ color, fontFamily: "var(--ao-font-body)" }}>{label}</span>
+                <span className="text-[10px] leading-none" style={{ color: "var(--ao-text-muted)", fontFamily: "var(--ao-font-body)" }}>{role}</span>
               </motion.button>
             ))}
           </motion.div>
 
           <p className="mt-6 text-center text-[13px]" style={{ color: "var(--ao-text-muted)", fontFamily: "var(--ao-font-body)" }}>
             New to ArcticOps?{" "}
-            <Link href="/signup" className="transition-colors hover:opacity-80" style={{ color: "var(--ao-accent)" }}>
+            <Link href="/signup" className="transition-colors hover:opacity-80 font-medium" style={{ color: "var(--ao-accent)" }}>
               Activate your account
             </Link>
           </p>
         </div>
       </motion.div>
+
+      {/* Bottom badge */}
+      <div className="flex items-center justify-center gap-2 mt-5">
+        <Thermometer className="w-3.5 h-3.5" style={{ color: "var(--ao-text-muted)" }} aria-hidden="true" />
+        <span className="text-[11px]" style={{ color: "var(--ao-text-muted)", fontFamily: "var(--ao-font-body)" }}>
+          Secure pharmaceutical cold-chain platform
+        </span>
+      </div>
     </motion.div>
   )
 }

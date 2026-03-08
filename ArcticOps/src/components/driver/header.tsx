@@ -1,6 +1,6 @@
 "use client"
 import { useRouter } from "next/navigation"
-import { Bell, LogOut } from "lucide-react"
+import { Bell, LogOut, Snowflake } from "lucide-react"
 import { useState } from "react"
 import { useAuthStore } from "@/lib/store/auth-store"
 import { useDriverStore } from "@/lib/store/driver-store"
@@ -13,15 +13,12 @@ export function DriverHeader() {
   const router = useRouter()
   const { user, logout } = useAuthStore()
   const { currentAssignment } = useDriverStore()
-  const { notifications, markAllRead } = useNotificationStore()
+  const { notifications } = useNotificationStore()
   const [notifOpen, setNotifOpen] = useState(false)
 
   const isDriver = user?.role === "driver"
   const relevantNotifications = notifications.filter((n) => {
-    if (isDriver) {
-      // Drivers only see notifications related to THEIR shipment
-      return n.relatedEntityId === currentAssignment?.id
-    }
+    if (isDriver) return n.relatedEntityId === currentAssignment?.id
     return true
   })
   const unreadCount = relevantNotifications.filter(n => !n.read).length
@@ -31,54 +28,79 @@ export function DriverHeader() {
 
   return (
     <header
-      className="flex items-center justify-between px-4 h-14 border-b shrink-0"
+      className="flex items-center justify-between px-4 shrink-0"
       style={{
-        backgroundColor: "rgba(10,22,40,0.98)",
-        borderColor: "var(--ao-border)",
+        background: "linear-gradient(180deg, rgba(5,10,19,0.99) 0%, rgba(7,12,25,0.98) 100%)",
+        borderBottom: "1px solid rgba(30,48,80,0.7)",
+        backdropFilter: "blur(24px)",
+        height: "56px",
       }}
     >
       {/* Assignment info */}
       <div className="flex items-center gap-3 min-w-0">
+        {/* Logo icon */}
         <div
-          className="w-2.5 h-2.5 rounded-full shrink-0"
+          className="p-1.5 rounded-lg shrink-0 flex items-center justify-center"
           style={{
-            backgroundColor: statusConfig?.color ?? "var(--ao-text-muted)",
-            boxShadow: `0 0 6px ${statusConfig?.color ?? "transparent"}`,
-            animation: status === "in_transit" ? "checkpoint-pulse 2s ease-in-out infinite" : "none",
+            background: "radial-gradient(circle, rgba(0,200,168,0.15) 0%, rgba(0,200,168,0.05) 100%)",
+            border: "1px solid rgba(0,200,168,0.15)",
           }}
-          aria-hidden="true"
-        />
-        <div className="min-w-0">
-          <p
-            className="text-sm font-semibold truncate"
-            style={{ fontFamily: "var(--ao-font-mono)", color: "var(--ao-text-primary)" }}
-          >
-            {currentAssignment ? currentAssignment.id : "No Active Assignment"}
-          </p>
-          {currentAssignment && (
-            <p
-              className="text-[11px] truncate"
-              style={{ fontFamily: "var(--ao-font-body)", color: "var(--ao-text-muted)" }}
-            >
-              {currentAssignment.origin.split(",")[0]} → {currentAssignment.destination.split(",")[0]}
-            </p>
-          )}
+        >
+          <Snowflake className="w-4 h-4" style={{ color: "var(--ao-accent)" }} aria-hidden="true" />
         </div>
+        {currentAssignment ? (
+          <div className="flex items-center gap-2.5 min-w-0">
+            <div
+              className="w-2 h-2 rounded-full shrink-0"
+              style={{
+                backgroundColor: statusConfig?.color ?? "var(--ao-text-muted)",
+                boxShadow: `0 0 6px ${statusConfig?.color ?? "transparent"}`,
+                animation: status === "in_transit" ? "checkpoint-pulse 2s ease-in-out infinite" : "none",
+              }}
+              aria-hidden="true"
+            />
+            <div className="min-w-0">
+              <p className="text-[13px] font-bold leading-none" style={{ fontFamily: "var(--ao-font-mono)", color: "var(--ao-accent)" }}>
+                {currentAssignment.id}
+              </p>
+              <p className="text-[11px] truncate mt-0.5" style={{ fontFamily: "var(--ao-font-body)", color: "var(--ao-text-muted)" }}>
+                {currentAssignment.origin.split(",")[0]} → {currentAssignment.destination.split(",")[0]}
+              </p>
+            </div>
+          </div>
+        ) : (
+          <div className="min-w-0">
+            <p className="text-[13px] font-semibold" style={{ fontFamily: "var(--ao-font-body)", color: "var(--ao-text-secondary)" }}>
+              No Active Assignment
+            </p>
+          </div>
+        )}
       </div>
 
       {/* Actions */}
-      <div className="flex items-center gap-1.5 shrink-0">
+      <div className="flex items-center gap-1 shrink-0">
         <div className="relative">
           <button
             onClick={() => setNotifOpen((v) => !v)}
-            className={cn("relative p-2 rounded-lg transition-colors", notifOpen ? "bg-[rgba(255,255,255,0.08)]" : "hover:bg-[rgba(255,255,255,0.05)]")}
+            className={cn(
+              "relative p-2 rounded-xl transition-colors",
+              notifOpen ? "bg-[rgba(255,255,255,0.08)]" : "hover:bg-[rgba(255,255,255,0.05)]"
+            )}
+            style={{ border: "1px solid transparent" }}
             aria-label={`Notifications${unreadCount > 0 ? ` (${unreadCount})` : ""}`}
+            aria-expanded={notifOpen}
           >
-            <Bell className="w-5 h-5" style={{ color: "var(--ao-text-secondary)" }} aria-hidden="true" />
+            <Bell className="w-5 h-5" style={{ color: unreadCount > 0 ? "var(--ao-text-secondary)" : "var(--ao-text-muted)" }} aria-hidden="true" />
             {unreadCount > 0 && (
               <span
                 className="absolute -top-0.5 -right-0.5 w-4 h-4 rounded-full flex items-center justify-center text-[10px] font-bold"
-                style={{ backgroundColor: "#FF4757", color: "white", fontFamily: "var(--ao-font-mono)" }}
+                style={{
+                  background: "linear-gradient(135deg, #FF4757 0%, #FF6B6B 100%)",
+                  color: "white",
+                  fontFamily: "var(--ao-font-mono)",
+                  boxShadow: "0 0 8px rgba(255,71,87,0.5)",
+                }}
+                aria-hidden="true"
               >
                 {unreadCount > 9 ? "9+" : unreadCount}
               </span>
@@ -88,8 +110,8 @@ export function DriverHeader() {
         </div>
         <button
           onClick={() => { logout(); router.push("/login") }}
-          className="p-2 rounded-lg transition-colors hover:bg-[rgba(255,71,87,0.08)]"
-          style={{ color: "var(--ao-danger)" }}
+          className="p-2 rounded-xl transition-colors hover:bg-[rgba(255,71,87,0.08)]"
+          style={{ color: "var(--ao-danger)", border: "1px solid transparent" }}
           aria-label="Sign out"
         >
           <LogOut className="w-4 h-4" aria-hidden="true" />

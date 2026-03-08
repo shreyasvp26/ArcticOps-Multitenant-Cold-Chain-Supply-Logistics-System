@@ -30,13 +30,21 @@ function PredictiveDelays() {
     <div className="flex flex-col gap-4">
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
         {[
-          { label: "High Risk", value: predictions.filter((p) => p.confidencePercent >= 70).length, color: "#FF4757" },
-          { label: "Avg Delay Hours", value: `${Math.round(predictions.reduce((s, p) => s + p.predictedDelayHours, 0) / (predictions.length || 1))}h`, color: "#FFA502" },
-          { label: "Top Risk Factor", value: "Customs", color: "#3B82F6" },
-          { label: "Monitored", value: predictions.length, color: "#2ED573" },
-        ].map(({ label, value, color }) => (
-          <div key={label} className="rounded-xl border p-4" style={{ backgroundColor: "var(--ao-surface)", borderColor: "var(--ao-border)" }}>
-            <p className="text-[11px] uppercase tracking-wider mb-1" style={{ color: "var(--ao-text-muted)", fontFamily: "var(--ao-font-body)" }}>{label}</p>
+          { label: "High Risk", value: predictions.filter((p) => p.confidencePercent >= 70).length, color: "#FF4757", icon: "⚠" },
+          { label: "Avg Delay Hours", value: `${Math.round(predictions.reduce((s, p) => s + p.predictedDelayHours, 0) / (predictions.length || 1))}h`, color: "#FFA502", icon: "⏱" },
+          { label: "Top Risk Factor", value: "Customs", color: "#3B82F6", icon: "📋" },
+          { label: "Monitored", value: predictions.length, color: "#2ED573", icon: "👁" },
+        ].map(({ label, value, color, icon }) => (
+          <div key={label} className="rounded-xl p-4 transition-all hover:scale-[1.02]"
+            style={{
+              background: `linear-gradient(135deg, ${color}0d 0%, rgba(6,13,27,0.8) 100%)`,
+              border: `1px solid ${color}28`,
+              backdropFilter: "blur(12px)",
+            }}>
+            <div className="flex items-center gap-2 mb-2">
+              <span className="text-base">{icon}</span>
+              <p className="text-[11px] uppercase tracking-wider" style={{ color: "var(--ao-text-muted)", fontFamily: "var(--ao-font-body)" }}>{label}</p>
+            </div>
             <p className="text-2xl font-bold" style={{ color, fontFamily: "var(--ao-font-mono)" }}>{value}</p>
           </div>
         ))}
@@ -47,15 +55,21 @@ function PredictiveDelays() {
           const confColor = pred.confidencePercent >= 80 ? "#FF4757" : pred.confidencePercent >= 60 ? "#FFA502" : "#3B82F6"
           return (
             <div key={pred.shipmentId}
-              className="rounded-xl border p-4 cursor-pointer transition-all hover:scale-[1.01]"
-              style={{ backgroundColor: "var(--ao-surface)", borderColor: "var(--ao-border)", borderLeftWidth: 3, borderLeftColor: confColor }}
+              className="rounded-xl p-4 cursor-pointer transition-all hover:scale-[1.01] hover:brightness-110"
+              style={{
+                background: `linear-gradient(135deg, ${confColor}0a 0%, rgba(6,13,27,0.8) 100%)`,
+                border: `1px solid ${confColor}22`,
+                borderLeftWidth: 3,
+                borderLeftColor: confColor,
+                backdropFilter: "blur(12px)",
+              }}
               onClick={() => router.push(`/shipments/${pred.shipmentId}`)}>
               <div className="flex items-start justify-between mb-2">
                 <span className="text-[12px] font-bold" style={{ color: "var(--ao-accent)", fontFamily: "var(--ao-font-mono)" }}>{pred.shipmentId}</span>
                 <ExternalLink className="w-3.5 h-3.5" style={{ color: "var(--ao-text-muted)" }} />
               </div>
               <p className="text-[12px] mb-1" style={{ color: "var(--ao-text-secondary)", fontFamily: "var(--ao-font-body)" }}>{pred.clientName}</p>
-              <p className="text-[11px] mb-2" style={{ color: "var(--ao-text-muted)", fontFamily: "var(--ao-font-body)" }}>{pred.currentStatus}</p>
+              <p className="text-[11px] mb-3" style={{ color: "var(--ao-text-muted)", fontFamily: "var(--ao-font-body)" }}>{pred.currentStatus}</p>
               <div className="flex items-center gap-3">
                 <div>
                   <p className="text-[10px]" style={{ color: "var(--ao-text-muted)", fontFamily: "var(--ao-font-body)" }}>Predicted Delay</p>
@@ -70,7 +84,7 @@ function PredictiveDelays() {
                   <p className="text-[15px] font-bold" style={{ color: confColor, fontFamily: "var(--ao-font-mono)" }}>{pred.confidencePercent}%</p>
                 </div>
                 <span className="ml-auto text-[11px] px-2 py-0.5 rounded-full capitalize"
-                  style={{ backgroundColor: "rgba(255,255,255,0.05)", color: "var(--ao-text-muted)", fontFamily: "var(--ao-font-body)" }}>
+                  style={{ backgroundColor: `${confColor}18`, color: confColor, fontFamily: "var(--ao-font-body)", border: `1px solid ${confColor}30` }}>
                   {pred.primaryRiskFactor}
                 </span>
               </div>
@@ -94,19 +108,24 @@ function ExcursionAnalytics() {
     <div className="flex flex-col gap-5">
       <div className="grid grid-cols-2 lg:grid-cols-4 gap-3">
         {[
-          { label: "Total Excursions (YTD)", value: totalExcursions },
-          { label: "Most Affected Route", value: routes[0] ?? "—" },
-          { label: "Worst Carrier", value: "ArcticFreight" },
-          { label: "Peak Month", value: months[1] ?? "—" },
-        ].map(({ label, value }) => (
-          <div key={label} className="rounded-xl border p-4" style={{ backgroundColor: "var(--ao-surface)", borderColor: "var(--ao-border)" }}>
+          { label: "Total Excursions (YTD)", value: totalExcursions, color: "#FF4757" },
+          { label: "Most Affected Route", value: routes[0] ?? "—", color: "#FFA502" },
+          { label: "Worst Carrier", value: "ArcticFreight", color: "#3B82F6" },
+          { label: "Peak Month", value: months[1] ?? "—", color: "#7C3AED" },
+        ].map(({ label, value, color }) => (
+          <div key={label} className="rounded-xl p-4 transition-all hover:scale-[1.01]"
+            style={{
+              background: `linear-gradient(135deg, ${color}0d 0%, rgba(6,13,27,0.8) 100%)`,
+              border: `1px solid ${color}28`,
+              backdropFilter: "blur(12px)",
+            }}>
             <p className="text-[11px] uppercase tracking-wider mb-1" style={{ color: "var(--ao-text-muted)", fontFamily: "var(--ao-font-body)" }}>{label}</p>
-            <p className="text-[14px] font-bold" style={{ color: "var(--ao-text-primary)", fontFamily: "var(--ao-font-body)" }}>{value}</p>
+            <p className="text-[14px] font-bold" style={{ color, fontFamily: "var(--ao-font-mono)" }}>{value}</p>
           </div>
         ))}
       </div>
 
-      <div className="rounded-xl border p-5" style={{ backgroundColor: "var(--ao-surface)", borderColor: "var(--ao-border)" }}>
+      <div className="rounded-xl border p-5" style={{ background: "linear-gradient(135deg, rgba(11,18,34,0.9) 0%, rgba(6,13,27,0.95) 100%)", borderColor: "var(--ao-border)", backdropFilter: "blur(12px)" }}>
         <p className="text-sm font-semibold mb-4" style={{ color: "var(--ao-text-primary)", fontFamily: "var(--ao-font-body)" }}>Excursion Heatmap</p>
         <div className="overflow-x-auto">
           <div style={{ minWidth: 500 }}>
@@ -164,9 +183,14 @@ function CostOptimization() {
         {[
           { label: "Savings Opportunity", value: formatCurrency(totalSavings), color: "#2ED573" },
           { label: "Most Expensive Route", value: "SIN → LHR", color: "#FF4757" },
-          { label: "Best Efficiency", value: "ArcticFreight", color: "#00D4AA" },
+          { label: "Best Efficiency", value: "ArcticFreight", color: "#00C8A8" },
         ].map(({ label, value, color }) => (
-          <div key={label} className="rounded-xl border p-4" style={{ backgroundColor: "var(--ao-surface)", borderColor: "var(--ao-border)" }}>
+          <div key={label} className="rounded-xl p-4 transition-all hover:scale-[1.01]"
+            style={{
+              background: `linear-gradient(135deg, ${color}0d 0%, rgba(6,13,27,0.8) 100%)`,
+              border: `1px solid ${color}28`,
+              backdropFilter: "blur(12px)",
+            }}>
             <p className="text-[11px] uppercase tracking-wider mb-1" style={{ color: "var(--ao-text-muted)", fontFamily: "var(--ao-font-body)" }}>{label}</p>
             <p className="text-xl font-bold" style={{ color, fontFamily: "var(--ao-font-mono)" }}>{value}</p>
           </div>
@@ -174,7 +198,7 @@ function CostOptimization() {
       </div>
 
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-5">
-        <div className="rounded-xl border p-5" style={{ backgroundColor: "var(--ao-surface)", borderColor: "var(--ao-border)" }}>
+        <div className="rounded-xl border p-5" style={{ background: "linear-gradient(135deg, rgba(11,18,34,0.9) 0%, rgba(6,13,27,0.95) 100%)", borderColor: "var(--ao-border)", backdropFilter: "blur(12px)" }}>
           <p className="text-sm font-semibold mb-4" style={{ color: "var(--ao-text-primary)", fontFamily: "var(--ao-font-body)" }}>Cost by Transport Mode</p>
           <ResponsiveContainer width="100%" height={200}>
             <BarChart data={modeData} margin={{ top: 0, right: 0, bottom: 0, left: -10 }}>
@@ -189,14 +213,14 @@ function CostOptimization() {
           </ResponsiveContainer>
         </div>
 
-        <div className="rounded-xl border overflow-hidden" style={{ borderColor: "var(--ao-border)" }}>
-          <div className="px-4 py-3 border-b" style={{ borderColor: "var(--ao-border)", backgroundColor: "rgba(12,22,42,0.7)" }}>
+        <div className="rounded-xl border overflow-hidden" style={{ background: "linear-gradient(135deg, rgba(11,18,34,0.9) 0%, rgba(6,13,27,0.95) 100%)", borderColor: "var(--ao-border)", backdropFilter: "blur(12px)" }}>
+          <div className="px-4 py-3 border-b" style={{ borderColor: "var(--ao-border)", backgroundColor: "rgba(0,0,0,0.2)" }}>
             <p className="text-sm font-semibold" style={{ color: "var(--ao-text-primary)", fontFamily: "var(--ao-font-body)" }}>Budget vs Actual</p>
           </div>
           <div className="overflow-y-auto max-h-[200px]">
             <table className="w-full text-[12px]">
               <thead>
-                <tr style={{ backgroundColor: "rgba(12,22,42,0.5)", borderBottom: "1px solid var(--ao-border)" }}>
+                <tr style={{ backgroundColor: "rgba(13,24,41,0.5)", borderBottom: "1px solid var(--ao-border)" }}>
                   {["Shipment", "Estimated", "Actual", "Variance"].map((h) => (
                     <th key={h} className="px-3 py-2 text-left text-[10px] font-semibold uppercase"
                       style={{ color: "var(--ao-text-muted)", fontFamily: "var(--ao-font-body)" }}>{h}</th>
@@ -240,7 +264,12 @@ function ClientHealth() {
         const trendData = h.trend.map((t) => t.score)
 
         return (
-          <div key={h.tenantId} className="rounded-xl border p-5" style={{ backgroundColor: "var(--ao-surface)", borderColor: "var(--ao-border)" }}>
+          <div key={h.tenantId} className="rounded-xl p-5 transition-all hover:scale-[1.01]"
+            style={{
+              background: `linear-gradient(135deg, ${color}0d 0%, rgba(6,13,27,0.85) 100%)`,
+              border: `1px solid ${color}22`,
+              backdropFilter: "blur(12px)",
+            }}>
             <div className="flex items-center gap-3 mb-4">
               <div className="w-10 h-10 rounded-lg flex items-center justify-center text-sm font-bold"
                 style={{ backgroundColor: `${color}14`, color, fontFamily: "var(--ao-font-mono)" }}>
@@ -307,10 +336,15 @@ function SustainabilityDashboard() {
       <div className="grid grid-cols-1 md:grid-cols-3 gap-3">
         {[
           { label: "Total CO₂ (YTD)", value: `${(totalCo2 / 1000).toFixed(1)}t`, color: "#2ED573" },
-          { label: "CO₂ Saved (eco routes)", value: `${(savedKg / 1000).toFixed(1)}t`, color: "#00D4AA" },
+          { label: "CO₂ Saved (eco routes)", value: `${(savedKg / 1000).toFixed(1)}t`, color: "#00C8A8" },
           { label: "Avg per Shipment", value: `${Math.round(totalCo2 / 12)} kg`, color: "#3B82F6" },
         ].map(({ label, value, color }) => (
-          <div key={label} className="rounded-xl border p-4" style={{ backgroundColor: "var(--ao-surface)", borderColor: "var(--ao-border)" }}>
+          <div key={label} className="rounded-xl p-4 transition-all hover:scale-[1.01]"
+            style={{
+              background: `linear-gradient(135deg, ${color}0d 0%, rgba(6,13,27,0.8) 100%)`,
+              border: `1px solid ${color}28`,
+              backdropFilter: "blur(12px)",
+            }}>
             <div className="flex items-center gap-2 mb-1">
               <Leaf className="w-3.5 h-3.5" style={{ color }} />
               <p className="text-[11px] uppercase tracking-wider" style={{ color: "var(--ao-text-muted)", fontFamily: "var(--ao-font-body)" }}>{label}</p>
@@ -319,7 +353,7 @@ function SustainabilityDashboard() {
           </div>
         ))}
       </div>
-      <div className="rounded-xl border p-5" style={{ backgroundColor: "var(--ao-surface)", borderColor: "var(--ao-border)" }}>
+      <div className="rounded-xl border p-5" style={{ background: "linear-gradient(135deg, rgba(11,18,34,0.9) 0%, rgba(6,13,27,0.95) 100%)", borderColor: "var(--ao-border)", backdropFilter: "blur(12px)" }}>
         <p className="text-sm font-semibold mb-4" style={{ color: "var(--ao-text-primary)", fontFamily: "var(--ao-font-body)" }}>CO₂ by Transport Mode</p>
         <ResponsiveContainer width="100%" height={200}>
           <BarChart data={modeData} margin={{ top: 0, right: 0, bottom: 0, left: -10 }}>
@@ -342,25 +376,68 @@ export default function AnalyticsPage() {
   const [tab, setTab] = useState<"delays" | "excursions" | "costs" | "clients" | "sustainability">("delays")
 
   const TABS = [
-    { id: "delays", label: "Predictive Delays", icon: TrendingUp },
-    { id: "excursions", label: "Excursion Analytics", icon: Thermometer },
-    { id: "costs", label: "Cost Optimization", icon: DollarSign },
-    { id: "clients", label: "Client Health", icon: Heart },
-    { id: "sustainability", label: "Sustainability", icon: Leaf },
+    { id: "delays", label: "Predictive Delays", icon: TrendingUp, desc: "AI-powered delay forecasting" },
+    { id: "excursions", label: "Excursion Analytics", icon: Thermometer, desc: "Temperature breach patterns" },
+    { id: "costs", label: "Cost Optimization", icon: DollarSign, desc: "Budget vs actual analysis" },
+    { id: "clients", label: "Client Health", icon: Heart, desc: "Relationship & satisfaction scores" },
+    { id: "sustainability", label: "Sustainability", icon: Leaf, desc: "Carbon footprint tracking" },
   ]
+
+  const activeTab = TABS.find((t) => t.id === tab)
 
   return (
     <div className="flex flex-col h-full">
-      <div className="flex border-b overflow-x-auto shrink-0"
-        style={{ borderColor: "var(--ao-border)", backgroundColor: "rgba(12,22,42,0.6)" }}>
-        {TABS.map(({ id, label, icon: Icon }) => (
-          <button key={id} onClick={() => setTab(id as typeof tab)}
-            className={cn("flex items-center gap-2 px-5 py-3 text-[13px] font-medium border-b-2 transition-colors whitespace-nowrap",
-              tab === id ? "border-[var(--ao-accent)]" : "border-transparent hover:bg-[rgba(255,255,255,0.03)]")}
-            style={{ color: tab === id ? "var(--ao-accent)" : "var(--ao-text-muted)", fontFamily: "var(--ao-font-body)" }}>
-            <Icon className="w-4 h-4" /> {label}
-          </button>
-        ))}
+      {/* Page header bar */}
+      <div
+        className="shrink-0 px-6 py-4 border-b"
+        style={{
+          borderColor: "var(--ao-border)",
+          background: "linear-gradient(180deg, rgba(7,12,22,0.8) 0%, rgba(5,10,19,0.5) 100%)",
+          backdropFilter: "blur(12px)",
+        }}
+      >
+        <div className="flex items-center gap-3 mb-4">
+          <div
+            className="w-8 h-8 rounded-lg flex items-center justify-center"
+            style={{ background: "linear-gradient(135deg, rgba(0,200,168,0.2) 0%, rgba(0,200,168,0.08) 100%)", border: "1px solid rgba(0,200,168,0.25)" }}
+          >
+            <TrendingUp className="w-4 h-4" style={{ color: "var(--ao-accent)" }} />
+          </div>
+          <div>
+            <p className="text-[11px] uppercase tracking-widest font-semibold" style={{ color: "var(--ao-text-muted)", fontFamily: "var(--ao-font-body)", letterSpacing: "0.12em" }}>
+              Intelligence Suite
+            </p>
+            <p className="text-[13px] font-medium" style={{ color: "var(--ao-text-secondary)", fontFamily: "var(--ao-font-body)" }}>
+              {activeTab?.desc}
+            </p>
+          </div>
+        </div>
+
+        {/* Tab bar */}
+        <div className="flex gap-1 overflow-x-auto">
+          {TABS.map(({ id, label, icon: Icon }) => {
+            const isActive = tab === id
+            return (
+              <button
+                key={id}
+                onClick={() => setTab(id as typeof tab)}
+                className="flex items-center gap-2 px-4 py-2 rounded-lg text-[12px] font-medium transition-all whitespace-nowrap"
+                style={{
+                  background: isActive
+                    ? "linear-gradient(135deg, rgba(0,200,168,0.18) 0%, rgba(0,200,168,0.08) 100%)"
+                    : "transparent",
+                  color: isActive ? "var(--ao-accent)" : "var(--ao-text-muted)",
+                  border: isActive ? "1px solid rgba(0,200,168,0.3)" : "1px solid transparent",
+                  fontFamily: "var(--ao-font-body)",
+                  boxShadow: isActive ? "0 0 12px rgba(0,200,168,0.1)" : "none",
+                }}
+              >
+                <Icon className="w-3.5 h-3.5" />
+                {label}
+              </button>
+            )
+          })}
+        </div>
       </div>
 
       <AnimatePresence mode="wait">

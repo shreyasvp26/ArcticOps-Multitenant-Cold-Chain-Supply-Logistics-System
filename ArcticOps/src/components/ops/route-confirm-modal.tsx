@@ -32,14 +32,27 @@ interface RouteConfirmModalProps {
     destination: string
     zone: string
     urgency: string
-    deadline: string
     client: Tenant | null
     onConfirm: () => void
     onCancel: () => void
 }
 
+const URGENCY_DAYS: Record<string, { min: number; max: number }> = {
+  standard: { min: 7, max: 14 },
+  express: { min: 3, max: 5 },
+  emergency: { min: 1, max: 2 },
+}
+
+function formatExpectedDelivery(urgency: string): string {
+  const { min, max } = URGENCY_DAYS[urgency] ?? { min: 7, max: 14 }
+  const fmt = (d: Date) => d.toLocaleDateString("en-GB", { day: "numeric", month: "short", year: "numeric" })
+  const from = new Date(); from.setDate(from.getDate() + min)
+  const to = new Date(); to.setDate(to.getDate() + max)
+  return `${fmt(from)} – ${fmt(to)}`
+}
+
 export function RouteConfirmModal({
-    route, origin, destination, zone, urgency, deadline, client,
+    route, origin, destination, zone, urgency, client,
     onConfirm, onCancel,
 }: RouteConfirmModalProps) {
     const etaDays = Math.floor(route.totalEtaHours / 24)
@@ -69,7 +82,7 @@ export function RouteConfirmModal({
                 >
                     {/* Header */}
                     <div className="flex items-center justify-between px-5 py-4 border-b"
-                        style={{ borderColor: "var(--ao-border)", backgroundColor: "rgba(0,212,170,0.05)" }}>
+                        style={{ borderColor: "var(--ao-border)", backgroundColor: "rgba(0,200,168,0.05)" }}>
                         <div className="flex items-center gap-2">
                             <CheckCircle2 className="w-5 h-5" style={{ color: "var(--ao-accent)" }} />
                             <span className="text-sm font-bold" style={{ color: "var(--ao-text-primary)", fontFamily: "var(--ao-font-display)" }}>
@@ -185,15 +198,13 @@ export function RouteConfirmModal({
                                 </div>
                             </div>
 
-                            {/* Deadline */}
-                            {deadline && (
-                                <div className="p-3 rounded-lg" style={{ backgroundColor: "var(--ao-surface)", border: "1px solid var(--ao-border)" }}>
-                                    <p className="text-[10px] uppercase tracking-wider mb-1" style={{ color: "var(--ao-text-muted)", fontFamily: "var(--ao-font-body)" }}>Deadline</p>
-                                    <p className="text-[13px] font-semibold" style={{ color: "var(--ao-text-primary)", fontFamily: "var(--ao-font-mono)" }}>
-                                        {deadline}
-                                    </p>
-                                </div>
-                            )}
+                            {/* Expected Delivery */}
+                            <div className="p-3 rounded-lg" style={{ backgroundColor: "var(--ao-surface)", border: "1px solid var(--ao-border)" }}>
+                                <p className="text-[10px] uppercase tracking-wider mb-1" style={{ color: "var(--ao-text-muted)", fontFamily: "var(--ao-font-body)" }}>Expected Delivery</p>
+                                <p className="text-[13px] font-semibold" style={{ color: "var(--ao-text-primary)", fontFamily: "var(--ao-font-mono)" }}>
+                                    {formatExpectedDelivery(urgency)}
+                                </p>
+                            </div>
                         </div>
 
                         {/* Confirmation note */}
@@ -214,7 +225,7 @@ export function RouteConfirmModal({
                         <button
                             onClick={onConfirm}
                             className="flex-1 py-2.5 rounded-xl text-sm font-bold transition-all hover:opacity-90 flex items-center justify-center gap-2"
-                            style={{ backgroundColor: "var(--ao-accent)", color: "#0A1628", fontFamily: "var(--ao-font-body)" }}
+                            style={{ backgroundColor: "var(--ao-accent)", color: "#060D1B", fontFamily: "var(--ao-font-body)" }}
                         >
                             <CheckCircle2 className="w-4 h-4" />
                             Confirm &amp; Create Shipment

@@ -68,7 +68,7 @@ export default function DeliverPage() {
   const draw = (e: React.MouseEvent<HTMLCanvasElement>) => {
     if (!isDrawing.current) return
     const ctx = canvasRef.current!.getContext("2d")!
-    ctx.lineWidth = 2; ctx.lineCap = "round"; ctx.strokeStyle = "#00D4AA"
+    ctx.lineWidth = 2; ctx.lineCap = "round"; ctx.strokeStyle = "#00C8A8"
     ctx.lineTo(e.nativeEvent.offsetX, e.nativeEvent.offsetY)
     ctx.stroke()
   }
@@ -112,7 +112,7 @@ export default function DeliverPage() {
           {!arrived ? (
             <button onClick={() => { setArrived(true) }}
               className="w-full max-w-xs py-3.5 rounded-xl text-base font-bold"
-              style={{ backgroundColor: "var(--ao-accent)", color: "#0A1628", fontFamily: "var(--ao-font-body)" }}>
+              style={{ backgroundColor: "var(--ao-accent)", color: "#060D1B", fontFamily: "var(--ao-font-body)" }}>
               ✓ Confirm Arrival
             </button>
           ) : (
@@ -143,12 +143,12 @@ export default function DeliverPage() {
           {!photoCapture ? (
             <button onClick={() => fileInputRef.current?.click()}
               className="w-full max-w-xs py-3.5 rounded-xl text-base font-bold"
-              style={{ backgroundColor: "var(--ao-accent)", color: "#0A1628", fontFamily: "var(--ao-font-body)" }}>
+              style={{ backgroundColor: "var(--ao-accent)", color: "#060D1B", fontFamily: "var(--ao-font-body)" }}>
               <Camera className="w-4 h-4 inline mr-2" /> Upload Photo
             </button>
           ) : (
             <div className="w-full max-w-xs h-40 rounded-xl flex items-center justify-center text-[12px]"
-              style={{ backgroundColor: "rgba(0,212,170,0.08)", border: "1px solid rgba(0,212,170,0.3)", color: "#2ED573", fontFamily: "var(--ao-font-body)" }}>
+              style={{ backgroundColor: "rgba(0,200,168,0.08)", border: "1px solid rgba(0,200,168,0.3)", color: "#2ED573", fontFamily: "var(--ao-font-body)" }}>
               ✓ Photo captured
             </div>
           )}
@@ -217,13 +217,13 @@ export default function DeliverPage() {
               (step === 2 && !signed)
             }
             className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold disabled:opacity-40"
-            style={{ backgroundColor: "var(--ao-accent)", color: "#0A1628", fontFamily: "var(--ao-font-body)" }}>
+            style={{ backgroundColor: "var(--ao-accent)", color: "#060D1B", fontFamily: "var(--ao-font-body)" }}>
             Next <ArrowRight className="w-4 h-4" />
           </button>
         ) : (
           <button onClick={handleSubmit}
             className="flex items-center gap-2 px-5 py-2.5 rounded-xl text-sm font-bold"
-            style={{ backgroundColor: "#2ED573", color: "#0A1628", fontFamily: "var(--ao-font-body)" }}>
+            style={{ backgroundColor: "#22E574", color: "#060D1B", fontFamily: "var(--ao-font-body)" }}>
             Submit Delivery <CheckCircle2 className="w-4 h-4" />
           </button>
         )}

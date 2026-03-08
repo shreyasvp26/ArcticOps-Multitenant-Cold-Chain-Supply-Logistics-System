@@ -99,38 +99,40 @@
 /* ─────────────────────────────────────────────────────────────
    :root — ArcticOps dark-mode-first design tokens
    Dark mode is the default and ONLY theme for this build.
+   Palette: Deep Space Cold-Chain — void-black base, sapphire
+   surfaces, electric teal accent, high-contrast status colors.
 ───────────────────────────────────────────────────────────── */
 :root {
   /* Shadcn base tokens — overridden to ArcticOps dark palette */
-  --background: #0A1628;
-  --foreground: #F1F5F9;
-  --card: #111D33;
-  --card-foreground: #F1F5F9;
-  --popover: #1A2942;
-  --popover-foreground: #F1F5F9;
-  --primary: #00D4AA;
-  --primary-foreground: #0A1628;
-  --secondary: #1A2942;
-  --secondary-foreground: #F1F5F9;
-  --muted: #1A2942;
-  --muted-foreground: #64748B;
-  --accent: #00D4AA;
-  --accent-foreground: #0A1628;
-  --destructive: #FF4757;
-  --border: #243352;
-  --input: #243352;
-  --ring: #00D4AA;
+  --background: #060D1B;
+  --foreground: #EEF2FF;
+  --card: #0D1829;
+  --card-foreground: #EEF2FF;
+  --popover: #162035;
+  --popover-foreground: #EEF2FF;
+  --primary: #00C8A8;
+  --primary-foreground: #060D1B;
+  --secondary: #162035;
+  --secondary-foreground: #EEF2FF;
+  --muted: #162035;
+  --muted-foreground: #5E7A99;
+  --accent: #00C8A8;
+  --accent-foreground: #060D1B;
+  --destructive: #FF3D54;
+  --border: #1E3050;
+  --input: #1E3050;
+  --ring: #00C8A8;
   --radius: 0.75rem;
 
   /* Sidebar tokens */
-  --sidebar: #111D33;
-  --sidebar-foreground: #F1F5F9;
-  --sidebar-primary: #00D4AA;
-  --sidebar-primary-foreground: #0A1628;
-  --sidebar-accent: #1A2942;
-  --sidebar-accent-foreground: #F1F5F9;
-  --sidebar-border: #243352;
-  --sidebar-ring: #00D4AA;
+  --sidebar: #0D1829;
+  --sidebar-foreground: #EEF2FF;
+  --sidebar-primary: #00C8A8;
+  --sidebar-primary-foreground: #060D1B;
+  --sidebar-accent: #162035;
+  --sidebar-accent-foreground: #EEF2FF;
+  --sidebar-border: #1E3050;
+  --sidebar-ring: #00C8A8;
 
   /* Chart tokens — temperature zone inspired */
   --chart-1: #7C3AED;
@@ -141,40 +143,40 @@
 
   /* ── ArcticOps proprietary tokens ── */
 
-  /* Base surfaces */
-  --ao-background:       #0A1628;
-  --ao-surface:          #111D33;
-  --ao-surface-elevated: #1A2942;
-  --ao-border:           #243352;
-  --ao-border-hover:     #2D4068;
+  /* Base surfaces — deeper void-black → sapphire layering */
+  --ao-background:       #060D1B;
+  --ao-surface:          #0D1829;
+  --ao-surface-elevated: #162035;
+  --ao-border:           #1E3050;
+  --ao-border-hover:     #2A4470;
 
-  /* Text */
-  --ao-text-primary:     #F1F5F9;
-  --ao-text-secondary:   #94A3B8;
-  --ao-text-muted:       #64748B;
+  /* Text — slightly warmer off-white for less eye-strain */
+  --ao-text-primary:     #EEF2FF;
+  --ao-text-secondary:   #8BA3C4;
+  --ao-text-muted:       #5E7A99;
 
-  /* Accent — Cryo Teal */
-  --ao-accent:           #00D4AA;
-  --ao-accent-hover:     #00E8BC;
-  --ao-accent-subtle:    rgba(0, 212, 170, 0.1);
+  /* Accent — Electric Cryo Teal (richer, more luminous) */
+  --ao-accent:           #00C8A8;
+  --ao-accent-hover:     #00E5C0;
+  --ao-accent-subtle:    rgba(0, 200, 168, 0.12);
 
-  /* Semantic status */
-  --ao-success:          #2ED573;
-  --ao-warning:          #FFA502;
-  --ao-danger:           #FF4757;
-  --ao-info:             #3B82F6;
+  /* Semantic status — boosted saturation/luminosity */
+  --ao-success:          #22E574;
+  --ao-warning:          #FFB020;
+  --ao-danger:           #FF3D54;
+  --ao-info:             #4D9EFF;
 
-  /* Temperature zones */
-  --ao-temp-cryo:        #7C3AED;
+  /* Temperature zones — vivid, calibrated */
+  --ao-temp-cryo:        #8B5CF6;
   --ao-temp-frozen:      #3B82F6;
   --ao-temp-cold:        #06B6D4;
   --ao-temp-ambient:     #F59E0B;
   --ao-temp-hot:         #EF4444;
 
   /* Stress-aware ambient backgrounds */
-  --ao-ambient-calm:     #0A1628;
-  --ao-ambient-alert:    #1A1A2E;
-  --ao-ambient-urgent:   #1F1520;
+  --ao-ambient-calm:     #060D1B;
+  --ao-ambient-alert:    #160E1C;
+  --ao-ambient-urgent:   #1C0B12;
 
   /* Font families */
   --ao-font-display: 'Space Grotesk', system-ui, sans-serif;
@@ -197,6 +199,10 @@
 
   body {
     background-color: var(--ao-background);
+    background-image:
+      radial-gradient(ellipse 120% 60% at 50% -10%, rgba(0,200,168,0.04) 0%, transparent 55%),
+      radial-gradient(ellipse 80% 50% at 5% 90%, rgba(59,130,246,0.03) 0%, transparent 50%),
+      radial-gradient(ellipse 60% 40% at 95% 85%, rgba(77,158,255,0.025) 0%, transparent 50%);
     color: var(--ao-text-primary);
     font-family: var(--ao-font-body);
     line-height: 1.5;
@@ -217,12 +223,12 @@
   /* ── Thin dark scrollbars ── */
   * {
     scrollbar-width: thin;
-    scrollbar-color: var(--ao-border) transparent;
+    scrollbar-color: rgba(30,48,80,0.7) transparent;
   }
 
   *::-webkit-scrollbar {
-    width: 6px;
-    height: 6px;
+    width: 5px;
+    height: 5px;
   }
 
   *::-webkit-scrollbar-track {
@@ -230,12 +236,12 @@
   }
 
   *::-webkit-scrollbar-thumb {
-    background: var(--ao-border);
-    border-radius: 3px;
+    background: rgba(30,48,80,0.7);
+    border-radius: 10px;
   }
 
   *::-webkit-scrollbar-thumb:hover {
-    background: var(--ao-border-hover);
+    background: rgba(45,64,104,0.9);
   }
 
   /* ── Focus rings ── */
@@ -328,7 +334,7 @@ input, textarea, select {
 
 /* ── Leaflet overrides for ArcticOps dark theme ── */
 .leaflet-control-zoom {
-  border: 1px solid rgba(36,51,82,0.9) !important;
+  border: 1px solid rgba(30,48,80,0.9) !important;
   border-radius: 8px !important;
   overflow: hidden;
   box-shadow: 0 4px 16px rgba(0,0,0,0.4) !important;
@@ -337,7 +343,7 @@ input, textarea, select {
   background: rgba(8,16,34,0.92) !important;
   backdrop-filter: blur(12px);
   color: rgba(148,163,184,0.8) !important;
-  border-color: rgba(36,51,82,0.6) !important;
+  border-color: rgba(30,48,80,0.6) !important;
   width: 26px !important;
   height: 26px !important;
   line-height: 26px !important;
@@ -345,7 +351,7 @@ input, textarea, select {
 }
 .leaflet-control-zoom a:hover {
   background: rgba(26,41,66,0.98) !important;
-  color: #00D4AA !important;
+  color: #00C8A8 !important;
 }
 .leaflet-control-attribution {
   background: rgba(8,16,34,0.7) !important;
@@ -361,3 +367,133 @@ input, textarea, select {
   background: transparent !important;
   border: none !important;
 }
+
+/* ── Enhanced ArcticOps utility classes ── */
+
+/* Premium glass card */
+.ao-glass-card {
+  background: linear-gradient(135deg, rgba(13,22,41,0.95) 0%, rgba(7,12,25,0.95) 100%);
+  border: 1px solid rgba(30,48,80,0.7);
+  border-radius: 16px;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.2);
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+.ao-glass-card:hover {
+  border-color: rgba(45,64,104,0.9);
+  box-shadow: 0 8px 32px rgba(0,0,0,0.3), 0 0 0 1px rgba(0,200,168,0.05);
+}
+
+/* Accent glass card */
+.ao-accent-card {
+  background: linear-gradient(135deg, rgba(0,200,168,0.08) 0%, rgba(7,12,25,0.95) 100%);
+  border: 1px solid rgba(0,200,168,0.15);
+  border-radius: 16px;
+  box-shadow: 0 4px 24px rgba(0,0,0,0.15), 0 0 30px rgba(0,200,168,0.06);
+}
+
+/* Teal glow text */
+.ao-text-accent {
+  color: var(--ao-accent);
+  text-shadow: 0 0 20px rgba(0,200,168,0.3);
+}
+
+/* Section label */
+.ao-section-label {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+  color: var(--ao-text-muted);
+  font-family: var(--ao-font-body);
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.ao-section-label::before {
+  content: '';
+  width: 3px;
+  height: 14px;
+  background: var(--ao-accent);
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
+/* Status indicator dot */
+.ao-status-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  flex-shrink: 0;
+}
+.ao-status-dot-success { background: #2ED573; box-shadow: 0 0 6px rgba(46,213,115,0.5); }
+.ao-status-dot-warning { background: #FFA502; box-shadow: 0 0 6px rgba(255,165,2,0.5); }
+.ao-status-dot-danger { background: #FF4757; box-shadow: 0 0 6px rgba(255,71,87,0.5); }
+.ao-status-dot-info { background: #3B82F6; box-shadow: 0 0 6px rgba(59,130,246,0.5); }
+
+/* Input focus ring */
+.ao-input:focus {
+  border-color: rgba(0,200,168,0.5) !important;
+  box-shadow: 0 0 0 3px rgba(0,200,168,0.08) !important;
+  outline: none;
+}
+
+/* Improved table row hover */
+.ao-table-row {
+  transition: background-color 0.12s ease;
+  border-bottom: 1px solid rgba(30,48,80,0.4);
+}
+.ao-table-row:hover {
+  background-color: rgba(0,200,168,0.025);
+}
+
+/* Gradient badge */
+.ao-badge-accent {
+  background: linear-gradient(135deg, rgba(0,200,168,0.15) 0%, rgba(0,200,168,0.08) 100%);
+  border: 1px solid rgba(0,200,168,0.2);
+  color: var(--ao-accent);
+  border-radius: 9999px;
+  font-family: var(--ao-font-mono);
+  font-size: 11px;
+  font-weight: 600;
+  padding: 2px 8px;
+}
+
+/* Premium button */
+.ao-btn {
+  transition: filter 0.15s ease, box-shadow 0.15s ease, transform 0.15s ease;
+}
+.ao-btn:hover {
+  filter: brightness(1.08);
+  box-shadow: 0 6px 20px rgba(0,0,0,0.3);
+  transform: translateY(-1px);
+}
+.ao-btn:active {
+  transform: translateY(0);
+  filter: brightness(0.96);
+}
+
+/* Teal primary button */
+.ao-btn-primary {
+  background: linear-gradient(135deg, #00C8A8 0%, #00BFA3 100%);
+  color: #060D1B;
+  border-radius: 12px;
+  font-weight: 600;
+  font-family: var(--ao-font-body);
+  box-shadow: 0 4px 16px rgba(0,200,168,0.2), 0 0 0 1px rgba(0,200,168,0.15);
+}
+
+/* Card hover shadow lift */
+.ao-card {
+  transition: box-shadow 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+}
+.ao-card:hover {
+  box-shadow: 0 12px 32px rgba(0,0,0,0.3), 0 0 0 1px rgba(0,200,168,0.06);
+  transform: translateY(-1px);
+}
+
+/* Navigation item - no pseudo element conflicts */
+.ao-nav-item {
+  position: relative;
+  transition: all 0.15s ease;
+}
+

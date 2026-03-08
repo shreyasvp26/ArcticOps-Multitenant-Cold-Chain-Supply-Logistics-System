@@ -133,7 +133,7 @@ export default function ShipmentDetailPage({ params }: { params: Promise<{ id: s
       {/* Tab bar */}
       <div
         className="flex border-b shrink-0"
-        style={{ borderColor: "var(--ao-border)", backgroundColor: "rgba(12,22,42,0.6)" }}
+        style={{ borderColor: "var(--ao-border)", backgroundColor: "rgba(13,24,41,0.6)" }}
         role="tablist"
       >
         {TABS.map(({ id: tabId, label, icon: Icon }) => (
@@ -223,7 +223,7 @@ export default function ShipmentDetailPage({ params }: { params: Promise<{ id: s
                       <div className="flex items-center gap-2 flex-wrap">
                         <span className="text-[13px] font-medium" style={{ color: "var(--ao-text-primary)", fontFamily: "var(--ao-font-body)" }}>{cp.name}</span>
                         {cp.status === "current" && (
-                          <span className="text-[10px] px-1.5 py-0.5 rounded-full" style={{ backgroundColor: "rgba(0,212,170,0.12)", color: "var(--ao-accent)", fontFamily: "var(--ao-font-body)" }}>Current</span>
+                          <span className="text-[10px] px-1.5 py-0.5 rounded-full" style={{ backgroundColor: "rgba(0,200,168,0.12)", color: "var(--ao-accent)", fontFamily: "var(--ao-font-body)" }}>Current</span>
                         )}
                       </div>
                       {cp.actualArrival && (
@@ -331,7 +331,7 @@ export default function ShipmentDetailPage({ params }: { params: Promise<{ id: s
             <div className="rounded-xl border overflow-hidden" style={{ borderColor: "var(--ao-border)" }}>
               <table className="w-full" aria-label="Shipment documents">
                 <thead>
-                  <tr style={{ backgroundColor: "rgba(12,22,42,0.8)", borderBottom: "1px solid var(--ao-border)" }}>
+                  <tr style={{ backgroundColor: "rgba(13,24,41,0.8)", borderBottom: "1px solid var(--ao-border)" }}>
                     {["Document", "Status", "Uploaded", "Actions"].map((h) => (
                       <th key={h} className="px-4 py-3 text-left text-[11px] font-semibold uppercase tracking-wider" style={{ color: "var(--ao-text-muted)", fontFamily: "var(--ao-font-body)" }}>{h}</th>
                     ))}
@@ -367,7 +367,7 @@ export default function ShipmentDetailPage({ params }: { params: Promise<{ id: s
                           )}
                           {(doc.status === "missing" || doc.status === "pending") && (
                             <button className="flex items-center gap-1 text-[11px] px-2 py-1 rounded-md transition-colors"
-                              style={{ color: "var(--ao-accent)", fontFamily: "var(--ao-font-body)", backgroundColor: "rgba(0,212,170,0.10)" }}>
+                              style={{ color: "var(--ao-accent)", fontFamily: "var(--ao-font-body)", backgroundColor: "rgba(0,200,168,0.10)" }}>
                               <Upload className="w-3 h-3" /> Upload
                             </button>
                           )}
@@ -395,8 +395,8 @@ export default function ShipmentDetailPage({ params }: { params: Promise<{ id: s
                   <div key={msg.id} className={cn("flex", msg.sender === "ops" ? "justify-end" : "justify-start")}>
                     <div className={cn("max-w-[70%] px-4 py-2.5 rounded-2xl text-sm")}
                       style={{
-                        backgroundColor: msg.sender === "ops" ? "rgba(0,212,170,0.14)" : "var(--ao-surface-elevated)",
-                        border: `1px solid ${msg.sender === "ops" ? "rgba(0,212,170,0.3)" : "var(--ao-border)"}`,
+                        backgroundColor: msg.sender === "ops" ? "rgba(0,200,168,0.14)" : "var(--ao-surface-elevated)",
+                        border: `1px solid ${msg.sender === "ops" ? "rgba(0,200,168,0.3)" : "var(--ao-border)"}`,
                         color: "var(--ao-text-primary)",
                         fontFamily: "var(--ao-font-body)",
                       }}>
@@ -418,7 +418,7 @@ export default function ShipmentDetailPage({ params }: { params: Promise<{ id: s
                 />
                 <button onClick={sendMessage}
                   className="px-4 py-2.5 rounded-lg text-sm font-medium transition-all hover:brightness-110"
-                  style={{ backgroundColor: "var(--ao-accent)", color: "#0A1628", fontFamily: "var(--ao-font-body)" }}>
+                  style={{ backgroundColor: "var(--ao-accent)", color: "#060D1B", fontFamily: "var(--ao-font-body)" }}>
                   Send
                 </button>
               </div>

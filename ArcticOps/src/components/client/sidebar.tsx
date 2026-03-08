@@ -1,7 +1,6 @@
 "use client"
-import { useState } from "react"
 import Link from "next/link"
-import { usePathname, useRouter } from "next/navigation"
+import { usePathname } from "next/navigation"
 import { motion } from "framer-motion"
 import {
   Home, MapPin, ShoppingCart, FileText, MessageSquare,
@@ -32,17 +31,31 @@ export function ClientSidebar() {
     <motion.aside
       variants={sidebarVariants}
       animate={sidebarOpen ? "expanded" : "collapsed"}
-      className="relative flex flex-col border-r shrink-0 h-screen"
+      className="relative flex flex-col shrink-0 h-screen"
       style={{
-        backgroundColor: "rgba(12,22,42,0.95)",
-        borderColor: "var(--ao-border)",
-        backdropFilter: "blur(20px)",
+        background: "linear-gradient(180deg, rgba(5,10,19,0.98) 0%, rgba(7,12,25,0.98) 100%)",
+        borderRight: "1px solid rgba(30,48,80,0.7)",
+        backdropFilter: "blur(24px)",
       }}
       aria-label="Client navigation"
     >
+      {/* Right edge subtle glow - blue for client */}
+      <div
+        aria-hidden="true"
+        className="absolute inset-y-0 right-0 w-px pointer-events-none"
+        style={{ background: "linear-gradient(180deg, transparent 0%, rgba(59,130,246,0.12) 30%, rgba(59,130,246,0.06) 70%, transparent 100%)" }}
+      />
+
       {/* Logo + tenant name */}
-      <div className="flex items-center gap-3 px-4 py-5 border-b" style={{ borderColor: "var(--ao-border)", minHeight: "64px" }}>
-        <div className="p-1.5 rounded-lg shrink-0" style={{ backgroundColor: "rgba(59,130,246,0.14)" }}>
+      <div className="flex items-center gap-3 px-4 py-5 border-b" style={{ borderColor: "rgba(30,48,80,0.6)", minHeight: "64px" }}>
+        <div
+          className="p-2 rounded-xl shrink-0 flex items-center justify-center"
+          style={{
+            background: "radial-gradient(circle at 30% 30%, rgba(59,130,246,0.2) 0%, rgba(59,130,246,0.06) 100%)",
+            border: "1px solid rgba(59,130,246,0.2)",
+            boxShadow: "0 0 16px rgba(59,130,246,0.08)",
+          }}
+        >
           <Snowflake className="w-5 h-5" style={{ color: "#3B82F6" }} aria-hidden="true" />
         </div>
         {sidebarOpen && (
@@ -52,10 +65,10 @@ export function ClientSidebar() {
             className="overflow-hidden"
           >
             <p className="text-[14px] font-semibold leading-none truncate max-w-[160px]"
-              style={{ fontFamily: "var(--ao-font-display)", color: "var(--ao-text-primary)" }}>
+              style={{ fontFamily: "var(--ao-font-display)", color: "var(--ao-text-primary)", letterSpacing: "-0.01em" }}>
               {user?.tenantName ?? "Client Portal"}
             </p>
-            <p className="text-[11px] mt-0.5" style={{ fontFamily: "var(--ao-font-body)", color: "var(--ao-text-muted)" }}>
+            <p className="text-[10px] mt-0.5 uppercase tracking-wide" style={{ fontFamily: "var(--ao-font-body)", color: "var(--ao-text-muted)" }}>
               via ArcticOps
             </p>
           </motion.div>
@@ -72,26 +85,47 @@ export function ClientSidebar() {
                 <Link
                   href={href}
                   className={cn(
-                    "flex items-center gap-3 rounded-lg px-3 py-2.5 transition-all group relative",
-                    active ? "text-white" : "hover:bg-[rgba(255,255,255,0.04)]"
+                    "flex items-center gap-3 rounded-xl px-3 py-2.5 transition-all group relative",
+                    active ? "" : "hover:bg-[rgba(255,255,255,0.035)]"
                   )}
-                  style={active ? { backgroundColor: "#3B82F6", boxShadow: "0 0 16px rgba(59,130,246,0.25)" } : {}}
+                  style={active ? {
+                    background: "linear-gradient(135deg, rgba(59,130,246,0.15) 0%, rgba(59,130,246,0.08) 100%)",
+                    border: "1px solid rgba(59,130,246,0.2)",
+                    boxShadow: "0 0 20px rgba(59,130,246,0.06)",
+                  } : {
+                    border: "1px solid transparent",
+                  }}
                   aria-current={active ? "page" : undefined}
                 >
+                  {active && (
+                    <div
+                      className="absolute left-0 top-1/2 -translate-y-1/2 w-0.5 h-5 rounded-full"
+                      style={{ backgroundColor: "#3B82F6", boxShadow: "0 0 8px rgba(59,130,246,0.6)" }}
+                      aria-hidden="true"
+                    />
+                  )}
                   <Icon
-                    className="w-5 h-5 shrink-0"
-                    style={{ color: active ? "white" : "var(--ao-text-muted)" }}
+                    className="w-4.5 h-4.5 shrink-0 transition-colors"
+                    style={{ color: active ? "#3B82F6" : "rgba(148,163,184,0.6)" }}
                     aria-hidden="true"
                   />
                   {sidebarOpen && (
                     <span className="text-[13px] font-medium truncate"
-                      style={{ fontFamily: "var(--ao-font-body)", color: active ? "white" : "var(--ao-text-secondary)" }}>
+                      style={{ fontFamily: "var(--ao-font-body)", color: active ? "var(--ao-text-primary)" : "var(--ao-text-secondary)" }}>
                       {label}
                     </span>
                   )}
                   {!sidebarOpen && (
-                    <div className="absolute left-full ml-2 px-2 py-1 rounded-md text-xs whitespace-nowrap opacity-0 group-hover:opacity-100 pointer-events-none z-50 transition-opacity"
-                      style={{ backgroundColor: "var(--ao-surface-elevated)", color: "var(--ao-text-primary)", border: "1px solid var(--ao-border)", fontFamily: "var(--ao-font-body)" }}
+                    <div
+                      className="absolute left-full ml-3 px-2.5 py-1.5 rounded-lg text-[12px] whitespace-nowrap opacity-0 group-hover:opacity-100 pointer-events-none z-50 transition-opacity"
+                      style={{
+                        backgroundColor: "rgba(12,22,42,0.98)",
+                        color: "var(--ao-text-primary)",
+                        border: "1px solid rgba(30,48,80,0.8)",
+                        fontFamily: "var(--ao-font-body)",
+                        boxShadow: "0 8px 24px rgba(0,0,0,0.3)",
+                        backdropFilter: "blur(12px)",
+                      }}
                       aria-hidden="true">
                       {label}
                     </div>
@@ -103,13 +137,42 @@ export function ClientSidebar() {
         </ul>
       </nav>
 
-      <div className="p-2 border-t" style={{ borderColor: "var(--ao-border)" }}>
-        <button onClick={toggleSidebar}
-          className="w-full flex items-center justify-center p-2 rounded-lg transition-colors hover:bg-[rgba(255,255,255,0.05)]"
-          style={{ color: "var(--ao-text-muted)" }}
-          aria-label={sidebarOpen ? "Collapse sidebar" : "Expand sidebar"}>
-          {sidebarOpen ? <ChevronLeft className="w-4 h-4" /> : <ChevronRight className="w-4 h-4" />}
-        </button>
+      {/* User info + collapse */}
+      <div className="border-t" style={{ borderColor: "rgba(30,48,80,0.6)" }}>
+        {sidebarOpen && user && (
+          <div className="px-3 py-3 border-b" style={{ borderColor: "rgba(30,48,80,0.4)" }}>
+            <div className="flex items-center gap-2.5">
+              <div
+                className="w-7 h-7 rounded-lg flex items-center justify-center text-[11px] font-bold shrink-0"
+                style={{
+                  background: "radial-gradient(circle, rgba(59,130,246,0.2) 0%, rgba(59,130,246,0.08) 100%)",
+                  color: "#3B82F6",
+                  fontFamily: "var(--ao-font-mono)",
+                  border: "1px solid rgba(59,130,246,0.2)",
+                }}
+                aria-hidden="true"
+              >
+                {user.name?.charAt(0) ?? "?"}
+              </div>
+              <div className="flex-1 min-w-0">
+                <p className="text-[12px] font-semibold truncate" style={{ color: "var(--ao-text-primary)", fontFamily: "var(--ao-font-body)" }}>
+                  {user.name?.split(" ")[0]}
+                </p>
+                <p className="text-[10px] truncate" style={{ color: "var(--ao-text-muted)", fontFamily: "var(--ao-font-body)" }}>
+                  Client Portal
+                </p>
+              </div>
+            </div>
+          </div>
+        )}
+        <div className="p-2">
+          <button onClick={toggleSidebar}
+            className="w-full flex items-center justify-center p-2 rounded-xl transition-colors hover:bg-[rgba(255,255,255,0.04)]"
+            style={{ color: "var(--ao-text-muted)" }}
+            aria-label={sidebarOpen ? "Collapse sidebar" : "Expand sidebar"}>
+            {sidebarOpen ? <ChevronLeft className="w-4 h-4" aria-hidden="true" /> : <ChevronRight className="w-4 h-4" aria-hidden="true" />}
+          </button>
+        </div>
       </div>
     </motion.aside>
   )

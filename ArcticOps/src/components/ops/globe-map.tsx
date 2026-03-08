@@ -11,7 +11,7 @@ import type { Shipment } from "@/lib/types/shipment"
 const MAPBOX_TOKEN = process.env.NEXT_PUBLIC_MAPBOX_TOKEN
 
 const STATUS_COLORS: Record<string, string> = {
-  in_transit: "#00D4AA",
+  in_transit: "#00C8A8",
   at_customs: "#FFA502",
   preparing: "#3B82F6",
   requested: "#64748B",
@@ -20,7 +20,7 @@ const STATUS_COLORS: Record<string, string> = {
 }
 
 const STATUS_BG: Record<string, string> = {
-  in_transit: "rgba(0,212,170,0.1)",
+  in_transit: "rgba(0,200,168,0.1)",
   at_customs: "rgba(255,165,2,0.1)",
   preparing: "rgba(59,130,246,0.1)",
   requested: "rgba(100,116,139,0.1)",
@@ -28,7 +28,6 @@ const STATUS_BG: Record<string, string> = {
   cancelled: "rgba(255,71,87,0.1)",
 }
 
-<<<<<<< Updated upstream
 const TEMP_ZONE_COLOR: Record<string, string> = {
   ultra_cold: "#7C3AED",
   frozen: "#3B82F6",
@@ -97,7 +96,7 @@ function buildMarkerHtml(color: string, isMoving: boolean, riskScore: number) {
   return `<div style="position:relative;width:${size}px;height:${size}px;cursor:pointer;">
     ${rings}
     <div style="position:absolute;inset:0;border-radius:50%;background:${color};border:2px solid rgba(255,255,255,0.6);${dangerPulse}"></div>
-    ${danger ? `<div style="position:absolute;top:-2px;right:-2px;width:6px;height:6px;background:#FF4757;border-radius:50%;border:1px solid #111D33;"></div>` : ""}
+    ${danger ? `<div style="position:absolute;top:-2px;right:-2px;width:6px;height:6px;background:#FF4757;border-radius:50%;border:1px solid #0D1829;"></div>` : ""}
   </div>`
 }
 
@@ -124,25 +123,25 @@ function ShipmentListPanel({
         width: "248px",
         background: "rgba(8,16,34,0.92)",
         backdropFilter: "blur(20px)",
-        border: "1px solid rgba(36,51,82,0.9)",
+        border: "1px solid rgba(30,48,80,0.9)",
         boxShadow: "0 8px 32px rgba(0,0,0,0.5), inset 0 1px 0 rgba(255,255,255,0.04)",
       }}
     >
       {/* Panel header */}
       <div
         className="flex items-center justify-between px-3 py-2.5 shrink-0"
-        style={{ borderBottom: "1px solid rgba(36,51,82,0.8)" }}
+        style={{ borderBottom: "1px solid rgba(30,48,80,0.8)" }}
       >
         <div className="flex items-center gap-2">
           <div
             className="flex items-center gap-1.5 px-2 py-0.5 rounded-full"
-            style={{ background: "rgba(0,212,170,0.12)", border: "1px solid rgba(0,212,170,0.3)" }}
+            style={{ background: "rgba(0,200,168,0.12)", border: "1px solid rgba(0,200,168,0.3)" }}
           >
             <span
               className="w-1.5 h-1.5 rounded-full"
-              style={{ background: "#00D4AA", animation: "checkpoint-pulse 2s ease-in-out infinite" }}
+              style={{ background: "#00C8A8", animation: "checkpoint-pulse 2s ease-in-out infinite" }}
             />
-            <span style={{ fontFamily: "var(--ao-font-mono)", fontSize: "9px", color: "#00D4AA", fontWeight: 700, letterSpacing: "0.08em" }}>
+            <span style={{ fontFamily: "var(--ao-font-mono)", fontSize: "9px", color: "#00C8A8", fontWeight: 700, letterSpacing: "0.08em" }}>
               LIVE
             </span>
           </div>
@@ -183,17 +182,6 @@ function ShipmentListPanel({
         )}
       </div>
     </div>
-=======
-export function GlobeMap({ tenantId }: { tenantId?: string | null }) {
-  const [weatherVisible, setWeatherVisible] = useState(false)
-  const [popup, setPopup] = useState<ShipmentPopup | null>(null)
-  const [mapLoaded, setMapLoaded] = useState(false)
-  const shipments = useShipmentStore((s) => s.shipments)
-  const getLatestTemp = useTemperatureStore((s) => s.getLatest)
-
-  const activeShipments = shipments.filter(
-    (s) => s.status !== "cancelled" && (!tenantId || s.tenantId === tenantId)
->>>>>>> Stashed changes
   )
 }
 
@@ -220,7 +208,7 @@ function ShipmentCard({
       style={{
         background: selected ? `linear-gradient(90deg, ${color}14 0%, transparent 100%)` : "transparent",
         borderLeft: `2px solid ${selected ? color : "transparent"}`,
-        borderBottom: "1px solid rgba(36,51,82,0.4)",
+        borderBottom: "1px solid rgba(30,48,80,0.4)",
         cursor: "pointer",
       }}
     >
@@ -248,7 +236,7 @@ function ShipmentCard({
       {/* Progress bar */}
       {(sh.status === "in_transit" || sh.status === "at_customs") && (
         <div className="flex items-center gap-1.5 mb-1.5">
-          <div className="flex-1 h-1 rounded-full overflow-hidden" style={{ background: "rgba(36,51,82,0.8)" }}>
+          <div className="flex-1 h-1 rounded-full overflow-hidden" style={{ background: "rgba(30,48,80,0.8)" }}>
             <div
               className="h-full rounded-full"
               style={{
@@ -359,7 +347,7 @@ function ShipmentDetailPanel({
           <button
             onClick={onClose}
             className="flex items-center justify-center w-6 h-6 rounded-lg transition-colors"
-            style={{ background: "rgba(36,51,82,0.5)", color: "var(--ao-text-muted)" }}
+            style={{ background: "rgba(30,48,80,0.5)", color: "var(--ao-text-muted)" }}
           >
             <X size={10} />
           </button>
@@ -409,7 +397,7 @@ function ShipmentDetailPanel({
           </div>
 
           {/* Progress bar */}
-          <div className="h-1 rounded-full overflow-hidden mb-1" style={{ background: "rgba(36,51,82,0.8)" }}>
+          <div className="h-1 rounded-full overflow-hidden mb-1" style={{ background: "rgba(30,48,80,0.8)" }}>
             <div
               className="h-full rounded-full"
               style={{
@@ -469,13 +457,13 @@ function ShipmentDetailPanel({
             label="Cold Chain"
             value={`${sh.coldChainConfidence}%`}
             icon={<Shield size={9} />}
-            accent={sh.coldChainConfidence >= 85 ? "#00D4AA" : sh.coldChainConfidence >= 70 ? "#FFA502" : "#FF4757"}
+            accent={sh.coldChainConfidence >= 85 ? "#00C8A8" : sh.coldChainConfidence >= 70 ? "#FFA502" : "#FF4757"}
           />
           <StatCell
             label="Risk Score"
             value={sh.riskScore}
             icon={<AlertTriangle size={9} />}
-            accent={sh.riskScore > 60 ? "#FF4757" : sh.riskScore > 30 ? "#FFA502" : "#00D4AA"}
+            accent={sh.riskScore > 60 ? "#FF4757" : sh.riskScore > 30 ? "#FFA502" : "#00C8A8"}
           />
           <StatCell label="Carrier" value={sh.carrierName.split(" ")[0]!} icon={<Plane size={9} />} accent="var(--ao-text-muted)" />
         </div>
@@ -491,7 +479,7 @@ function ShipmentDetailPanel({
               const isCurrent = cp.status === "current"
               const isPassed = cp.status === "passed"
               const isLast = idx === sh.checkpoints.length - 1
-              const dotColor = isCurrent ? color : isPassed ? "#2ED573" : "rgba(36,51,82,1)"
+              const dotColor = isCurrent ? color : isPassed ? "#2ED573" : "rgba(30,48,80,1)"
               const dotBorder = isCurrent ? color : isPassed ? "#2ED573" : "rgba(100,116,139,0.4)"
               return (
                 <div key={cp.id} className="flex gap-2.5 items-start" style={{ minHeight: "28px" }}>
@@ -506,7 +494,7 @@ function ShipmentDetailPanel({
                       }}
                     />
                     {!isLast && (
-                      <div className="w-px flex-1 mt-0.5" style={{ background: isPassed ? "rgba(46,213,115,0.3)" : "rgba(36,51,82,0.6)", minHeight: "14px" }} />
+                      <div className="w-px flex-1 mt-0.5" style={{ background: isPassed ? "rgba(46,213,115,0.3)" : "rgba(30,48,80,0.6)", minHeight: "14px" }} />
                     )}
                   </div>
                   <div className="pb-2">
@@ -532,7 +520,7 @@ function ShipmentDetailPanel({
         {/* Cargo */}
         <div
           className="rounded-lg p-2.5"
-          style={{ background: "rgba(36,51,82,0.3)", border: "1px solid rgba(36,51,82,0.6)" }}
+          style={{ background: "rgba(30,48,80,0.3)", border: "1px solid rgba(30,48,80,0.6)" }}
         >
           <span style={{ fontFamily: "var(--ao-font-mono)", fontSize: "8px", color: "var(--ao-text-muted)", letterSpacing: "0.08em" }}>CARGO</span>
           {sh.materials.map((m) => (
@@ -551,7 +539,7 @@ function ShipmentDetailPanel({
 
 function StatCell({ label, value, icon, accent }: { label: string; value: string | number; icon: React.ReactNode; accent: string }) {
   return (
-    <div className="rounded-lg p-2" style={{ background: "rgba(36,51,82,0.25)", border: "1px solid rgba(36,51,82,0.5)" }}>
+    <div className="rounded-lg p-2" style={{ background: "rgba(30,48,80,0.25)", border: "1px solid rgba(30,48,80,0.5)" }}>
       <div className="flex items-center gap-1 mb-0.5" style={{ color: "var(--ao-text-muted)" }}>
         {icon}
         <span style={{ fontFamily: "var(--ao-font-mono)", fontSize: "8px", color: "var(--ao-text-muted)", letterSpacing: "0.06em" }}>{label.toUpperCase()}</span>
@@ -577,7 +565,6 @@ export function GlobeMap() {
   )
 }
 
-<<<<<<< Updated upstream
 // ---------- Leaflet implementation ----------
 function LeafletMap() {
   const containerRef = useRef<HTMLDivElement>(null)
@@ -649,7 +636,7 @@ function LeafletMap() {
       // Draw route polylines
       activeShipments.forEach((sh) => {
         if (sh.status !== "in_transit" && sh.status !== "at_customs") return
-        const color = STATUS_COLORS[sh.status] ?? "#00D4AA"
+        const color = STATUS_COLORS[sh.status] ?? "#00C8A8"
 
         const passedCoords = sh.checkpoints
           .filter((cp) => cp.status === "passed" || cp.status === "current")
@@ -785,10 +772,6 @@ function LeafletMap() {
 
 // ---------- Mapbox implementation ----------
 function MapboxMap() {
-=======
-// Separate component that handles Mapbox initialization
-function MapboxMap({ tenantId }: { tenantId?: string | null }) {
->>>>>>> Stashed changes
   const mapContainerRef = useRef<HTMLDivElement>(null)
   const mapRef = useRef<import("mapbox-gl").Map | null>(null)
   const mapboxMarkersRef = useRef<Map<string, import("mapbox-gl").Marker>>(new Map())
@@ -831,7 +814,6 @@ function MapboxMap({ tenantId }: { tenantId?: string | null }) {
       map.on("load", () => {
         const active = shipments.filter((s) => s.status !== "cancelled")
 
-<<<<<<< Updated upstream
         active.forEach((sh) => {
           const el = document.createElement("div")
           el.innerHTML = buildMarkerHtml(STATUS_COLORS[sh.status] ?? "#64748B", sh.status === "in_transit", sh.riskScore)
@@ -840,49 +822,19 @@ function MapboxMap({ tenantId }: { tenantId?: string | null }) {
           el.addEventListener("click", () => setSelectedId((prev) => prev === sh.id ? null : sh.id))
           mapboxMarkersRef.current.set(sh.id, marker)
         })
-=======
-        activeShipments
-          .forEach((sh) => {
-            const el = document.createElement("div")
-            el.className = "shipment-marker"
-            el.style.cssText = `
-              width: 12px; height: 12px; border-radius: 50%;
-              background: ${STATUS_COLORS[sh.status] ?? "#64748B"};
-              border: 2px solid rgba(255,255,255,0.3);
-              cursor: pointer;
-              box-shadow: 0 0 8px ${STATUS_COLORS[sh.status] ?? "#64748B"}80;
-            `
-            if (sh.status === "in_transit") {
-              el.style.animation = "checkpoint-pulse 2s ease-in-out infinite"
-            }
->>>>>>> Stashed changes
 
         active.filter((s) => s.status === "in_transit").forEach((sh) => {
           const id = `route-${sh.id}`
-          const color = STATUS_COLORS[sh.status] ?? "#00D4AA"
+          const color = STATUS_COLORS[sh.status] ?? "#00C8A8"
           const passedCoords = sh.checkpoints.filter((cp) => cp.status === "passed" || cp.status === "current").map((cp) => cp.coordinates)
           const upcomingCoords = sh.checkpoints.filter((cp) => cp.status === "upcoming").map((cp) => cp.coordinates)
 
-<<<<<<< Updated upstream
           const completedLine = toCurvedLine([sh.originCoordinates, ...passedCoords])
           if (completedLine.length >= 2) {
             map!.addSource(`${id}-done`, { type: "geojson", data: { type: "Feature", geometry: { type: "LineString", coordinates: completedLine }, properties: {} } })
             map!.addLayer({ id: `${id}-done-glow`, type: "line", source: `${id}-done`, paint: { "line-color": color, "line-width": 6, "line-opacity": 0.07 } })
             map!.addLayer({ id: `${id}-done-layer`, type: "line", source: `${id}-done`, paint: { "line-color": color, "line-width": 2.5, "line-opacity": 0.8 } })
           }
-=======
-        // Route lines for in_transit shipments
-        activeShipments
-          .filter((s) => s.status === "in_transit")
-          .forEach((sh) => {
-            const sourceId = `route-${sh.id}`
-            const completedCoords = sh.checkpoints
-              .filter((cp) => cp.status === "passed" || cp.status === "current")
-              .map((cp) => cp.coordinates)
-            const upcomingCoords = sh.checkpoints
-              .filter((cp) => cp.status === "upcoming")
-              .map((cp) => cp.coordinates)
->>>>>>> Stashed changes
 
           const upcomingLine = toCurvedLine([sh.currentCoordinates, ...upcomingCoords, sh.destinationCoordinates])
           if (upcomingLine.length >= 2) {

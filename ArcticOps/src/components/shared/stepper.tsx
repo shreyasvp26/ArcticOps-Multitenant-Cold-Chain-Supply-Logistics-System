@@ -33,8 +33,8 @@ export function Stepper({ steps, currentStep, className }: StepperProps) {
               <div
                 className={cn(
                   "w-8 h-8 rounded-full flex items-center justify-center text-sm font-semibold transition-all duration-300",
-                  isCompleted && "bg-[var(--ao-success)] text-[#0A1628]",
-                  isCurrent && "bg-[var(--ao-accent)] text-[#0A1628] ring-4 ring-[var(--ao-accent-subtle)]",
+                  isCompleted && "bg-[var(--ao-success)] text-[#060D1B]",
+                  isCurrent && "bg-[var(--ao-accent)] text-[#060D1B] ring-4 ring-[var(--ao-accent-subtle)]",
                   isUpcoming && "border-2 border-[var(--ao-border)] text-[var(--ao-text-muted)]"
                 )}
                 aria-current={isCurrent ? "step" : undefined}
