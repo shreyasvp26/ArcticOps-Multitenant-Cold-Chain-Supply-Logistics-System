@@ -10,7 +10,7 @@ import { pageVariants } from "@/lib/utils/motion"
 
 const PAGE_TITLES: Record<string, string> = {
   "/home": "Home",
-  "/tracker": "Shipment Tracker",
+  "/tracker": "Supply Telemetry",
   "/procurement": "Procurement",
   "/documents": "Documents",
   "/communications": "Communications",

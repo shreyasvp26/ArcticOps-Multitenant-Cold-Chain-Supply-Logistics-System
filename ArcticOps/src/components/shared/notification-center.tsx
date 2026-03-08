@@ -9,6 +9,7 @@ import {
 import { useNotificationStore } from "@/lib/store/notification-store"
 import { useAuthStore } from "@/lib/store/auth-store"
 import { useDriverStore } from "@/lib/store/driver-store"
+import { CLIENT_ROLES } from "@/lib/constants/roles"
 import { formatTimestamp } from "@/lib/utils/format"
 import { cn } from "@/lib/utils/cn"
 import type { AlertSeverity } from "@/lib/types/notification"
@@ -45,12 +46,18 @@ export function NotificationCenter({ open, onClose }: NotificationCenterProps) {
   const panelRef = useRef<HTMLDivElement>(null)
 
   const isDriver = user?.role === "driver"
+  const isClient = user?.role && (CLIENT_ROLES as string[]).includes(user.role)
+
+  if (isClient) return null
+
   const tenantNotifications = getForTenant(user?.tenantId ?? null)
     .filter((n) => {
       if (isDriver) {
-        // Extremely strict: only show if there is an assignment AND the notification is for it
         if (!currentAssignment) return false
         return n.relatedEntityId === currentAssignment.id
+      }
+      if (isClient) {
+        return n.tenantId === user?.tenantId
       }
       return true
     })

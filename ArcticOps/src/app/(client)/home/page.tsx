@@ -12,6 +12,7 @@ import { StatusBadge } from "@/components/shared/status-badge"
 import { useTemperatureStore } from "@/lib/store/temperature-store"
 import { formatEta, formatTimestamp } from "@/lib/utils/format"
 import { staggerContainer, staggerChild } from "@/lib/utils/motion"
+import { GlobeMap } from "@/components/ops/globe-map"
 
 const MODE_ICONS = { air: Plane, sea: Ship, rail: Train, road: Truck }
 
@@ -104,23 +105,30 @@ export default function ClientHomePage() {
         )}
       </div>
 
-      {/* Recent activity */}
+      {/* Recent shipment updates */}
       <div>
-        <h2 className="text-sm font-semibold mb-3" style={{ color: "var(--ao-text-secondary)", fontFamily: "var(--ao-font-body)" }}>Recent Activity</h2>
+        <h2 className="text-sm font-semibold mb-3" style={{ color: "var(--ao-text-secondary)", fontFamily: "var(--ao-font-body)" }}>Recent Shipment Updates</h2>
         <div className="rounded-xl border overflow-hidden" style={{ borderColor: "var(--ao-border)", backgroundColor: "var(--ao-surface)" }}>
-          {tenantNotifications.map((n, i) => (
-            <div key={n.id} className={`flex items-start gap-3 px-4 py-3 ${i > 0 ? "border-t" : ""}`}
-              style={{ borderColor: "var(--ao-border)" }}>
-              <div className="w-1.5 h-1.5 rounded-full mt-2 shrink-0"
-                style={{ backgroundColor: n.severity === "critical" ? "#FF4757" : n.severity === "warning" ? "#FFA502" : "#2ED573" }} />
-              <div className="flex-1 min-w-0">
-                <p className="text-[12px] font-medium" style={{ color: "var(--ao-text-primary)", fontFamily: "var(--ao-font-body)" }}>{n.title}</p>
-                <p className="text-[11px]" style={{ color: "var(--ao-text-muted)", fontFamily: "var(--ao-font-mono)" }}>{formatTimestamp(n.createdAt)}</p>
+          {notifications
+            .filter((n) => n.tenantId === user?.tenantId && n.relatedEntityType === "shipment")
+            .slice(0, 8)
+            .map((n, i) => (
+              <div key={n.id} className={`flex items-start gap-3 px-4 py-3 ${i > 0 ? "border-t" : ""}`}
+                style={{ borderColor: "var(--ao-border)" }}>
+                <div className="w-1.5 h-1.5 rounded-full mt-2 shrink-0"
+                  style={{ backgroundColor: n.severity === "critical" ? "#FF4757" : n.severity === "warning" ? "#FFA502" : "#2ED573" }} />
+                <div className="flex-1 min-w-0">
+                  <div className="flex items-center justify-between gap-2">
+                    <p className="text-[12px] font-bold" style={{ color: "var(--ao-accent)", fontFamily: "var(--ao-font-mono)" }}>{n.relatedEntityId}</p>
+                    <p className="text-[11px]" style={{ color: "var(--ao-text-muted)", fontFamily: "var(--ao-font-mono)" }}>{formatTimestamp(n.createdAt)}</p>
+                  </div>
+                  <p className="text-[12px] font-medium mt-0.5" style={{ color: "var(--ao-text-primary)", fontFamily: "var(--ao-font-body)" }}>{n.title}</p>
+                  <p className="text-[11px] mt-0.5" style={{ color: "var(--ao-text-muted)", fontFamily: "var(--ao-font-body)" }}>{n.message}</p>
+                </div>
               </div>
-            </div>
-          ))}
-          {tenantNotifications.length === 0 && (
-            <p className="px-4 py-6 text-sm text-center" style={{ color: "var(--ao-text-muted)", fontFamily: "var(--ao-font-body)" }}>No recent activity</p>
+            ))}
+          {notifications.filter((n) => n.tenantId === user?.tenantId && n.relatedEntityType === "shipment").length === 0 && (
+            <p className="px-4 py-8 text-sm text-center" style={{ color: "var(--ao-text-muted)", fontFamily: "var(--ao-font-body)" }}>No recent shipment updates</p>
           )}
         </div>
       </div>

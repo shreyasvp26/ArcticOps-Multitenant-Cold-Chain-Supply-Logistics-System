@@ -8,13 +8,16 @@ import { useNotificationStore } from "@/lib/store/notification-store"
 import { NotificationCenter } from "@/components/shared/notification-center"
 import { cn } from "@/lib/utils/cn"
 
+import { CLIENT_ROLES } from "@/lib/constants/roles"
+
 export function ClientHeader({ title }: { title?: string }) {
   const router = useRouter()
   const { user, logout } = useAuthStore()
   const { setCommandPaletteOpen } = useUIStore()
-  const { unreadCount } = useNotificationStore()
-  const [notifOpen, setNotifOpen] = useState(false)
+  const { notifications } = useNotificationStore()
   const [profileOpen, setProfileOpen] = useState(false)
+
+  const isClient = user?.role && (CLIENT_ROLES as string[]).includes(user.role)
 
   return (
     <header className="flex items-center justify-between px-6 h-16 border-b shrink-0 relative"
@@ -34,21 +37,6 @@ export function ClientHeader({ title }: { title?: string }) {
             ⌘K
           </kbd>
         </button>
-
-        <div className="relative">
-          <button onClick={() => setNotifOpen((v) => !v)}
-            className={cn("relative p-2 rounded-lg transition-colors", notifOpen ? "bg-[rgba(255,255,255,0.08)]" : "hover:bg-[rgba(255,255,255,0.05)]")}
-            aria-label={`Notifications${unreadCount > 0 ? ` (${unreadCount} unread)` : ""}`}>
-            <Bell className="w-5 h-5" style={{ color: "var(--ao-text-secondary)" }} />
-            {unreadCount > 0 && (
-              <span className="absolute -top-0.5 -right-0.5 w-4 h-4 rounded-full flex items-center justify-center text-[10px] font-bold"
-                style={{ backgroundColor: "#FF4757", color: "white", fontFamily: "var(--ao-font-mono)" }}>
-                {unreadCount > 9 ? "9+" : unreadCount}
-              </span>
-            )}
-          </button>
-          <NotificationCenter open={notifOpen} onClose={() => setNotifOpen(false)} />
-        </div>
 
         <div className="relative">
           <button onClick={() => setProfileOpen((v) => !v)}

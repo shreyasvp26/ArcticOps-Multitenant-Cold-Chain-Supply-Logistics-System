@@ -5,7 +5,7 @@ import { usePathname, useRouter } from "next/navigation"
 import { motion } from "framer-motion"
 import {
   Home, MapPin, ShoppingCart, FileText, MessageSquare,
-  Settings, ChevronLeft, ChevronRight, Snowflake
+  Settings, ChevronLeft, ChevronRight, Snowflake, Thermometer
 } from "lucide-react"
 import { cn } from "@/lib/utils/cn"
 import { useUIStore } from "@/lib/store/ui-store"
@@ -14,7 +14,7 @@ import { sidebarVariants } from "@/lib/utils/motion"
 
 const NAV_ITEMS = [
   { label: "Home", href: "/home", icon: Home },
-  { label: "Tracker", href: "/tracker", icon: MapPin },
+  { label: "Supply Telemetry", href: "/tracker", icon: Thermometer },
   { label: "Procurement", href: "/procurement", icon: ShoppingCart },
   { label: "Documents", href: "/documents", icon: FileText },
   { label: "Communications", href: "/communications", icon: MessageSquare },
