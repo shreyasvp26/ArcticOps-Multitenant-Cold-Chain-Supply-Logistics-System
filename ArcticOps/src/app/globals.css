@@ -497,3 +497,204 @@ input, textarea, select {
   transition: all 0.15s ease;
 }
 
+/* ─────────────────────────────────────────────────────────────
+   Icon button — slide-up fill + Y-flip hover effect
+   Inspired by Uiverse social-icon animation by @Spacious74
+───────────────────────────────────────────────────────────── */
+
+/*
+  Usage:
+    <button class="ao-icon-btn ao-icon-btn--teal">
+      <SomeIcon class="ao-icon-btn__icon" />
+    </button>
+
+  Color variants: --teal (default), --danger, --blue, --amber
+*/
+
+.ao-icon-btn {
+  position: relative;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  border: 1px solid rgba(30, 48, 80, 0.7);
+  background: rgba(12, 22, 42, 0.55);
+  overflow: hidden;
+  cursor: pointer;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  flex-shrink: 0;
+}
+
+/* Slide-up fill layer */
+.ao-icon-btn::before {
+  content: "";
+  position: absolute;
+  top: 100%;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: var(--ao-accent);
+  transition: top 0.35s cubic-bezier(0.4, 0, 0.2, 1);
+  z-index: 1;
+}
+
+/* Icon sits above the fill */
+.ao-icon-btn__icon {
+  position: relative;
+  z-index: 2;
+  transition: transform 0.45s ease, color 0.3s ease;
+}
+
+/* Hover: slide fill up + flip icon 360° on Y axis */
+.ao-icon-btn:hover::before {
+  top: 0;
+}
+.ao-icon-btn:hover .ao-icon-btn__icon {
+  transform: rotateY(360deg);
+  color: #fff !important;
+}
+.ao-icon-btn:hover {
+  border-color: transparent;
+  box-shadow: 0 0 16px rgba(0, 200, 168, 0.35);
+}
+
+/* Active press */
+.ao-icon-btn:active {
+  transform: scale(0.92);
+}
+
+/* ── Color variants ── */
+.ao-icon-btn--teal::before        { background: var(--ao-accent); }
+.ao-icon-btn--teal:hover          { box-shadow: 0 0 16px rgba(0,200,168,0.4); }
+
+.ao-icon-btn--danger::before      { background: var(--ao-danger); }
+.ao-icon-btn--danger:hover        { box-shadow: 0 0 16px rgba(255,61,84,0.4); }
+.ao-icon-btn--danger:hover::before { background: var(--ao-danger); }
+
+.ao-icon-btn--blue::before        { background: #3B82F6; }
+.ao-icon-btn--blue:hover          { box-shadow: 0 0 16px rgba(59,130,246,0.4); }
+.ao-icon-btn--blue:hover::before  { background: #3B82F6; }
+
+.ao-icon-btn--amber::before       { background: #F59E0B; }
+.ao-icon-btn--amber:hover         { box-shadow: 0 0 16px rgba(245,158,11,0.4); }
+.ao-icon-btn--amber:hover::before { background: #F59E0B; }
+
+/* Active / open state (e.g. bell when panel is open) */
+.ao-icon-btn--active {
+  border-color: rgba(0,200,168,0.35);
+  background: rgba(0,200,168,0.08);
+}
+.ao-icon-btn--active .ao-icon-btn__icon {
+  color: var(--ao-accent) !important;
+}
+
+/* Slightly rectangular variant for buttons with text labels (search bar) */
+.ao-icon-btn--pill {
+  border-radius: 12px;
+  width: auto;
+  height: auto;
+  padding: 7px 12px;
+  gap: 6px;
+}
+.ao-icon-btn--pill::before {
+  border-radius: 12px;
+}
+
+/* Sidebar nav items: trigger icon-btn animation when parent link is hovered */
+a:hover .ao-icon-btn::before,
+button:hover .ao-icon-btn::before {
+  top: 0;
+}
+a:hover .ao-icon-btn .ao-icon-btn__icon,
+button:hover .ao-icon-btn .ao-icon-btn__icon {
+  transform: rotateY(360deg);
+  color: #fff !important;
+}
+a:hover .ao-icon-btn,
+button:hover .ao-icon-btn {
+  border-color: transparent;
+}
+
+/* ─────────────────────────────────────────────────────────────
+   Uiverse login button — by Spacious74, adapted for ArcticOps
+───────────────────────────────────────────────────────────── */
+.uv-button {
+  cursor: pointer;
+  font-size: 1rem;
+  border-radius: 16px;
+  border: none;
+  padding: 2px;
+  background: radial-gradient(circle 80px at 80% -10%, #ffffff, #181b1b);
+  position: relative;
+  display: block;
+  transition: transform 0.18s ease, box-shadow 0.18s ease;
+}
+.uv-button:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 30px rgba(0,0,0,0.5);
+}
+.uv-button:active {
+  transform: translateY(0);
+}
+.uv-button::after {
+  content: "";
+  position: absolute;
+  width: 65%;
+  height: 60%;
+  border-radius: 120px;
+  top: 0;
+  right: 0;
+  box-shadow: 0 0 20px #ffffff38;
+  z-index: -1;
+  pointer-events: none;
+}
+
+.uv-button .blob1 {
+  position: absolute;
+  width: 70px;
+  height: 100%;
+  border-radius: 16px;
+  bottom: 0;
+  left: 0;
+  background: radial-gradient(
+    circle 60px at 0% 100%,
+    #3fe9ff,
+    #0000ff80,
+    transparent
+  );
+  box-shadow: -10px 10px 30px #0051ff2d;
+  pointer-events: none;
+}
+
+.uv-inner {
+  padding: 14px 25px;
+  border-radius: 14px;
+  color: #fff;
+  z-index: 3;
+  position: relative;
+  background: radial-gradient(circle 80px at 80% -50%, #777777, #0f1111);
+}
+.uv-inner::before {
+  content: "";
+  width: 100%;
+  height: 100%;
+  left: 0;
+  top: 0;
+  border-radius: 14px;
+  background: radial-gradient(
+    circle 60px at 0% 100%,
+    #00e1ff1a,
+    #0000ff11,
+    transparent
+  );
+  position: absolute;
+  pointer-events: none;
+}
+
+/* Demo variant — tighter inner padding */
+.uv-button.uv-demo .uv-inner {
+  padding: 10px 12px;
+}
+

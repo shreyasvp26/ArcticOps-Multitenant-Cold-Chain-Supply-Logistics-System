@@ -109,7 +109,7 @@ export default function RoutePlannerPage() {
   }
 
   /** User clicked Confirm in the modal — build a Shipment and save it */
-  const handleConfirm = () => {
+  const handleConfirm = (_backupRoute: RouteOption | null) => {
     if (!confirmRoute) return
 
     const now = new Date().toISOString()
@@ -198,6 +198,7 @@ export default function RoutePlannerPage() {
             zone={zone}
             urgency={urgency}
             client={selectedClient}
+            backupRoutes={routeOptions.filter((r) => r.id !== confirmRoute.id)}
             onConfirm={handleConfirm}
             onCancel={() => setConfirmRoute(null)}
           />

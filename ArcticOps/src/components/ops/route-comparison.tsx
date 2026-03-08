@@ -35,14 +35,31 @@ const MODE_LABELS: Record<string, string> = {
   road: "Road",
 }
 
-function TempConfidenceBar({ pct }: { pct: number }) {
+function TempConfidenceBar({ pct, baseline }: { pct: number; baseline?: number }) {
   const color = pct >= 90 ? "#2ED573" : pct >= 70 ? "#FFA502" : "#FF4757"
+  const dropped = baseline !== undefined && pct < baseline
   return (
     <div className="flex items-center gap-2">
       <div className="flex-1 h-1.5 rounded-full overflow-hidden" style={{ backgroundColor: "var(--ao-surface-elevated)" }}>
-        <div className="h-full rounded-full transition-all" style={{ width: `${pct}%`, backgroundColor: color }} />
+        <motion.div
+          className="h-full rounded-full"
+          animate={{ width: `${pct}%` }}
+          transition={{ duration: 0.4, ease: "easeOut" }}
+          style={{ backgroundColor: color }}
+        />
       </div>
       <span className="text-[11px] w-9 text-right" style={{ color, fontFamily: "var(--ao-font-mono)" }}>{pct}%</span>
+      {dropped && (
+        <motion.span
+          key={pct}
+          initial={{ opacity: 0, y: -4 }}
+          animate={{ opacity: 1, y: 0 }}
+          className="text-[10px] font-bold px-1.5 py-0.5 rounded"
+          style={{ backgroundColor: "rgba(255,61,84,0.15)", color: "#FF3D54", fontFamily: "var(--ao-font-mono)" }}
+        >
+          ▼{baseline! - pct}%
+        </motion.span>
+      )}
     </div>
   )
 }
@@ -50,7 +67,11 @@ function TempConfidenceBar({ pct }: { pct: number }) {
 interface ComputedRoute extends RouteOption {
   computedCost: number
   computedEtaHours: number
+  computedRiskScore: number
+  computedConfidence: number
   affected: boolean
+  riskDelta: number
+  etaDelta: number
 }
 
 interface RouteCardProps {
@@ -68,6 +89,9 @@ function RouteCard({ route, selected, onSelect, onSelectRoute }: RouteCardProps)
 
   // Build a readable "mode mix" label  e.g. "Air → Road"
   const modeMix = route.legs.map((l) => MODE_LABELS[l.mode] ?? l.mode).join(" → ")
+
+  const hasRiskChange = route.riskDelta > 0
+  const hasEtaChange = route.etaDelta > 0
 
   return (
     <motion.div
@@ -123,9 +147,22 @@ function RouteCard({ route, selected, onSelect, onSelectRoute }: RouteCardProps)
         <div className="grid grid-cols-2 gap-x-4 gap-y-2 mb-3">
           <div>
             <p className="text-[10px] uppercase tracking-wider mb-0.5" style={{ color: "var(--ao-text-muted)", fontFamily: "var(--ao-font-body)" }}>ETA</p>
-            <p className="text-[15px] font-bold" style={{ color: "var(--ao-text-primary)", fontFamily: "var(--ao-font-mono)" }}>
-              {etaDays > 0 ? `${etaDays}d ` : ""}{etaHours}h
-            </p>
+            <div className="flex items-center gap-1.5 flex-wrap">
+              <p className="text-[15px] font-bold" style={{ color: hasEtaChange ? "#FFA502" : "var(--ao-text-primary)", fontFamily: "var(--ao-font-mono)" }}>
+                {etaDays > 0 ? `${etaDays}d ` : ""}{etaHours}h
+              </p>
+              {hasEtaChange && (
+                <motion.span
+                  key={route.etaDelta}
+                  initial={{ opacity: 0, y: -4 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="text-[10px] font-bold px-1.5 py-0.5 rounded"
+                  style={{ backgroundColor: "rgba(255,165,2,0.15)", color: "#FFA502", fontFamily: "var(--ao-font-mono)" }}
+                >
+                  ▲+{route.etaDelta}h
+                </motion.span>
+              )}
+            </div>
           </div>
           <div>
             <p className="text-[10px] uppercase tracking-wider mb-0.5" style={{ color: "var(--ao-text-muted)", fontFamily: "var(--ao-font-body)" }}>Estimated Cost</p>
@@ -135,7 +172,20 @@ function RouteCard({ route, selected, onSelect, onSelectRoute }: RouteCardProps)
           </div>
           <div>
             <p className="text-[10px] uppercase tracking-wider mb-0.5" style={{ color: "var(--ao-text-muted)", fontFamily: "var(--ao-font-body)" }}>Risk Score</p>
-            <RiskScore score={route.riskScore} size="sm" showLabel={false} />
+            <div className="flex items-center gap-1.5 flex-wrap">
+              <RiskScore score={route.computedRiskScore} size="sm" showLabel={false} />
+              {hasRiskChange && (
+                <motion.span
+                  key={route.riskDelta}
+                  initial={{ opacity: 0, y: -4 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className="text-[10px] font-bold px-1.5 py-0.5 rounded"
+                  style={{ backgroundColor: "rgba(255,61,84,0.15)", color: "#FF3D54", fontFamily: "var(--ao-font-mono)" }}
+                >
+                  ▲+{route.riskDelta}
+                </motion.span>
+              )}
+            </div>
           </div>
           <div>
             <p className="text-[10px] uppercase tracking-wider mb-0.5" style={{ color: "var(--ao-text-muted)", fontFamily: "var(--ao-font-body)" }}>
@@ -157,7 +207,7 @@ function RouteCard({ route, selected, onSelect, onSelectRoute }: RouteCardProps)
           <p className="text-[10px] uppercase tracking-wider mb-1" style={{ color: "var(--ao-text-muted)", fontFamily: "var(--ao-font-body)" }}>
             Temp Maintenance Confidence
           </p>
-          <TempConfidenceBar pct={route.tempMaintenanceConfidence} />
+          <TempConfidenceBar pct={route.computedConfidence} baseline={route.tempMaintenanceConfidence} />
         </div>
 
         {route.notes && (
@@ -228,10 +278,38 @@ function RouteCard({ route, selected, onSelect, onSelectRoute }: RouteCardProps)
 }
 
 const SCENARIOS = [
-  { id: "port_strike", label: "Port Strike", costMult: 1.15, etaMult: 1.4, description: "Sea routes delayed 40%", affectsMode: "sea" as const },
-  { id: "severe_weather", label: "Severe Weather", costMult: 1.1, etaMult: 1.2, description: "Air and road +20% ETA", affectsMode: "air" as const },
-  { id: "carrier_unavailable", label: "Carrier Unavailable", costMult: 1.25, etaMult: 1.15, description: "Best carrier replaced", affectsMode: null },
-  { id: "customs_delay", label: "Customs Delay", costMult: 1.05, etaMult: 1.5, description: "All routes +50% ETA at borders", affectsMode: null },
+  {
+    id: "port_strike",
+    label: "Port Strike",
+    costMult: 1.15, etaMult: 1.4,
+    riskAdd: 18, confMult: 0.88,
+    description: "Sea routes delayed 40%, risk +18",
+    affectsMode: "sea" as const,
+  },
+  {
+    id: "severe_weather",
+    label: "Severe Weather",
+    costMult: 1.1, etaMult: 1.2,
+    riskAdd: 12, confMult: 0.93,
+    description: "Air & road +20% ETA, risk +12",
+    affectsMode: "air" as const,
+  },
+  {
+    id: "carrier_unavailable",
+    label: "Carrier Unavailable",
+    costMult: 1.25, etaMult: 1.15,
+    riskAdd: 22, confMult: 0.90,
+    description: "Best carrier replaced, risk +22",
+    affectsMode: null,
+  },
+  {
+    id: "customs_delay",
+    label: "Customs Delay",
+    costMult: 1.05, etaMult: 1.5,
+    riskAdd: 14, confMult: 0.95,
+    description: "All routes +50% ETA, risk +14",
+    affectsMode: null,
+  },
 ]
 
 interface RouteComparisonProps {
@@ -258,6 +336,8 @@ export function RouteComparison({ routes, isGenerating, origin, destination, onS
   const applyScenarios = (route: RouteOption): ComputedRoute => {
     let cost = route.totalCostUsd
     let etaHours = route.totalEtaHours
+    let riskScore = route.riskScore
+    let confidence = route.tempMaintenanceConfidence
     let affected = false
 
     for (const sid of activeScenarios) {
@@ -267,11 +347,22 @@ export function RouteComparison({ routes, isGenerating, origin, destination, onS
       if (legAffected) {
         cost = Math.round(cost * s.costMult)
         etaHours = Math.round(etaHours * s.etaMult)
+        riskScore = Math.min(100, riskScore + s.riskAdd)
+        confidence = Math.max(0, Math.round(confidence * s.confMult))
         affected = true
       }
     }
 
-    return { ...route, computedCost: cost, computedEtaHours: etaHours, affected }
+    return {
+      ...route,
+      computedCost: cost,
+      computedEtaHours: etaHours,
+      computedRiskScore: riskScore,
+      computedConfidence: confidence,
+      riskDelta: riskScore - route.riskScore,
+      etaDelta: etaHours - route.totalEtaHours,
+      affected,
+    }
   }
 
   const computedRoutes = routes

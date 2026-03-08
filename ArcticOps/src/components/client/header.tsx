@@ -57,11 +57,10 @@ export function ClientHeader({ title }: { title?: string }) {
       <div className="flex items-center gap-1.5">
         <button
           onClick={() => setCommandPaletteOpen(true)}
-          className="flex items-center gap-2 px-3 py-2 rounded-xl transition-all hover:bg-[rgba(255,255,255,0.05)]"
-          style={{ border: "1px solid rgba(30,48,80,0.7)", background: "rgba(12,22,42,0.6)" }}
+          className="ao-icon-btn ao-icon-btn--blue ao-icon-btn--pill flex items-center"
           aria-label="Open search (⌘K)"
         >
-          <Search className="w-3.5 h-3.5 shrink-0" style={{ color: "var(--ao-text-muted)" }} aria-hidden="true" />
+          <Search className="ao-icon-btn__icon w-3.5 h-3.5 shrink-0" style={{ color: "var(--ao-text-muted)" }} aria-hidden="true" />
           <span className="text-[12px] hidden sm:block" style={{ color: "var(--ao-text-muted)", fontFamily: "var(--ao-font-body)" }}>Search…</span>
           <kbd className="hidden sm:flex items-center text-[10px] px-1.5 py-0.5 rounded-md"
             style={{ backgroundColor: "rgba(255,255,255,0.05)", color: "var(--ao-text-muted)", fontFamily: "var(--ao-font-mono)", border: "1px solid rgba(30,48,80,0.8)" }}>
@@ -71,15 +70,15 @@ export function ClientHeader({ title }: { title?: string }) {
 
         <div className="relative">
           <button onClick={() => setNotifOpen((v) => !v)}
-            className={cn("relative p-2 rounded-xl transition-all", notifOpen ? "bg-[rgba(255,255,255,0.08)]" : "hover:bg-[rgba(255,255,255,0.04)]")}
-            style={{ border: "1px solid transparent" }}
+            className={cn("ao-icon-btn ao-icon-btn--blue", notifOpen && "ao-icon-btn--active")}
+            style={{ ["--ao-icon-btn-active-color" as string]: "#3B82F6" }}
             aria-label={`Notifications${unreadCount > 0 ? ` (${unreadCount} unread)` : ""}`}
             aria-expanded={notifOpen}
           >
-            <Bell className="w-4.5 h-4.5" style={{ color: unreadCount > 0 ? "var(--ao-text-secondary)" : "var(--ao-text-muted)" }} aria-hidden="true" />
+            <Bell className="ao-icon-btn__icon w-4 h-4" style={{ color: unreadCount > 0 ? "var(--ao-text-secondary)" : "var(--ao-text-muted)" }} aria-hidden="true" />
             {unreadCount > 0 && (
               <span className="absolute -top-0.5 -right-0.5 w-4 h-4 rounded-full flex items-center justify-center text-[10px] font-bold"
-                style={{ background: "linear-gradient(135deg, #FF4757 0%, #FF6B6B 100%)", color: "white", fontFamily: "var(--ao-font-mono)", boxShadow: "0 0 8px rgba(255,71,87,0.5)" }}
+                style={{ background: "linear-gradient(135deg, #FF4757 0%, #FF6B6B 100%)", color: "white", fontFamily: "var(--ao-font-mono)", boxShadow: "0 0 8px rgba(255,71,87,0.5)", zIndex: 3 }}
                 aria-hidden="true">
                 {unreadCount > 9 ? "9+" : unreadCount}
               </span>
@@ -103,7 +102,7 @@ export function ClientHeader({ title }: { title?: string }) {
               {user?.name?.charAt(0) ?? "?"}
             </div>
             <span className="text-[13px] font-medium hidden md:block" style={{ color: "var(--ao-text-secondary)", fontFamily: "var(--ao-font-body)" }}>
-              {user?.name?.split(" ")[0] ?? "User"}
+              {user?.name ?? "User"}
             </span>
             <ChevronDown
               className="w-3.5 h-3.5 hidden md:block transition-transform"
@@ -132,14 +131,19 @@ export function ClientHeader({ title }: { title?: string }) {
                 <button onClick={() => { router.push("/profile"); setProfileOpen(false) }}
                   className="w-full flex items-center gap-3 px-3 py-2 rounded-xl text-[13px] text-left hover:bg-[rgba(255,255,255,0.04)]"
                   style={{ color: "var(--ao-text-secondary)", fontFamily: "var(--ao-font-body)" }} role="menuitem">
-                  <User className="w-4 h-4 shrink-0" style={{ color: "var(--ao-text-muted)" }} aria-hidden="true" />
+                  <span className="ao-icon-btn ao-icon-btn--blue" style={{ width: 28, height: 28 }}>
+                    <User className="ao-icon-btn__icon w-3.5 h-3.5" style={{ color: "var(--ao-text-muted)" }} aria-hidden="true" />
+                  </span>
                   Profile & Preferences
                 </button>
                 <div className="my-1 mx-2 h-px" style={{ backgroundColor: "rgba(30,48,80,0.6)" }} aria-hidden="true" />
-                <button onClick={() => { logout(); router.push("/login") }}
+                <button onClick={() => { logout(); window.location.href = "/login" }}
                   className="w-full flex items-center gap-3 px-3 py-2 rounded-xl text-[13px] text-left hover:bg-[rgba(255,71,87,0.06)]"
                   style={{ color: "var(--ao-danger)", fontFamily: "var(--ao-font-body)" }} role="menuitem">
-                  <LogOut className="w-4 h-4 shrink-0" aria-hidden="true" /> Sign out
+                  <span className="ao-icon-btn ao-icon-btn--danger" style={{ width: 28, height: 28 }}>
+                    <LogOut className="ao-icon-btn__icon w-3.5 h-3.5" aria-hidden="true" style={{ color: "var(--ao-danger)" }} />
+                  </span>
+                  Sign out
                 </button>
               </div>
             </div>

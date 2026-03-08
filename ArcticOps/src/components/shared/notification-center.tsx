@@ -48,8 +48,6 @@ export function NotificationCenter({ open, onClose }: NotificationCenterProps) {
   const isDriver = user?.role === "driver"
   const isClient = user?.role && (CLIENT_ROLES as string[]).includes(user.role)
 
-  if (isClient) return null
-
   const tenantNotifications = getForTenant(user?.tenantId ?? null)
     .filter((n) => {
       if (isDriver) {
@@ -57,6 +55,7 @@ export function NotificationCenter({ open, onClose }: NotificationCenterProps) {
         return n.relatedEntityId === currentAssignment.id
       }
       if (isClient) {
+        // clients only see their own tenant's notifications
         return n.tenantId === user?.tenantId
       }
       return true
